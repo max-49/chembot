@@ -156,7 +156,7 @@ class Admin(commands.Cog):
 
     @commands.command(name='save', help="saves an archive of the chat!")
     async def save(self, ctx, *params):
-        with open('allowed_ids.json') as j:
+        with open('allowed_ids.json', 'rw') as j:
             allowed_ids = json.load(j)
         try:
             if(params[0] == "allowId"):
