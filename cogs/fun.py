@@ -212,7 +212,6 @@ class Fun(commands.Cog):
             for thing in all_list_alt:
                 if(thing in all_solves):
                     all_list.remove(thing)
-            score = my_challs[0]["user"]["score"]
             solved = '\n'.join(all_solves)
             unsolved = '\n'.join(all_list)
             embedVar = discord.Embed(title=f"Stats for {name}", color=0x3498DB)
