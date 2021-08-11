@@ -156,12 +156,21 @@ class Admin(commands.Cog):
 
     @commands.command(name='save', help="saves an archive of the chat!")
     async def save(self, ctx, *params):
-        allowed_ids = []
+        with open('allowed_ids.json') as j:
+            allowed_ids = json.load(j)
         try:
             if(params[0] == "allowId"):
-                allowed_ids.append(int(params[1]))
+                if int(params[1]) not in allowed_ids:
+                    allowed_ids.append(int(params[1])) 
+                    await ctx.reply("Successfully added ID to allowed IDs!")
+                else:
+                    await ctx.reply("This ID is already allowed to archive chats!")
             elif(params[0] == "denyId"):
-                allowed_ids.remove(int(params[1]))
+                if int(params[1]) in allowed_ids:
+                    allowed_ids.remove(int(params[1]))
+                    await ctx.reply("Successfully denied user from archiving chats!")
+                else:
+                    await ctx.reply("This ID already isn't allowed to archive chats!")
         except IndexError:
             if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator or ctx.author.id in allowed_ids):
                 await ctx.send("Saving...")
@@ -172,6 +181,8 @@ class Admin(commands.Cog):
                 transcript_file = discord.File(io.BytesIO(
                     transcript.encode()), filename=f"archive-{ctx.channel.name}.html")
                 await ctx.reply(file=transcript_file)
+        with open('allowed_ids.json') as j:
+            json.dump(allowed_ids, j)
 
     @commands.command(name='adminstuff', hidden=True)
     async def adminstuff(self, ctx):
