@@ -186,33 +186,36 @@ class Fun(commands.Cog):
 
     @commands.command(name="stats", help="ictf stats on chembot lmao")
     async def stats(self, ctx, *params):
-        if(len(params) > 0):
-            member = await converter.convert(ctx, params[0])
-        else:
-            member = ctx.author
-        all_challs = (requests.get('https://imaginaryctf.org/api/challenges/released')).json()
-        my_challs = (requests.get(f'https://imaginaryctf.org/api/solves/bydiscordid/{member.id}')).json()
-        all_solves = []
-        all_list = []
-        all_list_alt = []
-        for i in range(len(my_challs)):
-            all_solves.append(my_challs[i]["challenge"]["title"])
-        for i in range(len(all_challs)):
-            all_list.append(all_challs[i]["title"])
-        for thing in all_list:
-            all_list_alt.append(thing)
-        for thing in all_list_alt:
-            if(thing in all_solves):
-                all_list.remove(thing)
-        score = my_challs[0]["user"]["score"]
-        solved = '\n'.join(all_solves)
-        unsolved = '\n'.join(all_list)
-        embedVar = discord.Embed(title=f"Stats for {member.name}", color=0x3498DB)
-        embedVar.add_field(name="Score", value=score, inline=False)
-        embedVar.add_field(name="Solved Challenges", value=solved, inline=False)
-        embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=False)
-        embedVar.set_thumbnail(url=member.avatar_url)
-        await ctx.send(embed=embedVar)
+        try:
+            if(len(params) > 0):
+                member = await converter.convert(ctx, params[0])
+            else:
+                member = ctx.author
+            all_challs = (requests.get('https://imaginaryctf.org/api/challenges/released')).json()
+            my_challs = (requests.get(f'https://imaginaryctf.org/api/solves/bydiscordid/{member.id}')).json()
+            all_solves = []
+            all_list = []
+            all_list_alt = []
+            for i in range(len(my_challs)):
+                all_solves.append(my_challs[i]["challenge"]["title"])
+            for i in range(len(all_challs)):
+                all_list.append(all_challs[i]["title"])
+            for thing in all_list:
+                all_list_alt.append(thing)
+            for thing in all_list_alt:
+                if(thing in all_solves):
+                    all_list.remove(thing)
+            score = my_challs[0]["user"]["score"]
+            solved = '\n'.join(all_solves)
+            unsolved = '\n'.join(all_list)
+            embedVar = discord.Embed(title=f"Stats for {member.name}", color=0x3498DB)
+            embedVar.add_field(name="Score", value=score, inline=False)
+            embedVar.add_field(name="Solved Challenges", value=solved, inline=False)
+            embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=False)
+            embedVar.set_thumbnail(url=member.avatar_url)
+            await ctx.send(embed=embedVar)
+        except IndexError:
+            await ctx.send("User is not on the leaderboard yet! Tell them to check out <https://imaginaryctf.org/>!")
     
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
