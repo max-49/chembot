@@ -163,14 +163,18 @@ class Admin(commands.Cog):
                 if int(params[1]) not in allowed_ids:
                     allowed_ids.append(int(params[1])) 
                     await ctx.reply("Successfully added ID to allowed IDs!")
+                    return
                 else:
                     await ctx.reply("This ID is already allowed to archive chats!")
+                    return
             elif(params[0] == "denyId"):
                 if int(params[1]) in allowed_ids:
                     allowed_ids.remove(int(params[1]))
                     await ctx.reply("Successfully denied user from archiving chats!")
+                    return
                 else:
                     await ctx.reply("This ID already isn't allowed to archive chats!")
+                    return
         except IndexError:
             if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator or ctx.author.id in allowed_ids):
                 await ctx.send("Saving...")
