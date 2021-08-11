@@ -4,6 +4,7 @@ import string
 import aiohttp
 import discord
 import asyncio
+import requests
 from random import randint
 from datetime import datetime
 from utils import get_channel
@@ -12,7 +13,6 @@ from discord.ext.commands import MemberConverter
 from discord import Webhook, AsyncWebhookAdapter
 
 converter = MemberConverter()
-
 
 class Fun(commands.Cog):
     def __init__(self, bot):
@@ -183,6 +183,31 @@ class Fun(commands.Cog):
                     await webhook.send(msg, username=member.display_name, avatar_url=member.avatar_url, allowed_mentions=discord.AllowedMentions(users=True))
         except discord.errors.Forbidden as err:
             await ctx.send(f"{err}")
+
+    @commands.command(name="stats", help="ictf stats on chembot lmao")
+    async def stats(self, ctx):
+        all_challs = (requests.get('https://imaginaryctf.org/api/challenges/released')).json()
+        my_challs = (requests.get('https://imaginaryctf.org/api/solves/byuserid/86')).json()
+        all_solves = []
+        all_list = []
+        all_list_alt = []
+        for i in range(len(my_challs)):
+            all_solves.append(my_challs[i]["challenge"]["title"])
+        for i in range(len(all_challs)):
+            all_list.append(all_challs[i]["title"])
+        for thing in all_list:
+            all_list_alt.append(thing)
+        for thing in all_list_alt:
+            if(thing in all_solves):
+                all_list.remove(thing)
+        score = my_challs[0]["user"]["score"]
+        solved = '\n'.join(all_solves)
+        unsolved = '\n'.join(all_list)
+        embedVar = discord.Embed(title=f"Stats for {ctx.author.name}", color=0x3498DB)
+        embedVar.add_field(name="Score", value=score, inline=False)
+        embedVar.add_field(name="Solved Challenges", value=solved, inline=False)
+        embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=True)
+        await ctx.send(embed=embedVar)
     
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
