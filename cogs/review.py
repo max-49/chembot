@@ -863,10 +863,6 @@ class Review(commands.Cog):
 
     @commands.command(name='world', help="dispenses a Random AP World practice  question", aliases=['apworld', 'history'])
     async def world(self, ctx, *params):
-        param = ""
-        for thing in params:
-            param += str(thing) + " "
-        print(f"{ctx.author.name}: {'s!world'} " + str(param))
         if(ctx.author.id == 523319470105993226):
             await ctx.send("you get no more questions (this only shows up for sean because he complained about the lack of questions. if he wants, he could volunteer to input them himself :roomad:)")
             return 0
@@ -922,10 +918,6 @@ class Review(commands.Cog):
 
     @commands.command(name='apstats', help="dispenses a Random AP Stats practice  question")
     async def apstats(self, ctx, *params):
-        param = ""
-        for thing in params:
-            param += str(thing) + " "
-        print(f"{ctx.author.name}: {'s!stats'} " + str(param))
         with open('questions/apstats.json') as f:
             questions = json.load(f)
         question_number = int(randint(0, len(questions)-1))

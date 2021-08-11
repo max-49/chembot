@@ -187,7 +187,7 @@ class Fun(commands.Cog):
     @commands.command(name="stats", help="ictf stats on chembot lmao")
     async def stats(self, ctx):
         all_challs = (requests.get('https://imaginaryctf.org/api/challenges/released')).json()
-        my_challs = (requests.get('https://imaginaryctf.org/api/solves/byuserid/86')).json()
+        my_challs = (requests.get(f'https://imaginaryctf.org/api/solves/bydiscordid/{ctx.author.id}')).json()
         all_solves = []
         all_list = []
         all_list_alt = []
@@ -206,7 +206,7 @@ class Fun(commands.Cog):
         embedVar = discord.Embed(title=f"Stats for {ctx.author.name}", color=0x3498DB)
         embedVar.add_field(name="Score", value=score, inline=False)
         embedVar.add_field(name="Solved Challenges", value=solved, inline=False)
-        embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=True)
+        embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=False)
         embedVar.set_thumbnail(url=ctx.author.avatar_url)
         await ctx.send(embed=embedVar)
     
