@@ -156,25 +156,26 @@ class Admin(commands.Cog):
 
     @commands.command(name='save', help="saves an archive of the chat!")
     async def save(self, ctx, *params):
-        with open('allowed_ids.json', 'rw') as j:
+        with open('allowed_ids.json') as j:
             allowed_ids = json.load(j)
         try:
-            if(params[0] == "allowId"):
-                if int(params[1]) not in allowed_ids:
-                    allowed_ids.append(int(params[1])) 
-                    await ctx.reply("Successfully added ID to allowed IDs!")
-                    return
-                else:
-                    await ctx.reply("This ID is already allowed to archive chats!")
-                    return
-            elif(params[0] == "denyId"):
-                if int(params[1]) in allowed_ids:
-                    allowed_ids.remove(int(params[1]))
-                    await ctx.reply("Successfully denied user from archiving chats!")
-                    return
-                else:
-                    await ctx.reply("This ID already isn't allowed to archive chats!")
-                    return
+            if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator):
+                if(params[0] == "allowId"):
+                    if int(params[1]) not in allowed_ids:
+                        allowed_ids.append(int(params[1])) 
+                        await ctx.reply("Successfully added ID to allowed IDs!")
+                        return
+                    else:
+                        await ctx.reply("This ID is already allowed to archive chats!")
+                        return
+                elif(params[0] == "denyId"):
+                    if int(params[1]) in allowed_ids:
+                        allowed_ids.remove(int(params[1]))
+                        await ctx.reply("Successfully denied user from archiving chats!")
+                        return
+                    else:
+                        await ctx.reply("This ID already isn't allowed to archive chats!")
+                        return
         except IndexError:
             if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator or ctx.author.id in allowed_ids):
                 await ctx.send("Saving...")
@@ -185,7 +186,7 @@ class Admin(commands.Cog):
                 transcript_file = discord.File(io.BytesIO(
                     transcript.encode()), filename=f"archive-{ctx.channel.name}.html")
                 await ctx.reply(file=transcript_file)
-        with open('allowed_ids.json') as j:
+        with open('allowed_ids.json', 'w') as j:
             json.dump(allowed_ids, j)
 
     @commands.command(name='adminstuff', hidden=True)
