@@ -185,9 +185,13 @@ class Fun(commands.Cog):
             await ctx.send(f"{err}")
 
     @commands.command(name="stats", help="ictf stats on chembot lmao")
-    async def stats(self, ctx):
+    async def stats(self, ctx, *params):
+        if(len(params) > 0):
+            member = await converter.convert(ctx, params[0])
+        else:
+            member = ctx.author
         all_challs = (requests.get('https://imaginaryctf.org/api/challenges/released')).json()
-        my_challs = (requests.get(f'https://imaginaryctf.org/api/solves/bydiscordid/{ctx.author.id}')).json()
+        my_challs = (requests.get(f'https://imaginaryctf.org/api/solves/bydiscordid/{member.id}')).json()
         all_solves = []
         all_list = []
         all_list_alt = []
@@ -203,11 +207,11 @@ class Fun(commands.Cog):
         score = my_challs[0]["user"]["score"]
         solved = '\n'.join(all_solves)
         unsolved = '\n'.join(all_list)
-        embedVar = discord.Embed(title=f"Stats for {ctx.author.name}", color=0x3498DB)
+        embedVar = discord.Embed(title=f"Stats for {member.name}", color=0x3498DB)
         embedVar.add_field(name="Score", value=score, inline=False)
         embedVar.add_field(name="Solved Challenges", value=solved, inline=False)
         embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=False)
-        embedVar.set_thumbnail(url=ctx.author.avatar_url)
+        embedVar.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embedVar)
     
     async def cog_command_error(self, ctx, error):
