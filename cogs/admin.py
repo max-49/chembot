@@ -176,7 +176,7 @@ class Admin(commands.Cog):
                     else:
                         await ctx.reply("This ID already isn't allowed to archive chats!")
         except IndexError:
-            if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator or ctx.author.id in allowed_ids):
+            if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator or int(ctx.author.id) in allowed_ids):
                 await ctx.send("Saving...")
                 transcript = await chat_exporter.export(ctx.channel, None, "EST")
                 if transcript is None:
