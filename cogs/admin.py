@@ -155,15 +155,23 @@ class Admin(commands.Cog):
             await ctx.send("Question successfully added!")
 
     @commands.command(name='save', help="saves an archive of the chat!")
-    async def save(self, ctx):
-      if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator):
-        await ctx.send("Saving...")
-        transcript = await chat_exporter.export(ctx.channel, None, "EST")
-        if transcript is None:
-            return
-        transcript_file = discord.File(io.BytesIO(
-            transcript.encode()), filename=f"archive-{ctx.channel.name}.html")
-        await ctx.send(file=transcript_file)
+    async def save(self, ctx, *params):
+        allowed_ids = []
+        try:
+            if(params[0] == "allowId"):
+                allowed_ids.append(int(params[1]))
+            elif(params[0] == "denyId"):
+                allowed_ids.remove(int(params[1]))
+        except IndexError:
+            if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator or ctx.author.id in allowed_ids):
+                await ctx.send("Saving...")
+                transcript = await chat_exporter.export(ctx.channel, None, "EST")
+                if transcript is None:
+                    await ctx.reply("Save resulted in no transcript being created! Please try again.")
+                    return
+                transcript_file = discord.File(io.BytesIO(
+                    transcript.encode()), filename=f"archive-{ctx.channel.name}.html")
+                await ctx.reply(file=transcript_file)
 
     @commands.command(name='adminstuff', hidden=True)
     async def adminstuff(self, ctx):

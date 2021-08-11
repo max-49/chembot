@@ -10,7 +10,7 @@ intents = discord.Intents.default()
 intents.members = True
 help_command = commands.DefaultHelpCommand(no_category = 'Default')
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), help_command=help_command, intents=intents)
-TOKEN = os.getenv("TOKEN")
+CHEM_TOKEN = os.getenv("CHEM_TOKEN")
 
 if __name__ == '__main__':
     for filename in os.listdir('cogs'):
@@ -39,4 +39,4 @@ async def on_command_error(ctx, error):
     # else:
     #     await ctx.send(f"**`ERROR:`** {type(error).__name__} - {error}")
 
-bot.run(TOKEN)
+bot.run(CHEM_TOKEN)
