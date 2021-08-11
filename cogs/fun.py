@@ -195,7 +195,7 @@ class Fun(commands.Cog):
             my_challs = (requests.get(f'https://imaginaryctf.org/api/solves/bydiscordid/{member.id}')).json()
             if(my_challs[0]["team"] != None):
                 my_challs = (requests.get(f'https://imaginaryctf.org/api/solves/byteamid/{my_challs[0]["team"]["id"]}')).json()
-                score = my_challs[0]["user"]["team"]["score"]
+                score = my_challs[0]["team"]["score"]
                 name = str(my_challs[0]["team"]["name"]) + " (team)"
             else:
                 score = my_challs[0]["user"]["score"]
