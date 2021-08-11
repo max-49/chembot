@@ -920,8 +920,8 @@ class Review(commands.Cog):
             with open('profiles.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
 
-    @commands.command(name='stats', help="dispenses a Random AP Stats practice  question", aliases=['apstats'])
-    async def stats(self, ctx, *params):
+    @commands.command(name='apstats', help="dispenses a Random AP Stats practice  question")
+    async def apstats(self, ctx, *params):
         param = ""
         for thing in params:
             param += str(thing) + " "
