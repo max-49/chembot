@@ -162,7 +162,7 @@ class Admin(commands.Cog):
         try:
             if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator):
                 if(params[0] == "allowId"):
-                    discord_json = requests.get(f"https://discord.com/api/v9/users/{params[1]}/profile", headers={"Authorization":f"Bot {os.getenv('CHEM_TOKEN')}"}).json()
+                    discord_json = requests.get(f"https://discord.com/api/v8/users/{params[1]}/profile", headers={"Authorization":f"Bot {os.getenv('CHEM_TOKEN')}"}).json()
                     print(discord_json)
                     if int(params[1]) not in allowed_ids:
                         allowed_ids.append(int(params[1])) 
