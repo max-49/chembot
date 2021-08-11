@@ -193,6 +193,13 @@ class Fun(commands.Cog):
                 member = ctx.author
             all_challs = (requests.get('https://imaginaryctf.org/api/challenges/released')).json()
             my_challs = (requests.get(f'https://imaginaryctf.org/api/solves/bydiscordid/{member.id}')).json()
+            if(my_challs[0]["team"] != None):
+                my_challs = (requests.get(f'https://imaginaryctf.org/api/solves/byteamid/{my_challs[0]["team"]["id"]}')).json()
+                score = my_challs[0]["team"]["score"]
+                name = str(my_challs[0]["team"]["name"]) + " (team)"
+            else:
+                score = my_challs[0]["user"]["score"]
+                name = member.name
             all_solves = []
             all_list = []
             all_list_alt = []
@@ -208,7 +215,7 @@ class Fun(commands.Cog):
             score = my_challs[0]["user"]["score"]
             solved = '\n'.join(all_solves)
             unsolved = '\n'.join(all_list)
-            embedVar = discord.Embed(title=f"Stats for {member.name}", color=0x3498DB)
+            embedVar = discord.Embed(title=f"Stats for {name}", color=0x3498DB)
             embedVar.add_field(name="Score", value=score, inline=False)
             embedVar.add_field(name="Solved Challenges", value=solved, inline=False)
             embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=False)
