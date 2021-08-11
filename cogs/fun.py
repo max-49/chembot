@@ -207,6 +207,7 @@ class Fun(commands.Cog):
         embedVar.add_field(name="Score", value=score, inline=False)
         embedVar.add_field(name="Solved Challenges", value=solved, inline=False)
         embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=True)
+        embedVar.set_thumbnail(url=ctx.author.avatar_url)
         await ctx.send(embed=embedVar)
     
     async def cog_command_error(self, ctx, error):
