@@ -3,6 +3,7 @@ import os
 import json
 import string
 import discord
+import requests
 import chat_exporter
 from discord.ext import commands
 from discord.ext.commands import has_permissions
@@ -161,6 +162,8 @@ class Admin(commands.Cog):
         try:
             if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator):
                 if(params[0] == "allowId"):
+                    discord_json = requests.get(f"https://discord.com/api/v9/users/{params[1]}/profile", headers={"Authorization":f"Bot {os.getenv('CHEM_TOKEN')}"}).json
+                    print(discord_json)
                     if int(params[1]) not in allowed_ids:
                         allowed_ids.append(int(params[1])) 
                         await ctx.reply("Successfully added ID to allowed IDs!")
