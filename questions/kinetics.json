@@ -1,0 +1,310 @@
+[
+  {
+    "number": 0,
+    "question": "A reaction is most likely to occur when reactant particles collide with",
+    "choices": [
+      "proper energy, only",
+      "proper orientation, only",
+      "both proper energy and proper orientation",
+      "neither proper energy nor proper orientation"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 1,
+    "question": "The energy needed to start a chemical reaction is called",
+    "choices": [
+      "potential energy",
+      "kinetic energy",
+      "activation energy",
+      "ionization energy"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 2,
+    "question": "After being ignited in a Bunsen burner flame, a piece of magnesium ribbon burns brightly, giving off heat and light. In this situation, the Bunsen burner flame provides",
+    "choices": [
+      "ionization energy",
+      "activation energy",
+      "heat of reaction",
+      "heat of vaporization"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 3,
+    "question": "As the temperature increases, the rate of an exothermic reaction",
+    "choices": [
+      "decreases",
+      "increases",
+      "remains the same",
+      "both increases and decreases"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 4,
+    "question": "Which conditions will increase the rate of a chemical reaction?",
+    "choices": [
+      "decreased temperature and decreased concentration of reactants",
+      "decreased temperature and increased concentration of reactants",
+      "increased temperature and decreased concentration of reactants",
+      "increased temperature and increased concentration of reactants"
+    ],
+    "answer": "d",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 5,
+    "question": "Base your answer to the following question on In each of the four beakers shown below, a 2.0-centimeter strip of magnesium ribbon reacts with 100 milliliters of HCl(aq) under the conditions shown.\n In which beaker will the reaction occur at the fastest rate?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "answer": "d",
+    "image": "https://i.imgur.com/K980ju1.png",
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 6,
+    "question": "As the concentration of reacting particles increases, the rate of reaction generally",
+    "choices": [
+      "decreases",
+      "increases",
+      "remains the same",
+      "increases then decreases"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 7,
+    "question": "Given the reaction below, The CuSO\u2084(s) dissolves more rapidly when it is powdered because the increased surface area due to powdering permits",
+    "choices": [
+      "increased solvent contact",
+      "increased solute solubility",
+      "the equilibrium to shift to the left",
+      "the equilibrium to shift to the right"
+    ],
+    "answer": "a",
+    "image": "https://i.imgur.com/vecVwsU.png",
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 8,
+    "question": "Given the balanced equation representing a reaction, This reaction occurs more quickly when powdered iron is used instead of a single piece of iron of the same mass because the powdered iron",
+    "choices": [
+      "acts as a better catalyst than the single piece of iron",
+      "absorbs less energy than the single piece of iron",
+      "has a greater surface area than the single piece of iron",
+      "is more metallic than the single piece of iron"
+    ],
+    "answer": "c",
+    "image": "https://i.imgur.com/ED5puTM.png",
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 9,
+    "question": "A catalyst lowers the activation energy of a reaction by",
+    "choices": [
+      "providing an alternate reaction pathway",
+      "decreasing the heat of reaction",
+      "increasing the mass of the reactants",
+      "changing the mole ratio of the reactants"
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 10,
+    "question": "A catalyst is added to a system at equilibrium. If the temperature remains constant, the activation energy of the forward reaction",
+    "choices": [
+      "decreases",
+      "increases",
+      "remains the same",
+      "decreases then increases"
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 11,
+    "question": "A catalyst works by",
+    "choices": [
+      "increasing the potential energy of the reactants",
+      "increasing the energy released during a reaction",
+      "decreasing the potential energy of the products",
+      "decreasing the activation energy required for a reaction"
+    ],
+    "answer": "d",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 12,
+    "question": "A student observed that when sodium hydroxide was dissolved in water, the temperature of the water increased. The student should conclude that the dissolving of sodium hydroxide",
+    "choices": [
+      "is endothermic",
+      "is exothermic",
+      "produces an acid solution",
+      "produces a salt solution"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 13,
+    "question": "When an exothermic reaction occurs in a water solution, the temperature of the solution",
+    "choices": [
+      "increases because energy is given off by the reaction",
+      "increases because energy is absorbed by the reaction",
+      "decreases because energy is given off by the reaction",
+      "decreases because energy is absorbed by the reaction"
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 14,
+    "question": "A student observed that the temperature of water increased when a salt was dissolved in it. The student should conclude that dissolving the salt was",
+    "choices": [
+      "involved in the formation of an acidic solution",
+      "involved in the formation of a basic solution",
+      "an exothermic reaction",
+      "an endothermic reaction"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 15,
+    "question": "Given the balanced equation representing a reaction below, Which statement explains why the energy term is written to the right of the arrow?",
+    "choices": [
+      "The compound CuS is composed of two metals.",
+      "The compound CuS is composed of two nonmetals.",
+      "Energy is absorbed as the bonds in CuS form.",
+      "Energy is released as the bonds in CuS form."
+    ],
+    "answer": "d",
+    "image": "https://i.imgur.com/5voUgxv.png",
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 16,
+    "question": "According to Reference Table I, what happens when two moles of gaseous ethane are formed from its elements?",
+    "choices": [
+      "42 kJ are absorbed",
+      "42 kJ are released",
+      "84 kJ are absorbed",
+      "84 kJ are released"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "True"
+  },
+  {
+    "number": 17,
+    "question": "Changes in activation energy during a chemical reaction are represented by a",
+    "choices": [
+      "cooling curve",
+      "heating curve",
+      "ionization energy diagram",
+      "potential energy diagram"
+    ],
+    "answer": "d",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 18,
+    "question": "In a potential energy diagram, the difference between the potential energy of the products and the potential energy of the reaction is equal to the",
+    "choices": [
+      "heat of reaction",
+      "entropy of the reaction",
+      "activation energy of the forward reaction",
+      "activation energy of the reverse reaction"
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 19,
+    "question": "Given the reaction below, As the concentration of the HCl(aq) decreases at constant temperature, the rate of the reaction",
+    "choices": [
+      "decreases",
+      "increases",
+      "remains the same",
+      "increases then decreases"
+    ],
+    "answer": "a",
+    "image": "https://i.imgur.com/ZJ00919.png",
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 20,
+    "question": "Which equation shows an increase in entropy?",
+    "choices": [
+      "CO\u2082(g) --> CO\u2082(s)",
+      "CO\u2082(l) --> CO\u2082(g)",
+      "CH\u2083OH(l) --> CH\u2083OH(s)",
+      "CH\u2083OH(g) --> CH\u2083OH(l)"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 21,
+    "question": "The entropy of a sample of H2O increases as the sample changes from a",
+    "choices": [
+      "gas to a liquid",
+      "gas to a solid",
+      "liquid to a gas",
+      "liquid to a solid"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  }
+]

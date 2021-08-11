@@ -1,0 +1,506 @@
+[
+  {
+    "number": 0,
+    "question": "Which statement describes a concept included in the wave-mechanical model of the atom?",
+    "choices": [
+      "Protons, neutrons, and electrons are located in the nucleus.",
+      "Electrons orbit the nucleus in shells at fixed distances.",
+      "Atoms are hard, indivisible spheres.",
+      "Electrons are located in regions called orbitals."
+    ],
+    "answer": "d",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 1,
+    "question": "As an electron in an atom moves from a higher energy state to a lower energy state, the atom",
+    "choices": [
+      "becomes a negative ion",
+      "becomes a positive ion",
+      "releases energy",
+      "absorbs energy"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 2,
+    "question": "Two atoms that are different isotopes of the same element have the",
+    "choices": [
+      "same number of protons and the same number of neutrons",
+      "the same number of protons but a different number of neutrons",
+      "a different number of protons but the same number of neutrons",
+      "a different number of protons and a different number of neutrons"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 3,
+    "question": "Which subatomic particles are located in the nucleus of a neon atom?",
+    "choices": [
+      "electrons and positrons",
+      "electrons and neutrons",
+      "protons and neutrons",
+      "protons and electrons"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 4,
+    "question": "The total mass of the protons in an atom of gold-198 is approximately",
+    "choices": [
+      "79 atomic mass units",
+      "119 atomic mass units",
+      "198 atomic mass units",
+      "277 atomic mass units"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "True"
+  },
+  {
+    "number": 5,
+    "question": "In a calcium atom in the ground state, the electrons that possess the _least_ amount of energy are located in the",
+    "choices": [
+      "first electron shell",
+      "second electron shell",
+      "third electron shell",
+      "fourth electron shell"
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 6,
+    "question": "Which group of atomic models is listed in historical order from the earliest to the most recent?",
+    "choices": [
+      "hard-sphere model, wave-mechanical model, electron-shell model",
+      "hard-sphere model, electron-shell model, wave-mechanical model",
+      "electron-shell model, wave-mechanical model, hard-sphere model",
+      "electron-shell model, hard-sphere model, wave-mechanical model"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 7,
+    "question": "Which isotopic notation represents an atom of carbon-14?",
+    "choices": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "answer": "d",
+    "image": "https://i.imgur.com/1iCZNjN.png",
+    "Calc": "False",
+    "Table": "True"
+  },
+  {
+    "number": 8,
+    "question": "Which isotopic notation identifies a metalloid that is matched with the corresponding number of protons in each of its atoms?",
+    "choices": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "answer": "b",
+    "image": "https://i.imgur.com/vyRRPE9.png",
+    "Calc": "False",
+    "Table": "True"
+  },
+  {
+    "number": 9,
+    "question": "According to the wave-mechanical model of the atom, electrons in an atom",
+    "choices": [
+      "travel in defined circles",
+      "are most likely found in an excited state",
+      "have a positive charge",
+      "are located in orbitals outside the nucleus"
+    ],
+    "answer": "d",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 10,
+    "question": "What is the total charge of the nucleus of a carbon atom?",
+    "choices": [
+      "-6",
+      "0",
+      "+6",
+      "+12"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "True"
+  },
+  {
+    "number": 11,
+    "question": "A sample composed only of atoms having the same atomic number is classified as",
+    "choices": [
+      "an element",
+      "a solution",
+      "a compound",
+      "an isomer"
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 12,
+    "question": "Which two particles each have a mass approximately equal to one atomic mass unit?",
+    "choices": [
+      "electron and neutron",
+      "electron and positron",
+      "proton and electron",
+      "proton and neutron"
+    ],
+    "answer": "d",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 13,
+    "question": "Which electron configuration could represent a strontium atom in an excited state?",
+    "choices": [
+      "2\u20138\u201318\u20137\u20131",
+      "2\u20138\u201318\u20137\u20133",
+      "2\u20138\u201318\u20138\u20131",
+      "2\u20138\u201318\u20138\u20132"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "True"
+  },
+  {
+    "number": 14,
+    "question": "What is the total number of neutrons in the atom below?",
+    "choices": [
+      26,
+      31,
+      57,
+      83
+    ],
+    "answer": "b",
+    "image": "https://i.imgur.com/FfLmtnH.png",
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 15,
+    "question": "What is the total number of electrons in a Mg\u207a\u00b2 ion?",
+    "choices": [
+      10,
+      12,
+      14,
+      24
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "True"
+  },
+  {
+    "number": 16,
+    "question": "What was concluded about the structure of the atom as the result of the gold foil experiment?",
+    "choices": [
+      "A positively charged nucleus is surrounded by positively charged particles.",
+      "A positively charged nucleus is surrounded by mostly empty space.",
+      "A negatively charged nucleus is surrounded by positively charged particles.",
+      "A negatively charged nucleus is surrounded by mostly empty space."
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 17,
+    "question": "An atom is electrically neutral because the",
+    "choices": [
+      "number of protons equals the number of electrons",
+      "number of protons equals the number of neutrons",
+      "ratio of the number of neutrons to the number of electrons is 1:1",
+      "ratio of the number of neutrons to the number of protons is 2:1"
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 18,
+    "question": "How do the energy and the most probable location of an electron in the third shell of an atom compare to the energy and the most probable location of an electron in the first shell of the same atom?",
+    "choices": [
+      "In the third shell, an electron has more energy and is closer to the nucleus.",
+      "In the third shell, an electron has more energy and is farther from the nucleus.",
+      "In the third shell, an electron has less energy and is closer to the nucleus.",
+      "In the third shell, an electron has less energy and is farther from the nucleus."
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 19,
+    "question": "What is the net charge on an ion that has 9 protons, 11 neutrons, and 10 electrons?",
+    "choices": [
+      "1+",
+      "2+",
+      "1-",
+      "2-"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 20,
+    "question": "Which value of an element is calculated using both the mass and the relative abundance of each of the naturally occurring isotopes of this element?",
+    "choices": [
+      "atomic number",
+      "atomic mass",
+      "half-life",
+      "molar volume"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 21,
+    "question": "Which two notations represent different isotopes of the same element?",
+    "choices": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "answer": "a",
+    "image": "https://i.imgur.com/ZQf9qQS.png",
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 22,
+    "question": "The diagram below represents the nucleus of an atom. \nWhat are the atomic number and mass number of this atom?",
+    "choices": [
+      "The atomic number is 9 and the mass number is 19.",
+      "The atomic number is 9 and the mass number is 20.",
+      "The atomic number is 11 and the mass number is 19.",
+      "The atomic number is 11 and the mass number is 20."
+    ],
+    "answer": "b",
+    "image": "https://i.imgur.com/nSZmbNI.png",
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 23,
+    "question": "Which statement concerning elements is true?",
+    "choices": [
+      "Different elements must have different numbers of isotopes.",
+      "Different elements must have different numbers of neutrons.",
+      "All atoms of a given element must have the same mass number.",
+      "All atoms of a given element must have the same atomic number"
+    ],
+    "answer": "d",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 24,
+    "question": "Which subatomic particles are located in the nucleus of an He-4 atom?",
+    "choices": [
+      "electrons and neutrons",
+      "electrons and protons",
+      "neutrons and protons",
+      "neutrons, protons, and electrons"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 25,
+    "question": "Which part of a helium atom is positively charged?",
+    "choices": [
+      "electron",
+      "neutron",
+      "nucleus",
+      "orbital"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 26,
+    "question": "Which total mass is the _smallest_?",
+    "choices": [
+      "the mass of 2 electrons",
+      "the mass of 2 neutrons",
+      "the mass of 1 electron plus the mass of 1 proton",
+      "the mass of 1 neutron plus the mass of 1 electron"
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 27,
+    "question": "Subatomic particles can usually pass undeflected through an atom because the volume of an atom is composed of",
+    "choices": [
+      "an uncharged nucleus",
+      "largely empty space",
+      "neutrons",
+      "protons"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 28,
+    "question": "Which statement about the mass of an electron is correct?",
+    "choices": [
+      "The mass of an electron is equal to the mass of a proton.",
+      "The mass of an electron is less than the mass of a proton.",
+      "The mass of an electron is equal to the mass of a neutron.",
+      "The mass of an electron is greater than the mass of a neutron."
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 29,
+    "question": "What can be determined if only the atomic number of an atom is known?",
+    "choices": [
+      "the total number of neutrons in the atom, only",
+      "the total number of protons in the atom, only",
+      "the total number of protons and the total number of neutrons in the atom",
+      "the total number of protons and the total number of electrons in the atom"
+    ],
+    "answer": "d",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 30,
+    "question": "At 298 K, oxygen (O\u2082) and ozone (O\u2083) have different properties because their",
+    "choices": [
+      "atoms have different atomic numbers",
+      "atoms have different atomic masses",
+      "molecules have different molecular structures",
+      "molecules have different average kinetic energies"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 31,
+    "question": "Which polyatomic ion contains the greatest number of oxygen atoms?",
+    "choices": [
+      "acetate",
+      "carbonate",
+      "hydroxide",
+      "peroxide"
+    ],
+    "answer": "b",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 32,
+    "question": "Which particles are found in the nucleus of an argon atom?",
+    "choices": [
+      "protons and electrons",
+      "protons and neutrons",
+      "protons and neutrons",
+      "positrons and electrons"
+    ],
+    "answer": "c",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 33,
+    "question": "The diagram below represents a particle traveling through an electric field. Which particle remains undeflected when passing through this electric field?",
+    "choices": [
+      "proton",
+      "electron",
+      "neutron",
+      "positron"
+    ],
+    "answer": "c",
+    "image": "https://i.imgur.com/TB4ZDPz.png",
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 34,
+    "question": "The mass of an electron is",
+    "choices": [
+      "equal to the mass of a proton",
+      "equal to the mass of a neutron",
+      "greater than the mass of a proton",
+      "less than the mass of a neutron"
+    ],
+    "answer": "d",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  },
+  {
+    "number": 35,
+    "question": "Compared the energy of an electron in the second shell of an atom of sulfur, the energy of an electron in the",
+    "choices": [
+      "first shell is lower",
+      "first shell is the same",
+      "third shell is lower",
+      "third shell is the same"
+    ],
+    "answer": "a",
+    "image": 0,
+    "Calc": "False",
+    "Table": "False"
+  }
+]
