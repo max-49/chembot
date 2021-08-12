@@ -863,10 +863,6 @@ class Review(commands.Cog):
 
     @commands.command(name='world', help="dispenses a Random AP World practice  question", aliases=['apworld', 'history'])
     async def world(self, ctx, *params):
-        if(ctx.author.id == 523319470105993226):
-            await ctx.send("you get no more questions (this only shows up for sean because he complained about the lack of questions. if he wants, he could volunteer to input them himself :roomad:)")
-            return 0
-        else:
             found = 0
             with open('profiles.json') as f:
                 profile_data = json.load(f)

@@ -81,7 +81,7 @@ class Admin(commands.Cog):
 
     @commands.command(name='addworldquestion', help="owner only", hidden=True)
     async def addworldquestion(self, ctx):
-        if(ctx.author.id == 427832149173862400 or ctx.author.id == 523309470105993226 or ctx.author.id == 293416817408475136):
+        if(ctx.author.id == 427832149173862400):
             def check(msg):
                 return msg.author == ctx.author and msg.channel == msg.channel and \
                     msg.content.lower()[0] in string.printable
