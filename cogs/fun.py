@@ -212,8 +212,8 @@ class Fun(commands.Cog):
             for thing in all_list_alt:
                 if(thing in all_solves):
                     all_list.remove(thing)
-            solved = '\n'.join(all_solves)
-            unsolved = '\n'.join(all_list)
+            solved = '\n'.join(all_solves.reverse())
+            unsolved = '\n'.join(all_list.reverse())
             embedVar = discord.Embed(title=f"Stats for {name}", color=0x3498DB)
             embedVar.add_field(name="Score", value=score, inline=False)
             embedVar.add_field(name="Solved Challenges", value=solved, inline=True)
