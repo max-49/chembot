@@ -2,3 +2,4 @@ questions/
 work/
 *.json
 cogs/schlooth.py
+__pycache__/
