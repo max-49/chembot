@@ -13,7 +13,7 @@ class Currency(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="balance", aliases=['bal', 'money'], help="displays your balance in schlucks!")
+    @commands.command(name="balance", aliases=['bal', 'money'], help="displays your balance in coins!")
     async def bal(self, ctx, profile="none"):
         with open('profiles.json') as f:
             profile_data = json.load(f)
@@ -33,7 +33,7 @@ class Currency(commands.Cog):
                 embedVar = discord.Embed(
                     title=f"{profile_data[i]['Name']}'s balance", timestamp=datetime.utcnow(), color=0x00C3FF)
                 embedVar.add_field(
-                    name="Balance", value=f"{profile_data[i]['Balance']} schlucks", inline=False)
+                    name="Balance", value=f"{profile_data[i]['Balance']} coins", inline=False)
                 await ctx.reply(embed=embedVar)
         if(found == 0):
             await ctx.send("No profile found!")
@@ -83,7 +83,7 @@ class Currency(commands.Cog):
                     title="Currently Available Jobs", timestamp=datetime.utcnow(), color=0x00C3FF)
                 msg = ""
                 for i in range(len(jobs)):
-                    msg += f"{jobs[i]['name']}: {jobs[i]['base_salary']} schlucks\n"
+                    msg += f"{jobs[i]['name']}: {jobs[i]['base_salary']} coins\n"
                 embedVar.add_field(name="Jobs", value=msg, inline=False)
                 embedVar.add_field(
                     name="\u200b", value="Do `s!work <job>` to select a job!")
@@ -99,7 +99,7 @@ class Currency(commands.Cog):
                         if(profiles[i]['Job'] == ""):
                             profiles[i]['Job'] = str(params[0]).lower()
                             profiles[i]['Salary'] = jobs[job_index]['base_salary']
-                            await ctx.reply(f"You are now working as a `{str(params[0]).lower()}`! Do `s!work` to start working and making schlucks!")
+                            await ctx.reply(f"You are now working as a `{str(params[0]).lower()}`! Do `s!work` to start working and making coins!")
                             with open('profiles.json', 'w') as json_file:
                                 json.dump(profiles, json_file)
                             self.work.reset_cooldown(ctx)
@@ -140,7 +140,7 @@ class Currency(commands.Cog):
                         embedVar = discord.Embed(
                             title="Promotion!", timestamp=datetime.utcnow(), color=0xFFC0CB)
                         embedVar.add_field(name=f"Congratulations {ctx.author.name}! You've been working hard recently and have worked your way up to a promotion!",
-                                           value=f"Level: **{profiles[i]['level']}** --> **{profiles[i]['level'] + 1}**\nSalary: **{profiles[i]['Salary']} schlucks** --> **{math.floor(profiles[i]['Salary'] * 1.5)} schlucks**")
+                                           value=f"Level: **{profiles[i]['level']}** --> **{profiles[i]['level'] + 1}**\nSalary: **{profiles[i]['Salary']} coins** --> **{math.floor(profiles[i]['Salary'] * 1.5)} coins**")
                         profiles[i]['level'] += 1
                         profiles[i]['xp'] = 0
                         profiles[i]['Salary'] = math.floor(
@@ -171,7 +171,7 @@ class Currency(commands.Cog):
                         if msg.content.lower() == str(work_scens[scen]['answer']).lower():
                             correctEmbed = discord.Embed(color=0x00FF00)
                             correctEmbed.add_field(
-                                name="Nice job!", value=f"You've earned {profiles[i]['Salary']} schlucks for working!")
+                                name="Nice job!", value=f"You've earned {profiles[i]['Salary']} coins for working!")
                             profiles[i]['Balance'] += profiles[i]['Salary']
                             xp_given = randint(0, 20)
                             profiles[i]['xp'] += xp_given
@@ -185,7 +185,7 @@ class Currency(commands.Cog):
                             else:
                                 profiles[i]['Balance'] += math.floor(
                                     int(profiles[i]['Salary'])/3)
-                                await msg.reply(f"Incorrect Answer. The correct answer was `{work_scens[scen]['answer']}`. You've earned {math.floor(int(profiles[i]['Salary'])/3)} schlucks for working.")
+                                await msg.reply(f"Incorrect Answer. The correct answer was `{work_scens[scen]['answer']}`. You've earned {math.floor(int(profiles[i]['Salary'])/3)} coins for working.")
                                 break
         with open('profiles.json', 'w') as json_file:
             json.dump(profiles, json_file)
@@ -213,7 +213,7 @@ class Currency(commands.Cog):
             title="Currently Available Jobs", timestamp=datetime.utcnow(), color=0x00C3FF)
         msg = ""
         for i in range(len(jobs)):
-            msg += f"{jobs[i]['name']}: {jobs[i]['base_salary']} schlucks\n"
+            msg += f"{jobs[i]['name']}: {jobs[i]['base_salary']} coins\n"
         embedVar.add_field(name="Jobs", value=msg, inline=False)
         embedVar.add_field(
             name="\u200b", value="Do `s!work <job>` to select a job!")

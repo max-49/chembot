@@ -1,5 +1,6 @@
 import os
 import discord
+import platform
 import chat_exporter
 from discord.ext import commands
 from discord_components import DiscordComponents
@@ -8,8 +9,7 @@ from discord.ext.commands import CommandNotFound
 prefix = "c!"
 intents = discord.Intents.default()
 intents.members = True
-help_command = commands.DefaultHelpCommand(no_category = 'Default')
-bot = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), help_command=help_command, intents=intents)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), help_command=None, intents=intents)
 CHEM_TOKEN = os.getenv("CHEM_TOKEN")
 
 if __name__ == '__main__':
@@ -20,9 +20,13 @@ if __name__ == '__main__':
 @bot.event
 async def on_ready():
     print("Setting NP game", flush=True)
-    await bot.change_presence(activity=discord.Game(name="with cogs!!!!!!"))
-    print(f'{bot.user.name} has connected to Discord!')
-    DiscordComponents(bot)  
+    await bot.change_presence(activity=discord.Game(name="with Teamless"))
+    print(f"Logged in as {bot.user.name}")
+    print(f"discord.py API version: {discord.__version__}")
+    print(f"Python version: {platform.python_version()}")
+    print(f"Running on: {platform.system()} {platform.release()} ({os.name})")
+    print("-------------------")
+    DiscordComponents(bot)
     chat_exporter.init_exporter(bot)
 
 @bot.event
