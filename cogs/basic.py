@@ -89,7 +89,7 @@ class Basic(commands.Cog):
 
         if select_cog is None:
             number = 0
-            embed = discord.Embed(title="ChemBot Help", color=0x00ff00)
+            embed = discord.Embed(title=f"{self.bot.user.name} Help", color=0x00ff00)
             for key, value in help_list[number].items():
                 field = ""
                 for thing in value:
@@ -101,7 +101,7 @@ class Basic(commands.Cog):
                 for key, value in help_list[i].items():
                         if str(key.lower()) == str(select_cog.lower()):
                             number = i
-            embed = discord.Embed(title="ChemBot Help", color=0x00ff00)
+            embed = discord.Embed(title=f"{self.bot.user.name} Help", color=0x00ff00)
             for key, value in help_list[number].items():
                 field = ""
                 for thing in value:
@@ -124,7 +124,7 @@ class Basic(commands.Cog):
             if react == 0:
                 number -= 1
                 new_embed_data = embeds[number]
-                embed = discord.Embed(title="ChemBot Help", color=0x00ff00)
+                embed = discord.Embed(title=f"{self.bot.user.name} Help", color=0x00ff00)
                 for key, value in new_embed_data.items():
                     field = ""
                     for thing in value:
@@ -135,7 +135,7 @@ class Basic(commands.Cog):
             elif react == 1:
                 number += 1
                 new_embed_data = embeds[number]
-                embed = discord.Embed(title="ChemBot Help", color=0x00ff00)
+                embed = discord.Embed(title=f"{self.bot.user.name} Help", color=0x00ff00)
                 for key, value in new_embed_data.items():
                     field = ""
                     for thing in value:
