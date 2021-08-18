@@ -3,3 +3,4 @@ work/
 *.json
 cogs/schlooth.py
 __pycache__/
+cogs/__pycache__/
