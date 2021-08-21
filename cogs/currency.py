@@ -16,22 +16,17 @@ class Currency(commands.Cog):
         self.info = get_bot(os.getcwd().split('/')[-2])
         self.bot = bot
 
-    @commands.command(name="balance", aliases=['bal', 'money'], help="displays your balance!")
-    async def bal(self, ctx, profile="none"):
+    @commands.command(name="balance", aliases=['bal', 'money'], help="displays your balance!", pass_context=True)
+    async def bal(self, ctx, profile: discord.Member=None):
         with open('profiles.json') as f:
             profile_data = json.load(f)
-        if(profile != "none"):
-            uid = profile
-            try:
-                uid = int(uid)
-            except ValueError:
-                uid = profile
-        else:
+        if profile is None:
             uid = ctx.author.id
+        else:
+            uid = profile.id
         found = 0
         for i in range(len(profile_data)):
-            user_mention = f"<@!{profile_data[i]['ID']}>"
-            if(profile_data[i]['ID'] == uid or profile_data[i]['Name'] == uid or profile_data[i]['Nick'] == uid or profile_data[i]['Tag'] == uid or user_mention == uid):
+            if(profile_data[i]['ID'] == uid):
                 found = 1
                 embedVar = discord.Embed(
                     title=f"{profile_data[i]['Name']}'s balance", timestamp=datetime.utcnow(), color=0x00C3FF)

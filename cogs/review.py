@@ -18,6 +18,22 @@ class Review(commands.Cog):
         with open('profiles.json') as f:
             profile_data = json.load(f)
         uid = ctx.author.id if profile is None else profile.id
+        if(len(profile_data) == 0):
+            if profile is None:
+                profile = ctx.author
+            profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(
+                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+            embedVar = discord.Embed(
+                title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
+            percent_correct = 0
+            embedVar.add_field(name="Chemistry Regents Review Stats",
+                               value=f"0/0 (0%)", inline=False)
+            embedVar.add_field(
+                name="Balance", value=f"0 {self.info[2]}", inline=False)
+            embedVar.set_thumbnail(url=profile.avatar_url)
+            await ctx.send(embed=embedVar)
+            with open('profiles.json', 'w') as json_file:
+                json.dump(profile_data, json_file)
         for i in range(len(profile_data)):
             if(profile_data[i]['ID'] == uid):
                 embedVar = discord.Embed(
