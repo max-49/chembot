@@ -5,3 +5,5 @@ cogs/schlooth.py
 __pycache__/
 cogs/__pycache__/
 config.py
+profiles.json
+allowed_ids.json
