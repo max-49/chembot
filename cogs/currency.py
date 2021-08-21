@@ -271,6 +271,9 @@ class Currency(commands.Cog):
                 job_data = json.load(f)
             await ctx.send(f"{ctx.author.mention}, new job detected! Please enter a base salary for this job (just the number). Keep in mind, the base salary for most jobs is around 10.")
             salary = await self.bot.wait_for("message", check=check)
+            if int(salary.content) <= 0:
+                await ctx.send("You can't have a salary this low! Exiting.")
+                return
             try:
                 job_data.append({
                     "name": user_job,
