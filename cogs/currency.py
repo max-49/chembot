@@ -13,7 +13,7 @@ from discord.ext.commands import has_permissions
 
 class Currency(commands.Cog):
     def __init__(self, bot):
-        self.info = get_bot(os.getcwd().split('/')[-2])
+        self.info = get_bot(os.getcwd().split('/')[-1])
         self.bot = bot
 
     @commands.command(name="balance", aliases=['bal', 'money'], help="displays your balance!", pass_context=True)

@@ -10,7 +10,7 @@ from discord.ext import commands
 
 class Review(commands.Cog):
     def __init__(self, bot):
-        self.info = get_bot(os.getcwd().split('/')[-2])
+        self.info = get_bot(os.getcwd().split('/')[-1])
         self.bot = bot
 
     @commands.command(name='profile', help="displays your profile", pass_context=True)
