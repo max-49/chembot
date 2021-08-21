@@ -58,7 +58,5 @@ async def on_command_error(ctx, error):
     if isinstance(error, CommandNotFound):
         not_found = str(error).split('"')[1]
         await ctx.send(f"Command **`{not_found}`** not found.")
-    # else:
-    #     await ctx.send(f"**`ERROR:`** {type(error).__name__} - {error}")
 
 bot.run(TOKEN)

@@ -111,6 +111,10 @@ class Currency(commands.Cog):
                             await ctx.reply(f"You're already working as a {profiles[i]['Job']}! Please do `{self.info[3]}work resign` to choose a new job.")
                             self.work.reset_cooldown(ctx)
                             return 0
+                else:
+                    await ctx.send(f"You don't have a profile yet! Do {self.info[3]}profile to create a profile and start working!")
+                    self.work.reset_cooldown(ctx)
+                    return 0
             if(str(params[0]).lower() == "resign"):
                 for i in range(len(profiles)):
                     if(profiles[i]['ID'] == ctx.author.id):
