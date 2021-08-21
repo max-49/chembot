@@ -51,11 +51,43 @@ class Owner(commands.Cog):
         for i in range(len(profile_data)):
             if(profile_data[i]['Balance'] < 0):
                 profile_data[i]['Balance'] = 0
+            if(profile_data[i]['Calc'] == "True"):
+                profile_data[i]['Calc'] = True
+            if(profile_data[i]['Table'] == "True"):
+                profile_data[i]['Table'] = True
+            if(profile_data[i]['Calc'] == "False"):
+                profile_data[i]['Calc'] = False
+            if(profile_data[i]['Table'] == "False"):
+                profile_data[i]['Table'] = False
         with open('profiles.json', 'w') as j:
             json.dump(profile_data, j)
+        await ctx.send("Profiles updated!")
+
+    @commands.command(name='updatequestions', hidden=True)
+    @commands.is_owner()
+    async def updatequestions(self, ctx):
+        with open('questions/categories.json') as j:
+            categories = json.load(j)
+        for category in categories:
+            with open(f'questions/{category}.json') as j:
+                questions = json.load(j)
+            for question in questions:
+                if(question['Calc'] == "True"):
+                    question['Calc'] = True
+                if(question['Table'] == "True"):
+                    question['Table'] = True
+                if(question['Calc'] == "False"):
+                    question['Calc'] = False
+                if(question['Table'] == "False"):
+                    question['Table'] = False
+            with open(f'questions/{category}.json', 'w') as j:
+                questions = json.dump(questions, j)
+        await ctx.send('Questions updated!')
 
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
+
 
 
 def setup(bot):

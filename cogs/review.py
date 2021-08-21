@@ -3,7 +3,7 @@ import json
 import discord
 import asyncio
 from config import get_bot
-from random import randint
+from random import randint, choice
 from datetime import datetime
 from discord.ext import commands
 
@@ -22,7 +22,7 @@ class Review(commands.Cog):
             if profile is None:
                 profile = ctx.author
             profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(
-                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
             embedVar = discord.Embed(
                 title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
             percent_correct = 0
@@ -67,494 +67,48 @@ class Review(commands.Cog):
             with open('profiles.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
 
-    @commands.command(name='regents', help="dispenses a Random regents question (syntax: regents (<atom>, <periodic>, <matter>, <solubility>")
-    async def regents(self, ctx, *params):
+    @commands.command(name='regents', help="dispenses a Random regents question (syntax: regents (<atom>, <periodic>, <matter>, <solubility>", pass_context=True)
+    async def regents(self, ctx, category: str=None):
         found = 0
         with open('profiles.json') as f:
             profile_data = json.load(f)
-        found_indices = []
+        self_index = -1
         for i in range(len(profile_data)):
             if(profile_data[i]['ID'] == ctx.author.id):
                 found = 1
-                found_indices.append(i)
+                self_index = i
         if(found == 0):
             profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     found = 1
-                    found_indices.append(i)
-        i_value = found_indices[0]
-        try:
-            category_choice = params[0]
-            if(category_choice.lower() == "matter"):
-                category = "Matter"
-                with open('questions/matter.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-            elif(category_choice.lower() == "atom"):
-                category = "Atomic Structure"
-                with open('questions/atom.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-            elif(category_choice.lower() == "periodic"):
-                category = "Periodic Table"
-                with open('questions/periodic.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-            elif(category_choice.lower() == "solubility"):
-                category = "Solubility"
-                with open('questions/solubility.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-            elif(category_choice.lower() == "kinetics"):
-                category = "Kinetics"
-                with open('questions/kinetics.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-            else:
-                await ctx.send("Invalid Category. Choosing random category.")
-                category_number = int(randint(0, 4))
-                if(category_number == 0):
-                    category = "Matter"
-                    with open('questions/matter.json') as f:
-                        questions = json.load(f)
-                    if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                        question_number = int(randint(0, len(questions)-1))
-                    elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Calc"] == "True":
-                                questions.pop(i)
-                                continue
-                            elif questions[question_number]["Table"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                    elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Table"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                    elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Calc"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                elif(category_number == 2):
-                    category = "Periodic Table"
-                    with open('questions/periodic.json') as f:
-                        questions = json.load(f)
-                    if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                        question_number = int(randint(0, len(questions)-1))
-                    elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Calc"] == "True":
-                                questions.pop(i)
-                                continue
-                            elif questions[question_number]["Table"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                    elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Table"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                    elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Calc"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                elif(category_number == 3):
-                    category = "Solubility"
-                    with open('questions/solubility.json') as f:
-                        questions = json.load(f)
-                    if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                        question_number = int(randint(0, len(questions)-1))
-                    elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Calc"] == "True":
-                                questions.pop(i)
-                                continue
-                            elif questions[question_number]["Table"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                    elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Table"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                    elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Calc"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                elif(category_number == 4):
-                    category = "Kinetics"
-                    with open('questions/kinetics.json') as f:
-                        questions = json.load(f)
-                    if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                        question_number = int(randint(0, len(questions)-1))
-                    elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Calc"] == "True":
-                                questions.pop(i)
-                                continue
-                            elif questions[question_number]["Table"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                    elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Table"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
-                    elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                        while True:
-                            question_number = int(randint(0, len(questions)-1))
-                            if questions[question_number]["Calc"] == "True":
-                                questions.pop(i)
-                                continue
-                            else:
-                                break
+                    self_index = i
+        
+        with open('questions/categories.json') as j:
+            categories = json.load(j)
 
-        except IndexError:
-            category_number = int(randint(0, 4))
-            if(category_number == 0):
-                category = "Matter"
-                with open('questions/matter.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-            elif(category_number == 1):
-                category = "Atomic Structure"
-                with open('questions/atom.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-            elif(category_number == 2):
-                category = "Periodic Table"
-                with open('questions/periodic.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-            elif(category_number == 3):
-                category = "Solubility"
-                with open('questions/solubility.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-            elif(category_number == 4):
-                category = "Kinetics"
-                with open('questions/kinetics.json') as f:
-                    questions = json.load(f)
-                if(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "True"):
-                    question_number = int(randint(0, len(questions)-1))
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        elif questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "True" and profile_data[i_value]["Table"] == "False"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Table"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
-                elif(profile_data[i_value]["Calc"] == "False" and profile_data[i_value]["Table"] == "True"):
-                    while True:
-                        question_number = int(randint(0, len(questions)-1))
-                        if questions[question_number]["Calc"] == "True":
-                            questions.pop(i)
-                            continue
-                        else:
-                            break
+        if category is not None:
+            if category.lower() in categories:
+                category = category.lower()
+            else:
+                await ctx.reply("Invalid Category! Choosing random category.")
+                category = choice(categories)
+        else:
+            category = choice(categories)
+
+        with open(f'questions/{category.lower()}.json') as j:
+            questions = json.load(j)
+        while True:
+            question_number = randint(0, len(questions)-1)
+            if questions[question_number]["Calc"] and not profile_data[self_index]["Calc"]:
+                questions.pop(i)
+                continue
+            if questions[question_number]["Table"] and not profile_data[self_index]["Table"]:
+                questions.pop(i)
+                continue
+            else:
+                break
 
         embedVar = discord.Embed(
             title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0x00ff00)
@@ -565,20 +119,12 @@ class Review(commands.Cog):
         embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
             questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]), inline=False)
 
-        if(questions[question_number]['Calc'] == "True"):
-            if(questions[question_number]['Table'] == "True"):
-                embedVar.add_field(
-                    name="Tools required", value="Calculator and Reference Table", inline=False)
-            elif(questions[question_number]['Table'] == "False"):
-                embedVar.add_field(name="Tools required",
-                                   value="Calculator", inline=False)
-        elif(questions[question_number]['Table'] == "True"):
-            if(questions[question_number]['Calc'] == "True"):
-                embedVar.add_field(
-                    name="Tools required", value="Calculator and Reference Table", inline=False)
-            elif(questions[question_number]['Calc'] == "False"):
-                embedVar.add_field(name="Tools required",
-                                   value="Reference Table", inline=False)
+        if(questions[question_number]['Calc'] and questions[question_number]['Table']):
+            embedVar.add_field(name="Tools required", value="Calculator and Reference Table", inline=False)
+        elif(questions[question_number]['Calc'] and not questions[question_number]['Table']):
+            embedVar.add_field(name="Tools required", value="Calculator", inline=False)
+        elif(not questions[question_number]['Calc'] and questions[question_number]['Table']):
+            embedVar.add_field(name="Tools required", value="Reference Table", inline=False)
 
         embedVar.add_field(name="Category", value="`" +
                            str(category)+"`", inline=False)
@@ -608,48 +154,6 @@ class Review(commands.Cog):
             await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`.\nYou should probably review the `{category}` unit.")
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
-
-    @commands.command(name='review', help="dispenses a review question (kinetics)", hidden=True)
-    async def review(self, ctx):
-        with open('questions/kinetics.json') as f:
-            questions = json.load(f)
-        question_number = int(randint(0, len(questions)-1))
-
-        embedVar = discord.Embed(
-            title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0xD3D3D3)
-
-        if(questions[question_number]['image'] != 0):
-            embedVar.set_image(url=questions[question_number]['image'])
-
-        embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
-            questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]), inline=False)
-
-        embedVar.add_field(name="Category", value="`Kinetics`", inline=False)
-
-        await ctx.reply(embed=embedVar)
-
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
-                msg.content.lower() in ["a", "b", "c", "d"]
-
-        attempts = 1
-        while True:
-            try:
-                msg = await self.bot.wait_for("message", check=check, timeout=90)
-            except asyncio.TimeoutError:
-                await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
-                return 0
-            if msg.content.lower() == questions[question_number]['answer']:
-                await msg.reply("Correct!")
-                return 0
-            else:
-                if(attempts != 0):
-                    await msg.reply(f"Incorrect answer. You have {attempts} attempts left")
-                    attempts -= 1
-                    continue
-                else:
-                    await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`.")
-                    return 0
 
     @commands.command(name='leaderboard', help="Displays the global leaderboards", aliases=['lb', 'leader'], pass_context=True)
     async def lb(self, ctx, *, lb: str = None):
@@ -778,7 +282,7 @@ class Review(commands.Cog):
                 found_indices.append(i)
         if(found == 0):
             profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == uid):
                     found_indices.append(i)
@@ -795,9 +299,9 @@ class Review(commands.Cog):
             if(str(params[0]).lower() == "calc"):
                 try:
                     if(str(params[1]).lower() == "on"):
-                        profile_data[i_value]["Calc"] = "True"
+                        profile_data[i_value]["Calc"] = True
                     elif(str(params[1]).lower() == "off"):
-                        profile_data[i_value]["Calc"] = "False"
+                        profile_data[i_value]["Calc"] = True
                     else:
                         await ctx.send("Second parameter should be either \"on\" or \"off\"")
                         return 0
@@ -807,9 +311,9 @@ class Review(commands.Cog):
             if(str(params[0]).lower() == "table"):
                 try:
                     if(str(params[1]).lower() == "on"):
-                        profile_data[i_value]["Table"] = "True"
+                        profile_data[i_value]["Table"] = True
                     elif(str(params[1]).lower() == "off"):
-                        profile_data[i_value]["Table"] = "False"
+                        profile_data[i_value]["Table"] = False
                     else:
                         await ctx.send("Second parameter should be either \"on\" or \"off\"")
                         return 0
@@ -820,11 +324,11 @@ class Review(commands.Cog):
                 json.dump(profile_data, json_file)
             await ctx.send("Setting saved successfully!")
         except IndexError:
-            if(profile_data[i_value]["Calc"] == "True"):
+            if(profile_data[i_value]["Calc"]):
                 calc_value = f"🟢 Enabled"
             else:
                 calc_value = f"🔴 Disabled"
-            if(profile_data[i_value]["Table"] == "True"):
+            if(profile_data[i_value]["Table"]):
                 table_value = f"🟢 Enabled"
             else:
                 table_value = f"🔴 Disabled"
@@ -847,7 +351,7 @@ class Review(commands.Cog):
                 found = 1
         if(found == 0):
             profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
 
         with open('questions/apworld.json') as f:
             questions = json.load(f)
