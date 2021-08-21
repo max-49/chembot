@@ -194,8 +194,13 @@ class Currency(commands.Cog):
                                     int(profiles[i]['Salary'])/3)
                                 await msg.reply(f"Incorrect Answer. The correct answer was `{work_scens[scen]['answer']}`. You've earned {math.floor(int(profiles[i]['Salary'])/3)} {self.info[2]} for working.")
                                 break
-        with open('profiles.json', 'w') as json_file:
-            json.dump(profiles, json_file)
+                with open('profiles.json', 'w') as json_file:
+                    json.dump(profiles, json_file)
+                return
+        else:
+            await ctx.reply(f"You don't have a profile yet! Do `{self.info[3]}profile` to create a profile and start working!")
+            self.work.reset_cooldown(ctx)
+            return 0
 
     @work.error
     async def command_name_error(self, ctx, error):

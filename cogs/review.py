@@ -14,7 +14,7 @@ class Review(commands.Cog):
         self.bot = bot
 
     @commands.command(name='profile', help="displays your profile", pass_context=True)
-    async def profile(self, ctx, profile: discord.Member = None):
+    async def profile(self, ctx, profile: discord.Member=None):
         with open('profiles.json') as f:
             profile_data = json.load(f)
         uid = ctx.author.id if profile is None else profile.id
@@ -35,6 +35,8 @@ class Review(commands.Cog):
                 await ctx.send(embed=embedVar)
                 return
         else:
+            if profile is None:
+                profile = ctx.author
             profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(
                 profile.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
             embedVar = discord.Embed(
@@ -49,7 +51,7 @@ class Review(commands.Cog):
             with open('profiles.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
 
-    @commands.command(name='regents', help="dispenses a Random regents question (syntax: s!regents (<atom>, <periodic>, <matter>, <solubility>")
+    @commands.command(name='regents', help="dispenses a Random regents question (syntax: regents (<atom>, <periodic>, <matter>, <solubility>")
     async def regents(self, ctx, *params):
         found = 0
         with open('profiles.json') as f:
@@ -812,7 +814,7 @@ class Review(commands.Cog):
                 table_value = f"🔴 Disabled"
 
             embedVar = discord.Embed(title=f"{ctx.author.name}'s Regents Question Settings",
-                                     description="Use the command syntax `s!settings <calc/table> <on/off>` to change these settings", timestamp=datetime.utcnow(), color=0xFF0000)
+                                     description=f"Use the command syntax `{self.info[3]}settings <calc/table> <on/off>` to change these settings", timestamp=datetime.utcnow(), color=0xFF0000)
             embedVar.add_field(
                 name="Questions that require the use of a calculator", value=calc_value, inline=False)
             embedVar.add_field(
