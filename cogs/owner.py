@@ -1,5 +1,7 @@
 import os
+import json
 from discord.ext import commands
+
 
 class Owner(commands.Cog):
     def __init__(self, bot):
@@ -40,7 +42,18 @@ class Owner(commands.Cog):
             await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
         else:
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully reloaded!")
-    
+
+    @commands.command(name='updateprofiles', hidden=True)
+    @commands.is_owner()
+    async def updateprofiles(self, ctx):
+        with open('profiles.json') as j:
+            profile_data = json.load(j)
+        for i in range(len(profile_data)):
+            if(profile_data[i]['Balance'] < 0):
+                profile_data[i]['Balance'] = 0
+        with open('profiles.json', 'w') as j:
+            json.dump(profile_data, j)
+
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
 

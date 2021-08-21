@@ -3,7 +3,6 @@ import os
 import json
 import string
 import discord
-import requests
 import chat_exporter
 from discord.ext import commands
 from discord.ext.commands import has_permissions
@@ -163,7 +162,7 @@ class Admin(commands.Cog):
             if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator):
                 if(params[0] == "allowId"):
                     if int(params[1]) not in allowed_ids:
-                        allowed_ids.append(int(params[1])) 
+                        allowed_ids.append(int(params[1]))
                         await ctx.reply("Successfully added ID to allowed IDs!")
                     else:
                         await ctx.reply("This ID is already allowed to archive chats!")
@@ -186,15 +185,9 @@ class Admin(commands.Cog):
         with open('allowed_ids.json', 'w') as j:
             json.dump(allowed_ids, j)
 
-    @commands.command(name='adminstuff', hidden=True)
-    async def adminstuff(self, ctx):
-        embedVar = discord.Embed(color=0xadd8e6)
-        embedVar.add_field(name="How to gain access to the server",
-                           value="To gain access to the rest of the server, type **\"Tyler Bissoondial is a chad smurf\"** in this chat (case does not matter). Schlooth Bot will verify you soon after.", inline=False)
-        await ctx.send(embed=embedVar)
-
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))

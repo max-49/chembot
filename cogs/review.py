@@ -2,38 +2,24 @@ import os
 import json
 import discord
 import asyncio
+from config import get_bot
 from random import randint
-from utils import get_emoji
 from datetime import datetime
 from discord.ext import commands
 
 
 class Review(commands.Cog):
     def __init__(self, bot):
+        self.info = get_bot(os.getcwd().split('/')[-2])
         self.bot = bot
 
-    @commands.command(name='profile', help="displays your profile")
-    async def profile(self, ctx, profile="none"):
-        if profile == "none":
-            param = ""
-        else:
-            param = profile
-        print(f"{ctx.author.name}: {'s!profile'} " + str(param))
+    @commands.command(name='profile', help="displays your profile", pass_context=True)
+    async def profile(self, ctx, profile: discord.Member = None):
         with open('profiles.json') as f:
             profile_data = json.load(f)
-        if(profile != "none"):
-            uid = profile
-            try:
-                uid = int(uid)
-            except ValueError:
-                uid = profile
-        else:
-            uid = ctx.author.id
-        found = 0
-        found_indices = []
+        uid = ctx.author.id if profile is None else profile.id
         for i in range(len(profile_data)):
-            user_mention = f"<@!{profile_data[i]['ID']}>"
-            if(profile_data[i]['ID'] == uid or profile_data[i]['Name'] == uid or profile_data[i]['Nick'] == uid or profile_data[i]['Tag'] == uid or user_mention == uid):
+            if(profile_data[i]['ID'] == uid):
                 embedVar = discord.Embed(
                     title=f"{profile_data[i]['Name']}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
                 try:
@@ -41,51 +27,27 @@ class Review(commands.Cog):
                         profile_data[i]['Correct']/profile_data[i]['Total']) * 100
                 except ZeroDivisionError:
                     percent_correct = 0
-                try:
-                    percent_world_correct = (
-                        profile_data[i]['WorldCorrect']/profile_data[i]['WorldTotal']) * 100
-                except ZeroDivisionError:
-                    percent_world_correct = 0
                 embedVar.add_field(name="Chemistry Regents Review Stats",
                                    value=f"{str(profile_data[i]['Correct'])}/{str(profile_data[i]['Total'])} ({str(round(percent_correct, 2))}%)", inline=False)
-                embedVar.add_field(name="AP World Review Stats",
-                                   value=f"{str(profile_data[i]['WorldCorrect'])}/{str(profile_data[i]['WorldTotal'])} ({str(round(percent_world_correct, 2))}%)", inline=False)
                 embedVar.add_field(
-                    name="Balance", value=f"{profile_data[i]['Balance']} schlucks", inline=False)
+                    name="Balance", value=f"{profile_data[i]['Balance']} {self.info[2]}", inline=False)
                 embedVar.set_thumbnail(url=profile_data[i]['Avatar URL'])
                 await ctx.send(embed=embedVar)
-                found = 1
-                found_indices.append(i)
-        if(found == 0):
-            isSameUser = 0
-            for i in range(len(profile_data)):
-                if(profile_data[i]['ID'] == ctx.author.id):
-                    await ctx.send("Looks like this user does not have a profile. Ask them to create one with `s!profile`!")
-                    isSameUser = 1
-                    break
-            if(isSameUser == 0):
-                profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                    ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
-                embedVar = discord.Embed(
-                    title=f"{ctx.author.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
-                try:
-                    percent_correct = (
-                        profile_data[i]['Correct']/profile_data[i]['Total']) * 100
-                except ZeroDivisionError:
-                    percent_correct = 0
-                embedVar.add_field(name="Chemistry Regents Review Stats",
-                                   value=f"{str(profile_data[i]['Correct'])}/{str(profile_data[i]['Total'])} ({str(round(percent_correct, 2))}%)", inline=False)
-                embedVar.add_field(name="AP World Review Stats",
-                                   value=f"{str(profile_data[i]['WorldCorrect'])}/{str(profile_data[i]['WorldTotal'])} ({str(round(percent_world_correct, 2))}%)", inline=False)
-                embedVar.set_thumbnail(url=profile_data[i]['Avatar URL'])
-                await ctx.send(embed=embedVar)
-        try:
-            print(found_indices[1])
-            profile_data.pop(found_indices[1])
-        except IndexError:
-            var = 1
-        with open('profiles.json', 'w') as json_file:
-            json.dump(profile_data, json_file)
+                return
+        else:
+            profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(
+                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+            embedVar = discord.Embed(
+                title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
+            percent_correct = 0
+            embedVar.add_field(name="Chemistry Regents Review Stats",
+                               value=f"0/0 (0%)", inline=False)
+            embedVar.add_field(
+                name="Balance", value=f"0 {self.info[2]}", inline=False)
+            embedVar.set_thumbnail(url=profile.avatar_url)
+            await ctx.send(embed=embedVar)
+            with open('profiles.json', 'w') as json_file:
+                json.dump(profile_data, json_file)
 
     @commands.command(name='regents', help="dispenses a Random regents question (syntax: s!regents (<atom>, <periodic>, <matter>, <solubility>")
     async def regents(self, ctx, *params):
@@ -629,12 +591,8 @@ class Review(commands.Cog):
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
 
-    @commands.command(name='review', help="dispenses a review question (kinetics)")
-    async def review(self, ctx, *params):
-        param = ""
-        for thing in params:
-            param += str(thing) + " "
-        print(f"{ctx.author.name}: {'s!review'} " + str(param))
+    @commands.command(name='review', help="dispenses a review question (kinetics)", hidden=True)
+    async def review(self, ctx):
         with open('questions/kinetics.json') as f:
             questions = json.load(f)
         question_number = int(randint(0, len(questions)-1))
@@ -675,14 +633,14 @@ class Review(commands.Cog):
                     await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`.")
                     return 0
 
-    @commands.command(name='leaderboard', help="Displays the global leaderboards", aliases=['lb', 'leader'])
-    async def lb(self, ctx, *params):
+    @commands.command(name='leaderboard', help="Displays the global leaderboards", aliases=['lb', 'leader'], pass_context=True)
+    async def lb(self, ctx, *, lb: str = None):
         with open('profiles.json') as f:
             profile_data = json.load(f)
         percentages = {}
-        try:
-            if(str(params[0]).lower() in ['world', 'chem', 'apworld', 'chemistry', 'bal', 'money', 'rich', 'schlucks']):
-                if(str(params[0]).lower() == 'world' or str(params[0]).lower() == 'apworld'):
+        if lb is not None:
+            if(lb.lower() in ['world', 'chem', 'apworld', 'chemistry', 'bal', 'money', 'rich', 'schlucks', 'coins']):
+                if(lb.lower() == 'world' or lb.lower() == 'apworld'):
                     for i in range(len(profile_data)):
                         try:
                             percent_correct = (
@@ -704,7 +662,7 @@ class Review(commands.Cog):
                     embedVar.add_field(name="Placements",
                                        value=msg, inline=False)
                     await ctx.send(embed=embedVar)
-                elif(str(params[0]).lower() == 'bal' or str(params[0]).lower() == 'money' or str(params[0]).lower() == 'rich' or str(params[0]).lower() == 'schlucks'):
+                elif(lb.lower() == 'bal' or lb.lower() == 'money' or lb.lower() == 'rich' or lb.lower() == 'schlucks'):
                     for i in range(len(profile_data)):
                         try:
                             schlucks = profile_data[i]['Balance']
@@ -768,7 +726,7 @@ class Review(commands.Cog):
                     place += 1
                 embedVar.add_field(name="Placements", value=msg, inline=False)
                 await ctx.send(embed=embedVar)
-        except IndexError:
+        else:
             for i in range(len(profile_data)):
                 try:
                     percent_correct = (
@@ -845,13 +803,13 @@ class Review(commands.Cog):
             await ctx.send("Setting saved successfully!")
         except IndexError:
             if(profile_data[i_value]["Calc"] == "True"):
-                calc_value = f"{get_emoji('green_circle')} Enabled"
+                calc_value = f"🟢 Enabled"
             else:
-                calc_value = f"{get_emoji('red_circle')} Disabled"
+                calc_value = f"🔴 Disabled"
             if(profile_data[i_value]["Table"] == "True"):
-                table_value = f"{get_emoji('green_circle')} Enabled"
+                table_value = f"🟢 Enabled"
             else:
-                table_value = f"{get_emoji('red_circle')} Disabled"
+                table_value = f"🔴 Disabled"
 
             embedVar = discord.Embed(title=f"{ctx.author.name}'s Regents Question Settings",
                                      description="Use the command syntax `s!settings <calc/table> <on/off>` to change these settings", timestamp=datetime.utcnow(), color=0xFF0000)
@@ -862,58 +820,58 @@ class Review(commands.Cog):
             await ctx.send(embed=embedVar)
 
     @commands.command(name='world', help="dispenses a Random AP World practice  question", aliases=['apworld', 'history'])
-    async def world(self, ctx, *params):
-            found = 0
-            with open('profiles.json') as f:
-                profile_data = json.load(f)
+    async def world(self, ctx):
+        found = 0
+        with open('profiles.json') as f:
+            profile_data = json.load(f)
+        for i in range(len(profile_data)):
+            if(profile_data[i]['ID'] == ctx.author.id):
+                found = 1
+        if(found == 0):
+            profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
+                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+
+        with open('questions/apworld.json') as f:
+            questions = json.load(f)
+        question_number = int(randint(0, len(questions)-1))
+
+        embedVar = discord.Embed(
+            title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0xadd8e6)
+
+        if(questions[question_number]['image'] != 0):
+            embedVar.set_image(url=questions[question_number]['image'])
+
+        embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
+            questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]), inline=False)
+
+        await ctx.reply(embed=embedVar)
+
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == msg.channel and \
+                msg.content.lower() in ["a", "b", "c", "d"]
+        try:
+            msg = await self.bot.wait_for("message", check=check, timeout=90)
+        except asyncio.TimeoutError:
+            await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
-                    found = 1
-            if(found == 0):
-                profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                    ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
-
-            with open('questions/apworld.json') as f:
-                questions = json.load(f)
-            question_number = int(randint(0, len(questions)-1))
-
-            embedVar = discord.Embed(
-                title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0xadd8e6)
-
-            if(questions[question_number]['image'] != 0):
-                embedVar.set_image(url=questions[question_number]['image'])
-
-            embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
-                questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]), inline=False)
-
-            await ctx.reply(embed=embedVar)
-
-            def check(msg):
-                return msg.author == ctx.author and msg.channel == msg.channel and \
-                    msg.content.lower() in ["a", "b", "c", "d"]
-            try:
-                msg = await self.bot.wait_for("message", check=check, timeout=90)
-            except asyncio.TimeoutError:
-                await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
-                for i in range(len(profile_data)):
-                    if(profile_data[i]['ID'] == ctx.author.id):
-                        profile_data[i]['WorldTotal'] += 1
-            if msg.content.lower() == questions[question_number]['answer']:
-                for i in range(len(profile_data)):
-                    if(profile_data[i]['ID'] == ctx.author.id):
-                        profile_data[i]['WorldCorrect'] += 1
-                        profile_data[i]['WorldTotal'] += 1
-                await msg.reply("Correct!")
-            else:
-                for i in range(len(profile_data)):
-                    if(profile_data[i]['ID'] == ctx.author.id):
-                        profile_data[i]['WorldTotal'] += 1
-                await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`")
-            with open('profiles.json', 'w') as json_file:
-                json.dump(profile_data, json_file)
+                    profile_data[i]['WorldTotal'] += 1
+        if msg.content.lower() == questions[question_number]['answer']:
+            for i in range(len(profile_data)):
+                if(profile_data[i]['ID'] == ctx.author.id):
+                    profile_data[i]['WorldCorrect'] += 1
+                    profile_data[i]['WorldTotal'] += 1
+            await msg.reply("Correct!")
+        else:
+            for i in range(len(profile_data)):
+                if(profile_data[i]['ID'] == ctx.author.id):
+                    profile_data[i]['WorldTotal'] += 1
+            await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`")
+        with open('profiles.json', 'w') as json_file:
+            json.dump(profile_data, json_file)
 
     @commands.command(name='apstats', help="dispenses a Random AP Stats practice  question")
-    async def apstats(self, ctx, *params):
+    async def apstats(self, ctx):
         with open('questions/apstats.json') as f:
             questions = json.load(f)
         question_number = int(randint(0, len(questions)-1))
@@ -938,9 +896,10 @@ class Review(commands.Cog):
             await msg.reply("Correct!")
         else:
             await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`")
-    
+
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 def setup(bot):
     bot.add_cog(Review(bot))
