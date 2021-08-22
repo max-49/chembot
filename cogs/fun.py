@@ -116,7 +116,7 @@ class Fun(commands.Cog):
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(
                 use_hook.url, adapter=AsyncWebhookAdapter(session))
-            await webhook.send(message, username=ctx.author.display_name, avatar_url=ctx.author.avatar_url, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
+            await webhook.send(message, username=ctx.author.display_name, avatar_url=ctx.author.avatar_url, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
 
     @commands.command(name="saym", help="impersonate someone!")
     async def saym(self, ctx, member: discord.Member, *, message: str):
@@ -130,7 +130,7 @@ class Fun(commands.Cog):
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(
                 use_hook.url, adapter=AsyncWebhookAdapter(session))
-            await webhook.send(message, username=member.display_name, avatar_url=member.avatar_url, allowed_mentions=discord.AllowedMentions(everyone=False, users=False, roles=False, replied_user=False))
+            await webhook.send(message, username=member.display_name, avatar_url=member.avatar_url, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
 
     @commands.command(name="stats", help="ictf stats on chembot lmao", pass_context=True)
     async def stats(self, ctx, member: discord.Member = None):

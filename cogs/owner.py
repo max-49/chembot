@@ -51,6 +51,8 @@ class Owner(commands.Cog):
         for i in range(len(profile_data)):
             if(profile_data[i]['Balance'] < 0):
                 profile_data[i]['Balance'] = 0
+            if(profile_data[i]['Balance'] > 5000):
+                profile_data[i]['Balance'] = 5000
             if(profile_data[i]['Calc'] == "True"):
                 profile_data[i]['Calc'] = True
             if(profile_data[i]['Table'] == "True"):
