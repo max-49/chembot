@@ -32,7 +32,7 @@ class Review(commands.Cog):
             if profile is None:
                 profile = ctx.author
             profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(
-                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
             embedVar = discord.Embed(
                 title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
             percent_correct = 0
@@ -65,7 +65,7 @@ class Review(commands.Cog):
             if profile is None:
                 profile = ctx.author
             profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(
-                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
             embedVar = discord.Embed(
                 title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
             percent_correct = 0
@@ -91,7 +91,7 @@ class Review(commands.Cog):
                 self_index = i
         if(found == 0):
             profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     found = 1
@@ -377,7 +377,7 @@ class Review(commands.Cog):
                 found_indices.append(i)
         if(found == 0):
             profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == uid):
                     found_indices.append(i)
@@ -446,7 +446,7 @@ class Review(commands.Cog):
                 found = 1
         if(found == 0):
             profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1})
+                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
 
         with open('questions/apworld.json') as f:
             questions = json.load(f)
