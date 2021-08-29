@@ -458,10 +458,13 @@ class Currency(commands.Cog):
                             await ctx.reply("You don't have enough money to buy this item!")
                             return
                         else:
+                            profile_data[i]['Balance'] = profile_data[i]['Balance'] - item['price']
                             if(item['name'] == 'tempitem'):
                                 await ctx.reply('hi you bought something pog')
                             else:
                                 await ctx.reply("i have no idea how you got here. dm max if you got here.")
+                            with open('profiles.json', 'w') as json_file:
+                                json.dump(profile_data, json_file)
                             return
                 else:
                     await ctx.reply(f"Item doesn't exist! Make sure to use the item code found in `{self.info[3]}shop`")
