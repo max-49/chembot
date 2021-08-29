@@ -2,6 +2,7 @@ import os
 import json
 import discord
 import asyncio
+import itertools
 from config import get_bot
 from random import randint, choice
 from datetime import datetime
@@ -15,8 +16,17 @@ class Review(commands.Cog):
 
     @commands.command(name='profile', help="displays your profile", pass_context=True)
     async def profile(self, ctx, profile: discord.Member=None):
-        with open('profiles.json') as f:
-            profile_data = json.load(f)
+        guild_id = ctx.message.guild.id
+        while True:
+            try:
+                with open(f'profiles-{guild_id}.json') as f:
+                    profile_data = json.load(f)
+                break
+            except FileNotFoundError:
+                with open(f'profiles-{guild_id}.json', 'w') as f:
+                    f.write('[]')
+                continue
+        
         uid = ctx.author.id if profile is None else profile.id
         if(len(profile_data) == 0):
             if profile is None:
@@ -32,8 +42,9 @@ class Review(commands.Cog):
                 name="Balance", value=f"0 {self.info[2]}", inline=False)
             embedVar.set_thumbnail(url=profile.avatar_url)
             await ctx.send(embed=embedVar)
-            with open('profiles.json', 'w') as json_file:
+            with open(f'profiles-{guild_id}.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
+            return
         for i in range(len(profile_data)):
             if(profile_data[i]['ID'] == uid):
                 embedVar = discord.Embed(
@@ -64,13 +75,14 @@ class Review(commands.Cog):
                 name="Balance", value=f"0 {self.info[2]}", inline=False)
             embedVar.set_thumbnail(url=profile.avatar_url)
             await ctx.send(embed=embedVar)
-            with open('profiles.json', 'w') as json_file:
+            with open(f'profiles-{guild_id}.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
 
     @commands.command(name='regents', help="dispenses a Random regents question (syntax: regents (<atom>, <periodic>, <matter>, <solubility>", pass_context=True)
     async def regents(self, ctx, category: str=None):
         found = 0
-        with open('profiles.json') as f:
+        guild_id = ctx.message.guild.id
+        with open(f'profiles-{guild_id}.json') as f:
             profile_data = json.load(f)
         self_index = -1
         for i in range(len(profile_data)):
@@ -226,6 +238,89 @@ class Review(commands.Cog):
                         place += 1
                     embedVar.add_field(name="Placements",
                                        value=msg, inline=False)
+                    await ctx.send(embed=embedVar)
+            elif(lb.lower() in ['times', 'win', 'lose', 'profit', 'negprofit']):
+                if(lb.lower() == 'win' or lb.lower() == 'lose'):
+                    if(lb.lower() == 'win'):
+                        lb_type = 'Win'
+                    else:
+                        lb_type = 'Lose'
+                    for i in range(len(profile_data)):
+                        try:
+                            percent_correct = (profile_data[i][lb_type]/profile_data[i]['Times']) * 100
+                        except ZeroDivisionError:
+                            percent_correct = 0
+                        percentages[str(profile_data[i]['Name'])] = percent_correct
+                    embedVar = discord.Embed(title=f"Highest {lb_type} Percentages", timestamp=datetime.utcnow(), color=0x00ff00)
+                    sorted_percentages = {k: v for k, v in sorted(percentages.items(), key=lambda item: item[1], reverse=True)}
+                    msg = ""
+                    place = 1
+                    if(len(sorted_percentages) < 10):
+                        for key in sorted_percentages:
+                            msg += str(place) + ". " + key + " (" + \
+                                str(round(sorted_percentages[key], 2)) + f"%)\n"
+                            place += 1
+                    else:
+                        for key in itertools.islice(sorted_percentages, 10):
+                            msg += str(place) + ". " + key + " (" + \
+                                str(round(sorted_percentages[key], 2)) + f"%)\n"
+                            place += 1
+                    embedVar.add_field(name="Placements", value=msg, inline=False)
+                    await ctx.send(embed=embedVar)
+                elif(lb.lower() == 'times' or lb.lower() == 'profit' or lb.lower() == 'bagels'):
+                    if(lb.lower() == 'times'):
+                        lb_type = 'Times'
+                        end = 'times'
+                        embedVar = discord.Embed(title="People who have gambled the most", timestamp=datetime.utcnow(), color=0x00ff00)
+                    elif(lb.lower() == 'profit'):
+                        lb_type = 'Profit'
+                        end = self.info[2]
+                        embedVar = discord.Embed(title="Users who have made the most profit", timestamp=datetime.utcnow(), color=0x00ff00)
+                    else:
+                        lb_type = 'Balance'
+                        end = self.info[2]
+                        embedVar = discord.Embed(title="Richest Users", timestamp=datetime.utcnow(), color=0x00ff00)
+                    for i in range(len(profile_data)):
+                        for i in range(len(profile_data)):
+                            number = profile_data[i][lb_type]
+                            percentages[str(profile_data[i]['Name'])] = number
+                    sorted_percentages = {k: v for k, v in sorted(percentages.items(), key=lambda item: item[1], reverse=True)}
+                    msg = ""
+                    place = 1
+                    if(len(sorted_percentages) < 10):
+                        for key in sorted_percentages:
+                            msg += str(place) + ". " + key + " (" + \
+                                str(round(sorted_percentages[key], 2)) + f" {end})\n"
+                            place += 1
+                    else:
+                        for key in itertools.islice(sorted_percentages, 10):
+                            msg += str(place) + ". " + key + " (" + \
+                                str(round(sorted_percentages[key], 2)) + f" {end})\n"
+                            place += 1
+
+                    embedVar.add_field(name="Placements", value=msg, inline=False)
+                    await ctx.send(embed=embedVar)
+                elif(lb.lower() == 'negprofit'):
+                    embedVar = discord.Embed(title="Users who have made the least profit", timestamp=datetime.utcnow(), color=0x00ff00)
+                    for i in range(len(profile_data)):
+                        for i in range(len(profile_data)):
+                            number = profile_data[i]['Profit']
+                            percentages[str(profile_data[i]['Name'])] = number
+                    sorted_percentages = {k: v for k, v in sorted(percentages.items(), key=lambda item: item[1], reverse=False)}
+                    msg = ""
+                    place = 1
+                    if(len(sorted_percentages) < 10):
+                        for key in sorted_percentages:
+                            msg += str(place) + ". " + key + " (" + \
+                                str(round(sorted_percentages[key], 2)) + f" bagels)\n"
+                            place += 1
+                    else:
+                        for key in itertools.islice(sorted_percentages, 10):
+                            msg += str(place) + ". " + key + " (" + \
+                                str(round(sorted_percentages[key], 2)) + f" bagels)\n"
+                            place += 1
+
+                    embedVar.add_field(name="Placements", value=msg, inline=False)
                     await ctx.send(embed=embedVar)
             else:
                 await ctx.send("Invalid leaderboard choice! Showing chemistry leaderboard")

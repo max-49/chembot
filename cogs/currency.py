@@ -4,6 +4,7 @@ import math
 import string
 import asyncio
 import discord
+import random
 from config import get_bot
 from random import randint
 from datetime import datetime
@@ -423,6 +424,188 @@ class Currency(commands.Cog):
             await ctx.send("No profile found for this user! Ask them to create one before ruining their life!")
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
+
+    @commands.command(name='table', help='shows the slots payout table!')
+    async def table(self, ctx):
+        tables = [ { 'emoji': '⚽️', 'count': 2, 'payout': 1 }, { 'emoji': '🔴', 'count': 2, 'payout': 1 }, { 'emoji': '🌍', 'count': 2, 'payout': 1 }, { 'emoji': '💵', 'count': 2, 'payout': 1 }, { 'emoji': '📸', 'count': 2, 'payout': 1 }, { 'emoji': '🏓', 'count': 3, 'payout': 5 }, { 'emoji': '🏀', 'count': 3, 'payout': 10 }, { 'emoji': '🔍', 'count': 3, 'payout': 10 }, { 'emoji': '🔴', 'count': 3, 'payout': 20 }, { 'emoji': '⌛️', 'count': 3, 'payout': 25 }, { 'emoji': '🌽', 'count': 3, 'payout': 30 }, { 'emoji': '🌍', 'count': 3, 'payout': 50 }, { 'emoji': '🍎', 'count': 3, 'payout': 75 }, { 'emoji': '💵', 'count': 3, 'payout': 250 }]
+        emojis = ''
+        for table in tables:
+            emojis += f"{table['emoji'] * table['count']}     - {table['payout']}x\n"
+        embed = discord.Embed(title='Slots payout table!', timestamp=datetime.utcnow(), color=0x00C3FF)
+        embed.add_field(name='emoji - payout', value=emojis, inline=False)
+        await ctx.send(embed=embed)
+
+    @commands.command(name='shop', help='buy items at the shop!')
+    async def shop(self, ctx):
+        items = [{'name': 'tempitem', 'price': 100}]
+        embed = discord.Embed(title='BagelBot shop!', timestamp=datetime.utcnow(), color=0x00C3FF)
+        val = ''
+        for item in items:
+            val += f"**{item['name']}** - {item['price']} {self.info[2]}\n"
+        embed.add_field(name='Items for sale! (Item code - Price)', value=val, inline=False)
+        await ctx.send(embed=embed)
+
+    @commands.command(name='buy', help='buy an item from b.shop!')
+    async def buy(self, ctx, buy_item: str):
+        with open('profiles.json') as f:
+            profile_data = json.load(f)
+        items = [{'name': 'tempitem', 'price': 100}]
+        for i in range(len(profile_data)):
+            if(profile_data[i]['ID'] == ctx.author.id):        
+                for item in items:
+                    if(item['name'] == buy_item):
+                        if(item['price'] > profile_data[i]['Balance']):
+                            await ctx.reply("You don't have enough money to buy this item!")
+                            return
+                        else:
+                            if(item['name'] == 'tempitem'):
+                                await ctx.reply('hi you bought something pog')
+                            else:
+                                await ctx.reply("i have no idea how you got here. dm max if you got here.")
+                            return
+                else:
+                    await ctx.reply(f"Item doesn't exist! Make sure to use the item code found in `{self.info[3]}shop`")
+        else:
+            await ctx.reply(f"You don't have a profile yet! Create one with `{self.info[3]}balance`!")
+
+    @commands.command(name="bet", help="b.bet <high | slots> <amount>")
+    @commands.cooldown(1, 3, commands.BucketType.user)
+    async def bet(self, ctx, bet: str, amount: int):
+        with open('profiles.json') as f:
+            profile_data = json.load(f)
+        if(amount < 1):
+            await ctx.reply("You can't bet money that you don't have!")
+            return
+        for i in range(len(profile_data)):
+            if(profile_data[i]['ID'] == ctx.author.id):
+                original_balance = int(profile_data[i]['Balance'])
+                bet = bet.replace('../', '')
+                if(amount > original_balance):
+                    await ctx.reply("You can't bet more than you have!")
+                    return
+                if(bet == 'high'):
+                    welcome_message = 'High - roll a higher number than the bot to win!'
+                    bagel_roll = random.randint(1,10)
+                    you_roll = random.randint(1,10)
+                    if(you_roll > bagel_roll):
+                        percent_won = random.randint(1,100)
+                        embed = discord.Embed(title=welcome_message, timestamp=datetime.utcnow(), color=0x00ff00)
+                        embed.add_field(name=f'{self.bot.user.name} rolls...', value=bagel_roll, inline=True)
+                        embed.add_field(name='You roll...', value=you_roll, inline=True)
+                        embed.add_field(name=f'Congrats, you win! Your new balance is {math.floor(original_balance + (amount * (percent_won/100)))} {self.info[2]}!', value=f'Percent won: {percent_won}%', inline=False)
+                        profile_data[i]['Times'] = profile_data[i]['Times'] + 1
+                        profile_data[i]['Win'] = profile_data[i]['Win'] + 1
+                        profile_data[i]['Profit'] = profile_data[i]['Profit'] + math.floor(amount * (percent_won/100))
+                        profile_data[i]['Balance'] = int(math.floor(original_balance + (amount * (percent_won/100))))
+                        await ctx.reply(embed=embed)
+                    elif(you_roll < bagel_roll):
+                        embed = discord.Embed(title=welcome_message, timestamp=datetime.utcnow(), color=0xFF0000)
+                        embed.add_field(name=f'{self.bot.user.name} rolls...', value=bagel_roll, inline=True)
+                        embed.add_field(name='You roll...', value=you_roll, inline=True)
+                        profile_data[i]['Times'] = profile_data[i]['Times'] + 1
+                        profile_data[i]['Lose'] = profile_data[i]['Lose'] + 1
+                        profile_data[i]['Profit'] = profile_data[i]['Profit'] - amount
+                        embed.add_field(name=f'You lose! Your new balance is {original_balance - amount} {self.info[2]}!', value=':(', inline=False)
+                        profile_data[i]['Balance'] = int(original_balance - amount)
+                        await ctx.reply(embed=embed)
+                    else:
+                        embed = discord.Embed(title=welcome_message, timestamp=datetime.utcnow(), color=0xFFFF00)
+                        embed.add_field(name=f'{self.bot.user.name} rolls...', value=bagel_roll, inline=True)
+                        embed.add_field(name='You roll...', value=you_roll, inline=True)
+                        embed.add_field(name=f'Tie! Nobody loses money!', value='Close one', inline=False)
+                        profile_data[i]['Times'] = profile_data[i]['Times'] + 1
+                        await ctx.reply(embed=embed)
+                elif(bet == 'slots'):
+                    welcome_message = f'Slots - payout table is at {self.info[3]}table!'
+                    if(amount > 5000):
+                        await ctx.reply(f"You can't bet more than 5000 {self.info[2]} in the slot machine!")
+                        return
+                    emojis = ['⚽️', '🔴', '🔍', '🌍', '🍍', '🍎', '🌽', '🏀', '📸', '💵', '⌛️', '🏓']
+                    slots = ' '.join([random.choice(emojis), random.choice(emojis), random.choice(emojis)])
+                    tables = [ { 'emoji': '⚽️', 'count': 2, 'payout': 1 }, { 'emoji': '🔴', 'count': 2, 'payout': 1 }, { 'emoji': '🌍', 'count': 2, 'payout': 1 }, { 'emoji': '💵', 'count': 2, 'payout': 1 }, { 'emoji': '📸', 'count': 2, 'payout': 1 }, { 'emoji': '🏓', 'count': 3, 'payout': 5 }, { 'emoji': '🏀', 'count': 3, 'payout': 10 }, { 'emoji': '🔍', 'count': 3, 'payout': 10 }, { 'emoji': '🔴', 'count': 3, 'payout': 20 }, { 'emoji': '⌛️', 'count': 3, 'payout': 25 }, { 'emoji': '🌽', 'count': 3, 'payout': 30 }, { 'emoji': '🌍', 'count': 3, 'payout': 50 }, { 'emoji': '🍎', 'count': 3, 'payout': 75 }, { 'emoji': '💵', 'count': 3, 'payout': 250 }]
+                    payout = 0
+                    for emoji in emojis:
+                        instances = slots.count(emoji)
+                        for table in tables:
+                            if(emoji == table['emoji']):
+                                if(instances == table['count']):
+                                    payout = table['payout']
+                    if(payout == 0):
+                        embed = discord.Embed(title=welcome_message, timestamp=datetime.utcnow(), color=0xFF0000)
+                        embed.add_field(name='Your slot roll:', value=f'**>** {slots} **<**', inline=False)
+                        embed.add_field(name=f'You lose! Your new balance is {original_balance - amount} {self.info[2]}.', value=':(', inline=False)
+                        profile_data[i]['Times'] = profile_data[i]['Times'] + 1
+                        profile_data[i]['Lose'] = profile_data[i]['Lose'] + 1
+                        profile_data[i]['Profit'] = profile_data[i]['Profit'] - amount
+                        profile_data[i]['Balance'] = original_balance - amount
+                        await ctx.send(embed=embed)
+                    else:
+                        embed = discord.Embed(title=welcome_message, timestamp=datetime.utcnow(), color=0x00FF00)
+                        embed.add_field(name='Your slot roll:', value=f'**>** {slots} **<**', inline=False)
+                        embed.add_field(name=f'You win! Your new balance is {original_balance + (amount * payout)} {self.info[2]}! ({payout}x payout)', value=':)', inline=False)
+                        profile_data[i]['Times'] = profile_data[i]['Times'] + 1
+                        profile_data[i]['Win'] = profile_data[i]['Win'] + 1
+                        profile_data[i]['Profit'] = profile_data[i]['Profit'] + (amount * payout)
+                        profile_data[i]['Balance'] = original_balance + (amount * payout)
+                        await ctx.send(embed=embed)
+                else:
+                    await ctx.reply('Invalid option! Please choose either `high` or `slots`.')
+                    return
+                with open('profiles.json', 'w') as json_file:
+                    json.dump(profile_data, json_file)
+                return
+        else:
+            await ctx.send(f"You don't have a profile yet! Do `{self.info[3]}profile` to create one!")
+            self.bet.reset_cooldown(ctx)
+            return
+
+    @bet.error
+    async def command_name_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            cd = round(error.retry_after)
+            minutes = str(cd // 60)
+            seconds = str(cd % 60)
+            em = discord.Embed(title=f"Woah! Stop betting so fast!",
+                               description=f"Try again in {seconds} seconds.", color=0xFF0000)
+            await ctx.send(embed=em)
+
+
+    @commands.command(name='beg', help="beg for money because you don't have any")
+    @commands.cooldown(1, 120, commands.BucketType.user)
+    async def beg(self, ctx):
+        choice = random.randint(0,1)
+        if(choice == 0):
+            embed = discord.Embed(title='Begging', timestamp=datetime.utcnow(), color=0xFF0000)
+            embed.add_field(name='Your begging did not work', value='No extra money for you', inline=False)
+            await ctx.send(embed=embed)
+        else:
+            with open('profiles.json') as f:
+                profile_data = json.load(f)
+            for i in range(len(profile_data)):
+                if(profile_data[i]['ID'] == ctx.author.id):
+                    original_balance = int(profile_data[i]['Balance'])
+                    money = random.randint(50, 250)
+                    embed = discord.Embed(title='Begging', timestamp=datetime.utcnow(), color=0x00FF00)
+                    embed.add_field(name=f"Your begging worked and you've received {money} {self.info[2]}!", value=f'Your balance is now {original_balance + money} {self.info[2]}', inline=False)
+                    profile_data[i]['Balance'] = profile_data[i]['Balance'] + money
+                    await ctx.send(embed=embed)
+                    with open('profiles.json', 'w') as json_file:
+                        json.dump(profile_data, json_file)
+                    return
+            else:
+                await ctx.send(f"You don't have a profile yet! Do `{self.info[3]}balance` to create one.")
+                self.beg.reset_cooldown(ctx)
+            
+
+    @beg.error
+    async def command_name_error(self, ctx, error):
+        if isinstance(error, commands.CommandOnCooldown):
+            cd = round(error.retry_after)
+            minutes = str(cd // 60)
+            seconds = str(cd % 60)
+            em = discord.Embed(title=f"You can't just keep begging to get money!",
+                               description=f"Try again in {minutes} minutes and {seconds} seconds.", color=0xFF0000)
+            await ctx.send(embed=em)
 
     async def cog_command_error(self, ctx, error):
         if not isinstance(error, commands.CommandOnCooldown):
