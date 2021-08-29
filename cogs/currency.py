@@ -445,7 +445,7 @@ class Currency(commands.Cog):
         embed.add_field(name='Items for sale! (Item code - Price)', value=val, inline=False)
         await ctx.send(embed=embed)
 
-    @commands.command(name='buy', help='buy an item from b.shop!')
+    @commands.command(name='buy', help='buy an item from the shop!')
     async def buy(self, ctx, buy_item: str):
         with open('profiles.json') as f:
             profile_data = json.load(f)

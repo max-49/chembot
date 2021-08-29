@@ -19,11 +19,11 @@ class Review(commands.Cog):
         guild_id = ctx.message.guild.id
         while True:
             try:
-                with open(f'profiles-{guild_id}.json') as f:
+                with open(f'profiles.json') as f:
                     profile_data = json.load(f)
                 break
             except FileNotFoundError:
-                with open(f'profiles-{guild_id}.json', 'w') as f:
+                with open(f'profiles.json', 'w') as f:
                     f.write('[]')
                 continue
         
@@ -42,7 +42,7 @@ class Review(commands.Cog):
                 name="Balance", value=f"0 {self.info[2]}", inline=False)
             embedVar.set_thumbnail(url=profile.avatar_url)
             await ctx.send(embed=embedVar)
-            with open(f'profiles-{guild_id}.json', 'w') as json_file:
+            with open(f'profiles.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
             return
         for i in range(len(profile_data)):
@@ -75,14 +75,14 @@ class Review(commands.Cog):
                 name="Balance", value=f"0 {self.info[2]}", inline=False)
             embedVar.set_thumbnail(url=profile.avatar_url)
             await ctx.send(embed=embedVar)
-            with open(f'profiles-{guild_id}.json', 'w') as json_file:
+            with open(f'profiles.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
 
     @commands.command(name='regents', help="dispenses a Random regents question (syntax: regents (<atom>, <periodic>, <matter>, <solubility>", pass_context=True)
     async def regents(self, ctx, category: str=None):
         found = 0
         guild_id = ctx.message.guild.id
-        with open(f'profiles-{guild_id}.json') as f:
+        with open(f'profiles.json') as f:
             profile_data = json.load(f)
         self_index = -1
         for i in range(len(profile_data)):
