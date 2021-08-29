@@ -438,7 +438,7 @@ class Currency(commands.Cog):
     @commands.command(name='shop', help='buy items at the shop!')
     async def shop(self, ctx):
         items = [{'name': 'tempitem', 'price': 100}]
-        embed = discord.Embed(title='BagelBot shop!', timestamp=datetime.utcnow(), color=0x00C3FF)
+        embed = discord.Embed(title=f'{self.bot.user.name} shop!', timestamp=datetime.utcnow(), color=0x00C3FF)
         val = ''
         for item in items:
             val += f"**{item['name']}** - {item['price']} {self.info[2]}\n"
