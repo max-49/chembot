@@ -1,5 +1,8 @@
 import os
 import json
+import discord
+import subprocess
+import string
 from discord.ext import commands
 
 
@@ -89,6 +92,32 @@ class Owner(commands.Cog):
             with open(f'questions/{category}.json', 'w') as j:
                 questions = json.dump(questions, j)
         await ctx.send('Questions updated!')
+
+    @commands.command(name='shell', hidden=True)
+    @commands.is_owner()
+    async def shell(self, ctx):
+        await ctx.send('Shell spawned. Type `exit` to exit the shell.')
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == msg.channel and msg.content.lower()[0] in string.printable
+
+        while True:
+            command = await self.bot.wait_for("message", check=check)
+            print(f"$ {command.content}")
+            if(command.content == 'exit'):
+                break
+            try:
+                proc = subprocess.check_output([command.content], shell=True).decode("utf-8")
+            except subprocess.CalledProcessError as e:
+                proc = e.stdout
+            if(proc == b""):
+                proc = "Command errored but idk how to get the error message to show"
+            try:
+                await ctx.send(f"```{proc}```")
+            except discord.errors.HTTPException:
+                await ctx.send("Command executed with no stdout")
+        
+        await ctx.send('Shell exited')
+
 
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
