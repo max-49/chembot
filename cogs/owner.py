@@ -109,12 +109,13 @@ class Owner(commands.Cog):
                 proc = subprocess.check_output([command.content], shell=True).decode("utf-8")
             except subprocess.CalledProcessError as e:
                 proc = e.stdout
-            if(proc == b""):
-                proc = "Command errored but idk how to get the error message to show"
-            try:
-                await ctx.send(f"```{proc}```")
-            except discord.errors.HTTPException:
-                await ctx.send("Command executed with no stdout")
+            if(proc == "" or proc == b""):
+                await ctx.send("Command errored but idk how to get the error message to show")
+            else:
+                try:
+                    await ctx.send(f"```{proc}```")
+                except discord.errors.HTTPException:
+                    await ctx.send("Command executed with no stdout")
         
         await ctx.send('Shell exited')
 
