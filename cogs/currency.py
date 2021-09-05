@@ -587,7 +587,7 @@ class Currency(commands.Cog):
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     original_balance = int(profile_data[i]['Balance'])
-                    money = random.randint(50, 250)
+                    money = random.randint(50, 150)
                     embed = discord.Embed(title='Begging', timestamp=datetime.utcnow(), color=0x00FF00)
                     embed.add_field(name=f"Your begging worked and you've received {money} {self.info[2]}!", value=f'Your balance is now {original_balance + money} {self.info[2]}', inline=False)
                     profile_data[i]['Balance'] = profile_data[i]['Balance'] + money
