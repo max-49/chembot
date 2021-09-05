@@ -396,7 +396,7 @@ class Review(commands.Cog):
                     if(str(params[1]).lower() == "on"):
                         profile_data[i_value]["Calc"] = True
                     elif(str(params[1]).lower() == "off"):
-                        profile_data[i_value]["Calc"] = True
+                        profile_data[i_value]["Calc"] = False
                     else:
                         await ctx.send("Second parameter should be either \"on\" or \"off\"")
                         return 0
