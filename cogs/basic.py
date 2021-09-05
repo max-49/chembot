@@ -51,7 +51,7 @@ class Basic(commands.Cog):
     @commands.command(name='spam', help="spams text")
     async def spam(self, ctx, *, string: str):
         for i in range(5):
-            await ctx.send(string)
+            await ctx.send(string, allowed_mentions=discord.AllowedMentions(everyone=False))
 
     @commands.command(name="ping", help="displays the latency to the bot.")
     async def ping(self, ctx):
