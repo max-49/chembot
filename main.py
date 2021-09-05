@@ -21,7 +21,7 @@ info = get_bot(os.getcwd().split('/')[-1], is_debug)
 prefix = info[3]
 intents = discord.Intents.default()
 intents.members = True
-bot = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), help_command=None, intents=intents)
+bot = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), help_command=None, intents=intents, allowed_mentions=discord.AllowedMentions(everyone=False))
 
 TOKEN = info[0]
 
