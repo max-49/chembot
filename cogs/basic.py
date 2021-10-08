@@ -5,8 +5,11 @@ import discord
 from random import randint
 from datetime import datetime
 from discord.ext import commands
-from discord_components import Button, ButtonStyle
 
+class Website(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.add_item(discord.ui.Button(label='Visit Max49\'s Website', url="https://www.max49.cf"))
 
 class Basic(commands.Cog):
     def __init__(self, bot):
@@ -15,9 +18,9 @@ class Basic(commands.Cog):
     @commands.command(name='pfp', help="Displays a profile picture", pass_context=True)
     async def pfp(self, ctx, member: discord.Member = None):
         if member is None:
-            await ctx.send(f'{ctx.author.avatar_url}')
+            await ctx.send(f'{ctx.author.avatar.url}')
         else:
-            await ctx.send(f'{member.avatar_url}')
+            await ctx.send(f'{member.avatar.url}')
 
     @commands.command(name='info', help="Displays information about this bot")
     async def info(self, ctx):
@@ -27,7 +30,7 @@ class Basic(commands.Cog):
             name="Creator", value="Made by Max49#9833", inline=False)
         embed.set_thumbnail(
             url="https://cdn.discordapp.com/avatars/427832149173862400/1767e28d50d41fab9872c7137020df9c.webp?size=1024")
-        await ctx.send(embed=embed, components=[Button(style=ButtonStyle.URL, label="Visit Max's Website!", url="https://www.max49.cf/"), ])
+        await ctx.send(embed=embed, view=Website())
 
     @commands.command(name='gif', help="sends a random gif")
     async def gif(self, ctx, *, search_term: str):

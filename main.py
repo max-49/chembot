@@ -5,7 +5,6 @@ import platform
 import chat_exporter
 from config import get_bot
 from discord.ext import commands
-from discord_components import DiscordComponents
 from discord.ext.commands import CommandNotFound
 
 try:
@@ -42,7 +41,6 @@ async def on_ready():
     if(is_debug):
         print("Running with level DEBUG")
     print("-------------------")
-    DiscordComponents(bot)
     chat_exporter.init_exporter(bot)
 
 

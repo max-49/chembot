@@ -8,6 +8,73 @@ from random import randint, choice
 from datetime import datetime
 from discord.ext import commands
 
+class Regents(discord.ui.View):
+    def __init__(self, correct: str, category: str):
+        super().__init__()
+        self.value = None
+        self.correct = correct
+        self.category = category
+
+    @discord.ui.button(label='a', style=discord.ButtonStyle.grey)
+    async def a(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'a'):
+            await interaction.response.send_message('Correct!', ephemeral=True)
+            button.style = discord.ButtonStyle.green
+            self.value = True
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
+            button.style = discord.ButtonStyle.red
+            self.value = False
+        
+        for child in self.children:
+            child.disabled = True
+        await interaction.response.edit_message(view=self)
+        self.stop()
+
+    @discord.ui.button(label='b', style=discord.ButtonStyle.grey)
+    async def b(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'b'):
+            await interaction.response.send_message('Correct!', ephemeral=True)
+            button.style = discord.ButtonStyle.green
+            button.disabled = True
+            self.value = True
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
+            button.style = discord.ButtonStyle.red
+            button.disabled = True
+            self.value = False
+        await interaction.response.edit_message(view=self)
+        self.stop()
+
+    @discord.ui.button(label='c', style=discord.ButtonStyle.grey)
+    async def c(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'c'):
+            await interaction.response.send_message('Correct!', ephemeral=True)
+            button.style = discord.ButtonStyle.green
+            button.disabled = True
+            self.value = True       
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
+            button.style = discord.ButtonStyle.red
+            button.disabled = True
+            self.value = False           
+        await interaction.response.edit_message(view=self)
+        self.stop()
+    
+    @discord.ui.button(label='d', style=discord.ButtonStyle.grey)
+    async def d(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'd'):
+            await interaction.response.send_message('Correct!', ephemeral=True)
+            button.style = discord.ButtonStyle.green
+            button.disabled = True
+            self.value = True           
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
+            button.style = discord.ButtonStyle.red
+            button.disabled = True
+            self.value = False    
+        await interaction.response.edit_message(view=self)
+        self.stop()
 
 class Review(commands.Cog):
     def __init__(self, bot):
@@ -16,7 +83,6 @@ class Review(commands.Cog):
 
     @commands.command(name='profile', help="displays your profile", pass_context=True)
     async def profile(self, ctx, profile: discord.Member=None):
-        guild_id = ctx.message.guild.id
         while True:
             try:
                 with open(f'profiles.json') as f:
@@ -32,15 +98,12 @@ class Review(commands.Cog):
             if profile is None:
                 profile = ctx.author
             profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(
-                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
+                profile.avatar.url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
             embedVar = discord.Embed(
                 title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
             percent_correct = 0
-            embedVar.add_field(name="Chemistry Regents Review Stats",
-                               value=f"0/0 (0%)", inline=False)
-            embedVar.add_field(
-                name="Balance", value=f"0 {self.info[2]}", inline=False)
-            embedVar.set_thumbnail(url=profile.avatar_url)
+            embedVar.add_field(name="Profile initialized!", value=f"Run the command again to see your profile!", inline=False)
+            embedVar.set_thumbnail(url=profile.avatar.url)
             await ctx.send(embed=embedVar)
             with open(f'profiles.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
@@ -54,10 +117,15 @@ class Review(commands.Cog):
                         profile_data[i]['Correct']/profile_data[i]['Total']) * 100
                 except ZeroDivisionError:
                     percent_correct = 0
-                embedVar.add_field(name="Chemistry Regents Review Stats",
-                                   value=f"{str(profile_data[i]['Correct'])}/{str(profile_data[i]['Total'])} ({str(round(percent_correct, 2))}%)", inline=False)
+                embedVar.add_field(name="Chemistry Regents Review Stats", value=f"{str(profile_data[i]['Correct'])}/{str(profile_data[i]['Total'])} ({str(round(percent_correct, 2))}%)", inline=False)
                 embedVar.add_field(
                     name="Balance", value=f"{profile_data[i]['Balance']} {self.info[2]}", inline=False)
+                embedVar.add_field(name="Net profit from betting", value=f"{profile_data[i]['Profit']} bagels", inline=False)
+                try:
+                    percent = round((profile_data[i]['Win']/profile_data[i]['Times'])*100, 2)
+                except ZeroDivisionError:
+                    percent = 0
+                embedVar.add_field(name="Percent times won", value=f"{profile_data[i]['Win']}/{profile_data[i]['Times']} times ({percent}%)", inline=False) 
                 embedVar.set_thumbnail(url=profile_data[i]['Avatar URL'])
                 await ctx.send(embed=embedVar)
                 return
@@ -65,15 +133,12 @@ class Review(commands.Cog):
             if profile is None:
                 profile = ctx.author
             profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(
-                profile.avatar_url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
+                profile.avatar.url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
             embedVar = discord.Embed(
                 title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
             percent_correct = 0
-            embedVar.add_field(name="Chemistry Regents Review Stats",
-                               value=f"0/0 (0%)", inline=False)
-            embedVar.add_field(
-                name="Balance", value=f"0 {self.info[2]}", inline=False)
-            embedVar.set_thumbnail(url=profile.avatar_url)
+            embedVar.add_field(name="Profile initialized!", value="Run the command again to see your profile!", inline=False)
+            embedVar.set_thumbnail(url=profile.avatar.url)
             await ctx.send(embed=embedVar)
             with open(f'profiles.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
@@ -81,7 +146,6 @@ class Review(commands.Cog):
     @commands.command(name='regents', help="dispenses a Random regents question (syntax: regents (<atom>, <periodic>, <matter>, <solubility>", pass_context=True)
     async def regents(self, ctx, category: str=None):
         found = 0
-        guild_id = ctx.message.guild.id
         with open(f'profiles.json') as f:
             profile_data = json.load(f)
         self_index = -1
@@ -91,7 +155,7 @@ class Review(commands.Cog):
                 self_index = i
         if(found == 0):
             profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
+                ctx.author.avatar.url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     found = 1
@@ -138,32 +202,48 @@ class Review(commands.Cog):
         elif(not questions[question_number]['Calc'] and questions[question_number]['Table']):
             embedVar.add_field(name="Tools required", value="Reference Table", inline=False)
 
-        embedVar.add_field(name="Category", value="`" +
-                           str(category)+"`", inline=False)
+        embedVar.add_field(name="Category", value="`" + str(category)+"`", inline=False)
 
-        await ctx.reply(embed=embedVar)
+        regents = Regents(questions[question_number]['answer'], category)
+        await ctx.reply(embed=embedVar, view=regents)
 
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
-                msg.content.lower() in ["a", "b", "c", "d"]
-        try:
-            msg = await self.bot.wait_for("message", check=check, timeout=90)
-        except asyncio.TimeoutError:
+        await regents.wait()
+        if regents.value is None:
             await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     profile_data[i]['Total'] += 1
-        if msg.content.lower() == questions[question_number]['answer']:
+        elif regents.value:
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     profile_data[i]['Correct'] += 1
                     profile_data[i]['Total'] += 1
-            await msg.reply("Correct!")
         else:
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     profile_data[i]['Total'] += 1
-            await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`.\nYou should probably review the `{category}` unit.")
+
+        # def check(msg):
+        #     return msg.author == ctx.author and msg.channel == msg.channel and \
+        #         msg.content.lower() in ["a", "b", "c", "d"]
+        # try:
+        #     msg = await self.bot.wait_for("message", check=check, timeout=90)
+        # except asyncio.TimeoutError:
+        #     await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
+        #     for i in range(len(profile_data)):
+        #         if(profile_data[i]['ID'] == ctx.author.id):
+        #             profile_data[i]['Total'] += 1
+        # if msg.content.lower() == questions[question_number]['answer']:
+        #     for i in range(len(profile_data)):
+        #         if(profile_data[i]['ID'] == ctx.author.id):
+        #             profile_data[i]['Correct'] += 1
+        #             profile_data[i]['Total'] += 1
+        #     await msg.reply("Correct!")
+        # else:
+        #     for i in range(len(profile_data)):
+        #         if(profile_data[i]['ID'] == ctx.author.id):
+        #             profile_data[i]['Total'] += 1
+        #     await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`.\nYou should probably review the `{category}` unit.")
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
 
@@ -193,8 +273,7 @@ class Review(commands.Cog):
                         msg += str(place) + ". " + key + " (" + \
                             str(round(sorted_percentages[key], 2)) + "%)\n"
                         place += 1
-                    embedVar.add_field(name="Placements",
-                                       value=msg, inline=False)
+                    embedVar.add_field(name="Placements", value=msg, inline=False)
                     await ctx.send(embed=embedVar)
                 elif(lb.lower() == 'bal' or lb.lower() == 'money' or lb.lower() == 'rich' or lb.lower() == 'schlucks'):
                     for i in range(len(profile_data)):
@@ -214,8 +293,7 @@ class Review(commands.Cog):
                             str(round(
                                 sorted_percentages[key], 2)) + " schlucks)\n"
                         place += 1
-                    embedVar.add_field(name="Placements",
-                                       value=msg, inline=False)
+                    embedVar.add_field(name="Placements", value=msg, inline=False)
                     await ctx.send(embed=embedVar)
                 else:
                     for i in range(len(profile_data)):
@@ -236,8 +314,7 @@ class Review(commands.Cog):
                         msg += str(place) + ". " + key + " (" + \
                             str(round(sorted_percentages[key], 2)) + "%)\n"
                         place += 1
-                    embedVar.add_field(name="Placements",
-                                       value=msg, inline=False)
+                    embedVar.add_field(name="Placements", value=msg, inline=False)
                     await ctx.send(embed=embedVar)
             elif(lb.lower() in ['times', 'win', 'lose', 'profit', 'negprofit']):
                 if(lb.lower() == 'win' or lb.lower() == 'lose'):
@@ -377,7 +454,7 @@ class Review(commands.Cog):
                 found_indices.append(i)
         if(found == 0):
             profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
+                ctx.author.avatar.url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == uid):
                     found_indices.append(i)
@@ -428,8 +505,7 @@ class Review(commands.Cog):
             else:
                 table_value = f"🔴 Disabled"
 
-            embedVar = discord.Embed(title=f"{ctx.author.name}'s Regents Question Settings",
-                                     description=f"Use the command syntax `{self.info[3]}settings <calc/table> <on/off>` to change these settings", timestamp=datetime.utcnow(), color=0xFF0000)
+            embedVar = discord.Embed(title=f"{ctx.author.name}'s Regents Question Settings", description=f"Use the command syntax `{self.info[3]}settings <calc/table> <on/off>` to change these settings", timestamp=datetime.utcnow(), color=0xFF0000)
             embedVar.add_field(
                 name="Questions that require the use of a calculator", value=calc_value, inline=False)
             embedVar.add_field(
@@ -446,7 +522,7 @@ class Review(commands.Cog):
                 found = 1
         if(found == 0):
             profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar_url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
+                ctx.author.avatar.url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
 
         with open('questions/apworld.json') as f:
             questions = json.load(f)

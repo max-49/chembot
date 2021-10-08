@@ -9,7 +9,7 @@ import requests
 from random import randint
 from datetime import datetime
 from discord.ext import commands
-from discord import Webhook, AsyncWebhookAdapter
+from discord import Webhook, SyncWebhook
 
 
 class Fun(commands.Cog):
@@ -113,10 +113,8 @@ class Fun(commands.Cog):
         else:
             use_hook = await ctx.channel.create_webhook(name='chem')
         await ctx.message.delete()
-        async with aiohttp.ClientSession() as session:
-            webhook = Webhook.from_url(
-                use_hook.url, adapter=AsyncWebhookAdapter(session))
-            await webhook.send(message, username=ctx.author.display_name, avatar_url=ctx.author.avatar_url, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
+        webhook = SyncWebhook.from_url(use_hook.url)
+        webhook.send(message, username=ctx.author.display_name, avatar_url=ctx.author.avatar.url, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
 
     @commands.command(name="saym", help="impersonate someone!")
     async def saym(self, ctx, member: discord.Member, *, message: str):
@@ -127,10 +125,8 @@ class Fun(commands.Cog):
         else:
             use_hook = await ctx.channel.create_webhook(name='chem')
         await ctx.message.delete()
-        async with aiohttp.ClientSession() as session:
-            webhook = Webhook.from_url(
-                use_hook.url, adapter=AsyncWebhookAdapter(session))
-            await webhook.send(message, username=member.display_name, avatar_url=member.avatar_url, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
+        webhook = SyncWebhook.from_url(use_hook.url)
+        webhook.send(message, username=member.display_name, avatar_url=member.avatar.url, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
 
     @commands.command(name="stats", help="ictf stats on chembot lmao", pass_context=True)
     async def stats(self, ctx, member: discord.Member = None):
@@ -171,7 +167,7 @@ class Fun(commands.Cog):
                 embedVar.add_field(name="Solved Challenges", value=solved, inline=True)
             if(len(unsolved) > 3):
                 embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=True)
-            embedVar.set_thumbnail(url=member.avatar_url)
+            embedVar.set_thumbnail(url=member.avatar.url)
             await ctx.send(embed=embedVar)
         except IndexError:
             await ctx.send("User is not on the leaderboard yet! Tell them to check out <https://imaginaryctf.org/>!")
