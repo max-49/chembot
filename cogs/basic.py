@@ -15,6 +15,10 @@ class Basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(name='dosomething', help='yo')
+    async def smthg(self, ctx):
+        await ctx.invoke(self.bot.get_command('pfp'), query='Max49')
+
     @commands.command(name='pfp', help="Displays a profile picture", pass_context=True)
     async def pfp(self, ctx, member: discord.Member = None):
         if member is None:
