@@ -15,9 +15,9 @@ class Basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='dosomething', help='yo')
+    @commands.command(name='amongus', help='yo')
     async def smthg(self, ctx):
-        await ctx.invoke(self.bot.get_command('pfp'), member='Max49')
+        await ctx.invoke(self.bot.get_command('gif'), search_term="among us")
 
     @commands.command(name='pfp', help="Displays a profile picture", pass_context=True)
     async def pfp(self, ctx, member: discord.Member = None):
