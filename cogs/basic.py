@@ -17,7 +17,7 @@ class Basic(commands.Cog):
 
     @commands.command(name='dosomething', help='yo')
     async def smthg(self, ctx):
-        await ctx.invoke(self.bot.get_command('pfp'), query='Max49')
+        await ctx.invoke(self.bot.get_command('pfp'), member='Max49')
 
     @commands.command(name='pfp', help="Displays a profile picture", pass_context=True)
     async def pfp(self, ctx, member: discord.Member = None):
@@ -32,8 +32,7 @@ class Basic(commands.Cog):
             title="Bot Info", timestamp=datetime.utcnow(), color=0x00ff00)
         embed.add_field(
             name="Creator", value="Made by Max49#9833", inline=False)
-        embed.set_thumbnail(
-            url="https://cdn.discordapp.com/avatars/427832149173862400/1767e28d50d41fab9872c7137020df9c.webp?size=1024")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/427832149173862400/1767e28d50d41fab9872c7137020df9c.webp?size=1024")
         await ctx.send(embed=embed, view=Website())
 
     @commands.command(name='gif', help="sends a random gif")
