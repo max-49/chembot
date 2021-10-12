@@ -35,7 +35,7 @@ class Owner(commands.Cog):
         else:
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully unloaded!")
 
-    @commands.command(name='reload', hidden=True)
+    @commands.command(name='reload', aliases=['r'], hidden=True)
     @commands.is_owner()
     async def reload(self, ctx, *, cog: str):
         try:

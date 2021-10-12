@@ -9,72 +9,97 @@ from datetime import datetime
 from discord.ext import commands
 
 class Regents(discord.ui.View):
-    def __init__(self, correct: str, category: str):
+    def __init__(self, correct: str, category: str, choices: int, author: discord.Member):
         super().__init__()
         self.value = None
         self.correct = correct
         self.category = category
+        self.choices = choices
+        self.author = author
+        if(self.choices != 5):
+            self.remove_item(self.e)
 
-    @discord.ui.button(label='a', style=discord.ButtonStyle.grey)
+    @discord.ui.button(label='A', style=discord.ButtonStyle.grey)
     async def a(self, button: discord.ui.Button, interaction: discord.Interaction):
         if(self.correct == 'a'):
-            await interaction.response.send_message('Correct!', ephemeral=True)
+            await interaction.response.send_message('Correct!', ephemeral=True)          
             button.style = discord.ButtonStyle.green
             self.value = True
         else:
             await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
             button.style = discord.ButtonStyle.red
-            self.value = False
-        
+            self.value = False  
         for child in self.children:
             child.disabled = True
-        await interaction.response.edit_message(view=self)
+        await interaction.message.edit(view=self)
         self.stop()
 
-    @discord.ui.button(label='b', style=discord.ButtonStyle.grey)
+    @discord.ui.button(label='B', style=discord.ButtonStyle.grey)
     async def b(self, button: discord.ui.Button, interaction: discord.Interaction):
         if(self.correct == 'b'):
-            await interaction.response.send_message('Correct!', ephemeral=True)
+            await interaction.response.send_message('Correct!', ephemeral=True)         
             button.style = discord.ButtonStyle.green
-            button.disabled = True
             self.value = True
         else:
             await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
             button.style = discord.ButtonStyle.red
-            button.disabled = True
             self.value = False
-        await interaction.response.edit_message(view=self)
+        for child in self.children:
+            child.disabled = True
+        await interaction.message.edit(view=self)
         self.stop()
 
-    @discord.ui.button(label='c', style=discord.ButtonStyle.grey)
+    @discord.ui.button(label='C', style=discord.ButtonStyle.grey)
     async def c(self, button: discord.ui.Button, interaction: discord.Interaction):
         if(self.correct == 'c'):
-            await interaction.response.send_message('Correct!', ephemeral=True)
+            await interaction.response.send_message('Correct!', ephemeral=True)     
             button.style = discord.ButtonStyle.green
-            button.disabled = True
             self.value = True       
         else:
             await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
             button.style = discord.ButtonStyle.red
-            button.disabled = True
-            self.value = False           
-        await interaction.response.edit_message(view=self)
+            self.value = False   
+        for child in self.children:
+            child.disabled = True        
+        await interaction.message.edit(view=self)
         self.stop()
     
-    @discord.ui.button(label='d', style=discord.ButtonStyle.grey)
+    @discord.ui.button(label='D', style=discord.ButtonStyle.grey)
     async def d(self, button: discord.ui.Button, interaction: discord.Interaction):
         if(self.correct == 'd'):
             await interaction.response.send_message('Correct!', ephemeral=True)
             button.style = discord.ButtonStyle.green
-            button.disabled = True
             self.value = True           
         else:
             await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
             button.style = discord.ButtonStyle.red
-            button.disabled = True
-            self.value = False    
-        await interaction.response.edit_message(view=self)
+            self.value = False
+        for child in self.children:
+            child.disabled = True  
+        await interaction.message.edit(view=self)
         self.stop()
+
+    @discord.ui.button(label='E', style=discord.ButtonStyle.grey)
+    async def e(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'e'):
+            await interaction.response.send_message('Correct!', ephemeral=True)
+            button.style = discord.ButtonStyle.green
+            self.value = True
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)   
+            button.style = discord.ButtonStyle.red
+            self.value = False  
+        for child in self.children:
+            child.disabled = True
+        await interaction.message.edit(view=self)
+        self.stop()
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user == self.author:
+            return True
+        else:
+            return False
+
 
 class Review(commands.Cog):
     def __init__(self, bot):
@@ -161,7 +186,7 @@ class Review(commands.Cog):
                     found = 1
                     self_index = i
         
-        with open('questions/categories.json') as j:
+        with open('regents/categories.json') as j:
             categories = json.load(j)
 
         if category is not None:
@@ -173,7 +198,7 @@ class Review(commands.Cog):
         else:
             category = choice(categories)
 
-        with open(f'questions/{category.lower()}.json') as j:
+        with open(f'regents/{category.lower()}.json') as j:
             questions = json.load(j)
         while True:
             question_number = randint(0, len(questions)-1)
@@ -204,12 +229,12 @@ class Review(commands.Cog):
 
         embedVar.add_field(name="Category", value="`" + str(category)+"`", inline=False)
 
-        regents = Regents(questions[question_number]['answer'], category)
+        regents = Regents(questions[question_number]['answer'], category, 4, ctx.author)
         await ctx.reply(embed=embedVar, view=regents)
 
         await regents.wait()
         if regents.value is None:
-            await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
+            await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     profile_data[i]['Total'] += 1
@@ -223,29 +248,68 @@ class Review(commands.Cog):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     profile_data[i]['Total'] += 1
 
-        # def check(msg):
-        #     return msg.author == ctx.author and msg.channel == msg.channel and \
-        #         msg.content.lower() in ["a", "b", "c", "d"]
-        # try:
-        #     msg = await self.bot.wait_for("message", check=check, timeout=90)
-        # except asyncio.TimeoutError:
-        #     await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
-        #     for i in range(len(profile_data)):
-        #         if(profile_data[i]['ID'] == ctx.author.id):
-        #             profile_data[i]['Total'] += 1
-        # if msg.content.lower() == questions[question_number]['answer']:
-        #     for i in range(len(profile_data)):
-        #         if(profile_data[i]['ID'] == ctx.author.id):
-        #             profile_data[i]['Correct'] += 1
-        #             profile_data[i]['Total'] += 1
-        #     await msg.reply("Correct!")
-        # else:
-        #     for i in range(len(profile_data)):
-        #         if(profile_data[i]['ID'] == ctx.author.id):
-        #             profile_data[i]['Total'] += 1
-        #     await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`.\nYou should probably review the `{category}` unit.")
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
+
+    @commands.command(name='review', help='review for tests!', pass_context=True)
+    async def review(self, ctx, cat: str=None):
+        if not cat:
+            await ctx.reply("Please specify what kind of review you want! Possible options are `apchem`, `apworld`, `apush`, `apbio`, and `apstats`. Please use the regents command for chemistry regents questions.")
+            return 0
+        if cat == 'apchem' or cat == 'chem':
+            with open('questions/apchem.json') as f:
+                questions = json.load(f)
+            question_number = int(randint(0, len(questions)-1))
+            category = questions[question_number]['category']
+            choice_number = 4
+        elif cat == 'apworld' or cat == 'world':
+            with open('questions/apworld.json') as f:
+                questions = json.load(f)
+            question_number = int(randint(0, len(questions)-1))
+            try:
+                category = questions[question_number]['category']
+            except KeyError:
+                category = 'AP World'
+            choice_number = 4
+        elif cat == 'apush' or cat == 'ushistory':
+            with open('questions/apush.json') as f:
+                questions = json.load(f)
+            question_number = int(randint(0, len(questions)-1))
+            category = questions[question_number]['category']
+            choice_number = 4
+        elif cat == 'apstats' or cat == 'stats':
+            with open('questions/apstats.json') as f:
+                questions = json.load(f)
+            question_number = int(randint(0, len(questions)-1))
+            category = questions[question_number]['category']
+            choice_number = 5
+        elif cat == 'apbio' or cat == 'bio':
+            with open('questions/apbio.json') as f:
+                questions = json.load(f)
+            question_number = int(randint(0, len(questions)-1))
+            category = questions[question_number]['category']
+            choice_number = 4
+        else:
+            await ctx.reply("Invalid review type! Possible options are `apchem`, `apworld`, `apush`, `apbio`, and `apstats`. Please use the regents command for chemistry regents questions.")
+            return 0
+        
+        embedVar = discord.Embed(title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0xadd8e6)
+
+        if(questions[question_number]['image'] != 0):
+            embedVar.set_image(url=questions[question_number]['image'])
+
+        ife = "\ne) " + str(questions[question_number]['choices'][4]) if choice_number == 5 else ""
+        embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
+            questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]) + ife, inline=False)
+        
+
+        regents = Regents(questions[question_number]['answer'], category, choice_number, ctx.author)
+
+        await ctx.reply(embed=embedVar, view=regents)
+
+        await regents.wait()
+        if regents.value is None:
+            await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
 
     @commands.command(name='leaderboard', help="Displays the global leaderboards", aliases=['lb', 'leader'], pass_context=True)
     async def lb(self, ctx, *, lb: str = None):

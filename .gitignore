@@ -1,9 +1,9 @@
-questions/
 work/
-*.json
+trivia.json
 cogs/schlooth.py
 __pycache__/
 cogs/__pycache__/
 config.py
 profiles.json
 allowed_ids.json
+commands.json

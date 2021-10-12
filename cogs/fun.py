@@ -26,7 +26,7 @@ class Fun(commands.Cog):
 
     @commands.command(name='trivia', help="dispenses a user-submitted trivia question!", aliases=['triv'])
     async def trivia(self, ctx):
-        with open('questions/trivia.json') as f:
+        with open('trivia/trivia.json') as f:
             questions = json.load(f)
         question_number = int(randint(0, len(questions)-1))
 
