@@ -1,1 +1,45 @@
-[{"number": 0, "question": "The legacies or adaptations of legacies from the Mongol empire are varied. Most notably, they include which of the following selections?", "choices": ["Public libraries", "Universal health care", "The game of chess", "Religious tolerance"], "answer": "d", "image": "https://i.imgur.com/z7lDTH5.png"}, {"number": 1, "question": "The Mongol empire used which of the following to integrate its vast, geographically diverse area?", "choices": ["Emphasis on trade networks", "Expansion of bureaucracy to reinforce dominance", "The use of state-sponsored religion to legitimize the government", "Expansion of an interregional canal system"], "answer": "a", "image": "https://i.imgur.com/z7lDTH5.png"}, {"number": 2, "question": "Why did the ottoman die", "choices": ["internal problems", "mongols", "China", "East china"], "answer": "a", "image": 0}, {"number": 3, "question": "What were the causes of WW1", "choices": ["millitarism", "It wanted to start", "alliances", "other stuff"], "answer": "b", "image": 0}, {"number": 4, "question": "why is handsome so asian", "choices": ["his parents own a resturant", "his parents are chinese immigrants", "he is smart", "all of the above"], "answer": "d", "image": 0}]
+[
+  {
+    "number": 0,
+    "question": "The legacies or adaptations of legacies from the Mongol empire are varied. Most notably, they include which of the following selections?",
+    "choices": [
+      "Public libraries",
+      "Universal health care",
+      "The game of chess",
+      "Religious tolerance"
+    ],
+    "answer": "d",
+    "image": "https://i.imgur.com/z7lDTH5.png"
+  },
+  {
+    "number": 1,
+    "question": "The Mongol empire used which of the following to integrate its vast, geographically diverse area?",
+    "choices": [
+      "Emphasis on trade networks",
+      "Expansion of bureaucracy to reinforce dominance",
+      "The use of state-sponsored religion to legitimize the government",
+      "Expansion of an interregional canal system"
+    ],
+    "answer": "a",
+    "image": "https://i.imgur.com/z7lDTH5.png"
+  },
+  {
+    "number": 2,
+    "question": "Why did the ottoman die",
+    "choices": ["internal problems", "mongols", "China", "East china"],
+    "answer": "a",
+    "image": 0
+  },
+  {
+    "number": 3,
+    "question": "What were the causes of WW1",
+    "choices": [
+      "millitarism",
+      "It wanted to start",
+      "alliances",
+      "other stuff"
+    ],
+    "answer": "b",
+    "image": 0
+  }
+]
