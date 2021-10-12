@@ -128,7 +128,7 @@ class Fun(commands.Cog):
         webhook = SyncWebhook.from_url(use_hook.url)
         webhook.send(message, username=member.display_name, avatar_url=member.avatar.url, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
 
-    @commands.command(name="stats", help="ictf stats on chembot lmao", pass_context=True)
+    @commands.command(name="ictfstats", help="ictf stats on chembot lmao", pass_context=True)
     async def stats(self, ctx, member: discord.Member = None):
         try:
             if member is None:
