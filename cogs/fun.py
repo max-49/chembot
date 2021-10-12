@@ -12,6 +12,99 @@ from discord.ext import commands
 from discord import Webhook, SyncWebhook
 
 
+class Regents(discord.ui.View):
+    def __init__(self, correct: str, category: str, choices: int, author: discord.Member):
+        super().__init__()
+        self.value = None
+        self.correct = correct
+        self.category = category
+        self.choices = choices
+        self.author = author
+        if(self.choices != 5):
+            self.remove_item(self.e)
+
+    @discord.ui.button(label='A', style=discord.ButtonStyle.grey)
+    async def a(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'a'):
+            await interaction.response.send_message('Correct!', ephemeral=True)          
+            button.style = discord.ButtonStyle.green
+            self.value = True
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
+            button.style = discord.ButtonStyle.red
+            self.value = False  
+        for child in self.children:
+            child.disabled = True
+        await interaction.message.edit(view=self)
+        self.stop()
+
+    @discord.ui.button(label='B', style=discord.ButtonStyle.grey)
+    async def b(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'b'):
+            await interaction.response.send_message('Correct!', ephemeral=True)         
+            button.style = discord.ButtonStyle.green
+            self.value = True
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
+            button.style = discord.ButtonStyle.red
+            self.value = False
+        for child in self.children:
+            child.disabled = True
+        await interaction.message.edit(view=self)
+        self.stop()
+
+    @discord.ui.button(label='C', style=discord.ButtonStyle.grey)
+    async def c(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'c'):
+            await interaction.response.send_message('Correct!', ephemeral=True)     
+            button.style = discord.ButtonStyle.green
+            self.value = True       
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
+            button.style = discord.ButtonStyle.red
+            self.value = False   
+        for child in self.children:
+            child.disabled = True        
+        await interaction.message.edit(view=self)
+        self.stop()
+    
+    @discord.ui.button(label='D', style=discord.ButtonStyle.grey)
+    async def d(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'd'):
+            await interaction.response.send_message('Correct!', ephemeral=True)
+            button.style = discord.ButtonStyle.green
+            self.value = True           
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)
+            button.style = discord.ButtonStyle.red
+            self.value = False
+        for child in self.children:
+            child.disabled = True  
+        await interaction.message.edit(view=self)
+        self.stop()
+
+    @discord.ui.button(label='E', style=discord.ButtonStyle.grey)
+    async def e(self, button: discord.ui.Button, interaction: discord.Interaction):
+        if(self.correct == 'e'):
+            await interaction.response.send_message('Correct!', ephemeral=True)
+            button.style = discord.ButtonStyle.green
+            self.value = True
+        else:
+            await interaction.response.send_message(f'Incorrect! The correct answer was {self.correct}. You should probably review the {self.category} unit.', ephemeral=True)   
+            button.style = discord.ButtonStyle.red
+            self.value = False  
+        for child in self.children:
+            child.disabled = True
+        await interaction.message.edit(view=self)
+        self.stop()
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user == self.author:
+            return True
+        else:
+            return False
+
+
 class Fun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -42,19 +135,13 @@ class Fun(commands.Cog):
         embedVar.add_field(
             name="Added by:", value=questions[question_number]['creator'])
 
-        await ctx.reply(embed=embedVar)
+        regents = Regents(questions[question_number]['answer'], "Trivia", 4, ctx.author)
 
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
-                msg.content.lower() in ["a", "b", "c", "d"]
-        try:
-            msg = await self.bot.wait_for("message", check=check, timeout=120)
-        except asyncio.TimeoutError:
-            await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
-        if msg.content.lower() == questions[question_number]['answer']:
-            await msg.reply("Correct!")
-        else:
-            await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`")
+        await ctx.reply(embed=embedVar, view=regents)
+
+        await regents.wait()
+        if regents.value is None:
+            await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
 
     @commands.command(name='addtrivia', help="add a question to s!trivia!")
     async def addtrivia(self, ctx):

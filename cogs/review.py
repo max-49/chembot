@@ -302,6 +302,14 @@ class Review(commands.Cog):
         embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
             questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]) + ife, inline=False)
         
+        if(questions[question_number]['Calc'] and questions[question_number]['Table']):
+            embedVar.add_field(name="Tools required", value="Calculator and Reference Table", inline=False)
+        elif(questions[question_number]['Calc'] and not questions[question_number]['Table']):
+            embedVar.add_field(name="Tools required", value="Calculator", inline=False)
+        elif(not questions[question_number]['Calc'] and questions[question_number]['Table']):
+            embedVar.add_field(name="Tools required", value="Reference Table", inline=False)
+
+        embedVar.add_field(name="Category", value="`" + str(category)+"`", inline=False)
 
         regents = Regents(questions[question_number]['answer'], category, choice_number, ctx.author)
 
