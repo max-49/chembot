@@ -311,6 +311,26 @@ class Review(commands.Cog):
         if regents.value is None:
             await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
 
+    @commands.command(name='apstats', aliases=['stats', 'apstatistics', 'statistics'])
+    async def apstats(self, ctx):
+        await ctx.invoke(self.bot.get_command('review'), cat="apstats")
+
+    @commands.command(name='apush', aliases=['ush', 'ushistory', 'us', 'america'])
+    async def apush(self, ctx):
+        await ctx.invoke(self.bot.get_command('review'), cat="apush")
+
+    @commands.command(name='apbio', aliases=['bio', 'biology', 'apbiology'])
+    async def apbio(self, ctx):
+        await ctx.invoke(self.bot.get_command('review'), cat="apstats")
+
+    @commands.command(name='apworld', aliases=['world'])
+    async def apworld(self, ctx):
+        await ctx.invoke(self.bot.get_command('review'), cat="apworld")
+
+    @commands.command(name='apchem', aliases=['chem', 'chemistry', 'apchemistry'])
+    async def apchem(self, ctx):
+        await ctx.invoke(self.bot.get_command('review'), cat="apchem")
+
     @commands.command(name='leaderboard', help="Displays the global leaderboards", aliases=['lb', 'leader'], pass_context=True)
     async def lb(self, ctx, *, lb: str = None):
         with open('profiles.json') as f:
@@ -575,84 +595,6 @@ class Review(commands.Cog):
             embedVar.add_field(
                 name="Questions that require the use of the reference table", value=table_value, inline=False)
             await ctx.send(embed=embedVar)
-
-    @commands.command(name='world', help="dispenses a Random AP World practice  question", aliases=['apworld', 'history'])
-    async def world(self, ctx):
-        found = 0
-        with open('profiles.json') as f:
-            profile_data = json.load(f)
-        for i in range(len(profile_data)):
-            if(profile_data[i]['ID'] == ctx.author.id):
-                found = 1
-        if(found == 0):
-            profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(
-                ctx.author.avatar.url), "Correct": 0, "Total": 0, "Calc": True, "Table": True, "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0})
-
-        with open('questions/apworld.json') as f:
-            questions = json.load(f)
-        question_number = int(randint(0, len(questions)-1))
-
-        embedVar = discord.Embed(
-            title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0xadd8e6)
-
-        if(questions[question_number]['image'] != 0):
-            embedVar.set_image(url=questions[question_number]['image'])
-
-        embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
-            questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]), inline=False)
-
-        await ctx.reply(embed=embedVar)
-
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
-                msg.content.lower() in ["a", "b", "c", "d"]
-        try:
-            msg = await self.bot.wait_for("message", check=check, timeout=90)
-        except asyncio.TimeoutError:
-            await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
-            for i in range(len(profile_data)):
-                if(profile_data[i]['ID'] == ctx.author.id):
-                    profile_data[i]['WorldTotal'] += 1
-        if msg.content.lower() == questions[question_number]['answer']:
-            for i in range(len(profile_data)):
-                if(profile_data[i]['ID'] == ctx.author.id):
-                    profile_data[i]['WorldCorrect'] += 1
-                    profile_data[i]['WorldTotal'] += 1
-            await msg.reply("Correct!")
-        else:
-            for i in range(len(profile_data)):
-                if(profile_data[i]['ID'] == ctx.author.id):
-                    profile_data[i]['WorldTotal'] += 1
-            await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`")
-        with open('profiles.json', 'w') as json_file:
-            json.dump(profile_data, json_file)
-
-    @commands.command(name='apstats', help="dispenses a Random AP Stats practice  question")
-    async def apstats(self, ctx):
-        with open('questions/apstats.json') as f:
-            questions = json.load(f)
-        question_number = int(randint(0, len(questions)-1))
-
-        embedVar = discord.Embed(
-            title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0xadd8e6)
-
-        embedVar.set_image(url=questions[question_number]['image'])
-
-        # embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3] + "\ne) " + str(questions[question_number]['choices'][4])), inline=False)
-
-        await ctx.reply(embed=embedVar)
-
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
-                msg.content.lower() in ["a", "b", "c", "d", "e"]
-        try:
-            msg = await self.bot.wait_for("message", check=check, timeout=90)
-        except asyncio.TimeoutError:
-            await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
-        if msg.content.lower() == questions[question_number]['answer']:
-            await msg.reply("Correct!")
-        else:
-            await msg.reply(f"Incorrect Answer. The correct answer was `{questions[question_number]['answer']}`")
 
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
