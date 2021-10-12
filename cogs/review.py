@@ -252,7 +252,7 @@ class Review(commands.Cog):
             json.dump(profile_data, json_file)
 
     @commands.command(name='review', help='review for tests!', pass_context=True)
-    async def review(self, ctx, cat: str=None):
+    async def reviewcommand(self, ctx, cat: str=None):
         if not cat:
             await ctx.reply("Please specify what kind of review you want! Possible options are `apchem`, `apworld`, `apush`, `apbio`, and `apstats`. Please use the regents command for chemistry regents questions.")
             return 0
