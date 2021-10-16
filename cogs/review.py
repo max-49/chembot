@@ -145,7 +145,7 @@ class Review(commands.Cog):
                 embedVar.add_field(name="Chemistry Regents Review Stats", value=f"{str(profile_data[i]['Correct'])}/{str(profile_data[i]['Total'])} ({str(round(percent_correct, 2))}%)", inline=False)
                 embedVar.add_field(
                     name="Balance", value=f"{profile_data[i]['Balance']} {self.info[2]}", inline=False)
-                embedVar.add_field(name="Net profit from betting", value=f"{profile_data[i]['Profit']} bagels", inline=False)
+                embedVar.add_field(name="Net profit from betting", value=f"{profile_data[i]['Profit']} {self.info[2]}", inline=False)
                 try:
                     percent = round((profile_data[i]['Win']/profile_data[i]['Times'])*100, 2)
                 except ZeroDivisionError:
@@ -481,12 +481,12 @@ class Review(commands.Cog):
                     if(len(sorted_percentages) < 10):
                         for key in sorted_percentages:
                             msg += str(place) + ". " + key + " (" + \
-                                str(round(sorted_percentages[key], 2)) + f" bagels)\n"
+                                str(round(sorted_percentages[key], 2)) + f" {self.info[2]})\n"
                             place += 1
                     else:
                         for key in itertools.islice(sorted_percentages, 10):
                             msg += str(place) + ". " + key + " (" + \
-                                str(round(sorted_percentages[key], 2)) + f" bagels)\n"
+                                str(round(sorted_percentages[key], 2)) + f" {self.info[2]})\n"
                             place += 1
 
                     embedVar.add_field(name="Placements", value=msg, inline=False)
