@@ -7,3 +7,4 @@ config.py
 profiles.json
 allowed_ids.json
 commands.json
+egg.py

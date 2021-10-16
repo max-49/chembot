@@ -185,7 +185,7 @@ class Fun(commands.Cog):
             new_number = 0
         question_data.append({"number": new_number, "question": question.content.replace('\n', ' '), "choices": [option_a.content.replace('\n', ' '), option_b.content.replace(
             '\n', ' '), option_c.content.replace('\n', ' '), option_d.content.replace('\n', ' ')], "answer": (answer.content.replace('\n', ' ')).lower(), "image": image, "creator": ctx.author.name})
-        with open('questions/trivia.json', 'w') as json_file:
+        with open('trivia/trivia.json', 'w') as json_file:
             json.dump(question_data, json_file)
         await ctx.send(f"{ctx.author.mention}, your question was successfully added!")
 
