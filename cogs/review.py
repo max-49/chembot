@@ -98,6 +98,7 @@ class Regents(discord.ui.View):
         if interaction.user == self.author:
             return True
         else:
+            await interaction.response.send_message('This button isn\'t for you!', ephemeral=True)
             return False
 
 
