@@ -383,7 +383,7 @@ class Review(commands.Cog):
                     for key in sorted_percentages:
                         msg += str(place) + ". " + key + " (" + \
                             str(round(
-                                sorted_percentages[key], 2)) + " schlucks)\n"
+                                sorted_percentages[key], 2)) + f" {self.info[2]})\n"
                         place += 1
                     embedVar.add_field(name="Placements", value=msg, inline=False)
                     await ctx.send(embed=embedVar)

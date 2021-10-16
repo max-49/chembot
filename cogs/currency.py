@@ -441,7 +441,7 @@ class Currency(commands.Cog):
         embed.add_field(name='Items for sale! (Item code - Price)', value='**1kbagels** - 1,000 bagels\n**fakeflag** - 1,000 bagels\n**flag** - 1,000,000 bagels', inline=False)
         await ctx.send(embed=embed)
 
-    @commands.command(name='buy', help='buy an item from b.shop!')
+    @commands.command(name='buy', help='buy an item from the shop!')
     async def buy(self, ctx, buy_item: str):
         with open('profiles.json') as f:
             profile_data = json.load(f)
@@ -468,12 +468,12 @@ class Currency(commands.Cog):
                                 json.dump(profile_data, json_file)
                             return
                 else:
-                    await ctx.reply("Item doesn't exist! Make sure to use the item code found in `b.shop`")
+                    await ctx.reply(f"Item doesn't exist! Make sure to use the item code found in `{self.info[3]}shop`")
                     return
         else:
-            await ctx.reply("You don't have a profile yet! Create one with `b.balance`!")
+            await ctx.reply(f"You don't have a profile yet! Create one with `{self.info[3]}balance`!")
 
-    @commands.command(name="bet", help="b.bet <high | slots> <amount>")
+    @commands.command(name="bet", help="bet <high | slots> <amount>")
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def bet(self, ctx, bet: str, amount: int):
         with open('profiles.json') as f:
@@ -495,7 +495,7 @@ class Currency(commands.Cog):
                         embed = discord.Embed(title=welcome_message, timestamp=datetime.utcnow(), color=0x00ff00)
                         embed.add_field(name='BagelBot rolls...', value=bagel_roll, inline=True)
                         embed.add_field(name='You roll...', value=you_roll, inline=True)
-                        embed.add_field(name=f'Congrats, you win! Your new balance is {math.floor(original_balance + amount)} bagels!', value=f':)', inline=False)
+                        embed.add_field(name=f'Congrats, you win! Your new balance is {math.floor(original_balance + amount)} {self.info[2]}!', value=f':)', inline=False)
                         profile_data[i]['Times'] = profile_data[i]['Times'] + 1
                         profile_data[i]['Win'] = profile_data[i]['Win'] + 1
                         profile_data[i]['Profit'] = profile_data[i]['Profit'] + math.floor(amount)
@@ -508,7 +508,7 @@ class Currency(commands.Cog):
                         profile_data[i]['Times'] = profile_data[i]['Times'] + 1
                         profile_data[i]['Lose'] = profile_data[i]['Lose'] + 1
                         profile_data[i]['Profit'] = profile_data[i]['Profit'] - amount
-                        embed.add_field(name=f'You lose! Your new balance is {original_balance - amount} bagels!', value=':(', inline=False)
+                        embed.add_field(name=f'You lose! Your new balance is {original_balance - amount} {self.info[2]}!', value=':(', inline=False)
                         profile_data[i]['Balance'] = int(original_balance - amount)
                         await ctx.reply(embed=embed)
                     else:
@@ -519,7 +519,7 @@ class Currency(commands.Cog):
                         profile_data[i]['Times'] = profile_data[i]['Times'] + 1
                         await ctx.reply(embed=embed)
                 elif(bet == 'slots'):
-                    welcome_message = "Slots - payout table is at b.table!"
+                    welcome_message = f"Slots - payout table is at {self.info[3]}table!"
                     emojis = ['⚽️', '🔴', '🔍', '🌍', '📸', '💵', '⌛️', '🏓']
                     slots = ' '.join([random.choice(emojis), random.choice(emojis), random.choice(emojis)])
                     tables = [ { 'emoji': '⚽️', 'count': 2, 'payout': 1 }, { 'emoji': '🔍', 'count': 2, 'payout': 1 }, { 'emoji': '⌛️', 'count': 2, 'payout': 1.75 }, { 'emoji': '🏓', 'count': 2, 'payout': 1.75 }, { 'emoji': '🔴', 'count': 2, 'payout': 2 }, { 'emoji': '🌍', 'count': 2, 'payout': 2 }, { 'emoji': '💵', 'count': 2, 'payout': 2 }, { 'emoji': '📸', 'count': 2, 'payout': 2 }, { 'emoji': '🏓', 'count': 3, 'payout': 5 }, { 'emoji': '⚽️', 'count': 3, 'payout': 10 }, { 'emoji': '🔍', 'count': 3, 'payout': 10 }, { 'emoji': '🔴', 'count': 3, 'payout': 20 }, { 'emoji': '⌛️', 'count': 3, 'payout': 25 }, { 'emoji': '🌍', 'count': 3, 'payout': 50 }, { 'emoji': '📸', 'count': 3, 'payout': 75 }, { 'emoji': '💵', 'count': 3, 'payout': 250 }]
@@ -533,7 +533,7 @@ class Currency(commands.Cog):
                     if(payout == 0):
                         embed = discord.Embed(title=welcome_message, timestamp=datetime.utcnow(), color=0xFF0000)
                         embed.add_field(name='Your slot roll:', value=f'**>** {slots} **<**', inline=False)
-                        embed.add_field(name=f'You lose! Your new balance is {original_balance - amount} bagels.', value=':(', inline=False)
+                        embed.add_field(name=f'You lose! Your new balance is {original_balance - amount} {self.info[2]}.', value=':(', inline=False)
                         profile_data[i]['Times'] = profile_data[i]['Times'] + 1
                         profile_data[i]['Lose'] = profile_data[i]['Lose'] + 1
                         profile_data[i]['Profit'] = profile_data[i]['Profit'] - amount
@@ -542,7 +542,7 @@ class Currency(commands.Cog):
                     else:
                         embed = discord.Embed(title=welcome_message, timestamp=datetime.utcnow(), color=0x00FF00)
                         embed.add_field(name='Your slot roll:', value=f'**>** {slots} **<**', inline=False)
-                        embed.add_field(name=f'You win! Your new balance is {math.floor(original_balance + (amount * payout))} bagels! ({payout}x payout)', value=':)', inline=False)
+                        embed.add_field(name=f'You win! Your new balance is {math.floor(original_balance + (amount * payout))} {self.info[2]}! ({payout}x payout)', value=':)', inline=False)
                         profile_data[i]['Times'] = profile_data[i]['Times'] + 1
                         profile_data[i]['Win'] = profile_data[i]['Win'] + 1
                         profile_data[i]['Profit'] = profile_data[i]['Profit'] + math.floor(amount * payout)
@@ -555,7 +555,7 @@ class Currency(commands.Cog):
                     json.dump(profile_data, json_file)
                 return
         else:
-            await ctx.send("You don't have a profile yet! Do `b.balance` to create one!")
+            await ctx.send(f"You don't have a profile yet! Do `{self.info[3]}balance` to create one!")
             self.bet.reset_cooldown(ctx)
             return
 
@@ -585,14 +585,14 @@ class Currency(commands.Cog):
                     original_balance = int(profile_data[i]['Balance'])
                     money = random.randint(50, 200)
                     embed = discord.Embed(title='Begging', timestamp=datetime.utcnow(), color=0x00FF00)
-                    embed.add_field(name=f"Your begging worked and you've received {money} bagels!", value=f'Your balance is now {original_balance + money}', inline=False)
+                    embed.add_field(name=f"Your begging worked and you've received {money} {self.info[2]}!", value=f'Your balance is now {original_balance + money}', inline=False)
                     profile_data[i]['Balance'] = profile_data[i]['Balance'] + money
                     await ctx.send(embed=embed)
                     with open('profiles.json', 'w') as json_file:
                         json.dump(profile_data, json_file)
                     return
             else:
-                await ctx.send("You don't have a profile yet! Do `b.balance` to create one.")
+                await ctx.send(f"You don't have a profile yet! Do `{self.info[3]}balance` to create one.")
                 self.beg.reset_cooldown(ctx)
             
 
@@ -605,7 +605,7 @@ class Currency(commands.Cog):
             em = discord.Embed(title=f"You can't just keep begging to get money!", description=f"Try again in {minutes} minutes and {seconds} seconds.", color=0xFF0000)
             await ctx.send(embed=em)
 
-    @commands.command(name="sim", help="b.sim <high | slots> <amount> <times>")
+    @commands.command(name="sim", help="sim <high | slots> <amount> <times>")
     async def sim(self, ctx, bet: str, amount: int, times: int):
         if(times < 1):
             await ctx.reply('You can\'t simulate that number of attempts!')
@@ -642,7 +642,7 @@ class Currency(commands.Cog):
             embed.add_field(name='Times won', value=f"{times_won}/{times} ({round((times_won/times)*100, 2)}%)")
             embed.add_field(name='Times tied', value=f"{times_tied}/{times} ({round((times_tied/times)*100, 2)}%)")
             embed.add_field(name='Times lost', value=f"{times_lost}/{times} ({round((times_lost/times)*100, 2)}%)")
-            embed.add_field(name='Net profit with consistent bet of {:,} bagels'.format(amount), value="{:,}".format(net_profit), inline=False)
+            embed.add_field(name='Net profit with consistent bet of {:,} {}'.format(amount, self.info[2]), value="{:,}".format(net_profit), inline=False)
             await ctx.reply(embed=embed)
             return
         elif(bet == 'slots'):
@@ -669,7 +669,7 @@ class Currency(commands.Cog):
             embed = discord.Embed(title="BagelBot Slots Simulation", timestamp=datetime.utcnow(), color=0x00FF00)
             embed.add_field(name='Times won', value=f"{times_won}/{times} ({round((times_won/times)*100, 2)}%)")
             embed.add_field(name='Times lost', value=f"{times_lost}/{times} ({round((times_lost/times)*100, 2)}%)")
-            embed.add_field(name='Net profit with consistent bet of {:,} bagels'.format(amount), value="{:,}".format(net_profit), inline=False)
+            embed.add_field(name='Net profit with consistent bet of {:,} {}'.format(amount, self.info[2]), value="{:,}".format(net_profit), inline=False)
             await ctx.reply(embed=embed)
             return
 
