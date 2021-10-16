@@ -54,8 +54,8 @@ class Owner(commands.Cog):
         for i in range(len(profile_data)):
             if(profile_data[i]['Balance'] < 0):
                 profile_data[i]['Balance'] = 0
-            if(profile_data[i]['Balance'] > 5000):
-                profile_data[i]['Balance'] = 5000
+            if(profile_data[i]['Balance'] > 20000):
+                profile_data[i]['Balance'] = 20000
             if(profile_data[i]['Calc'] == "True"):
                 profile_data[i]['Calc'] = True
             if(profile_data[i]['Table'] == "True"):
@@ -64,10 +64,10 @@ class Owner(commands.Cog):
                 profile_data[i]['Calc'] = False
             if(profile_data[i]['Table'] == "False"):
                 profile_data[i]['Table'] = False
-            profile_data[i]['Win'] = 0
-            profile_data[i]['Lose'] = 0
-            profile_data[i]['Profit'] = 0
-            profile_data[i]['Times'] = 0
+            # profile_data[i]['Win'] = 0
+            # profile_data[i]['Lose'] = 0
+            # profile_data[i]['Profit'] = 0
+            # profile_data[i]['Times'] = 0
         with open('profiles.json', 'w') as j:
             json.dump(profile_data, j)
         await ctx.send("Profiles updated!")
