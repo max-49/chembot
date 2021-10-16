@@ -329,7 +329,7 @@ class Review(commands.Cog):
 
     @commands.command(name='apbio', aliases=['bio', 'biology', 'apbiology'])
     async def apbio(self, ctx):
-        await ctx.invoke(self.bot.get_command('review'), cat="apstats")
+        await ctx.invoke(self.bot.get_command('review'), cat="apbio")
 
     @commands.command(name='apworld', aliases=['world'])
     async def apworld(self, ctx):

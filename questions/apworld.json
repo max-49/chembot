@@ -9,7 +9,9 @@
       "Religious tolerance"
     ],
     "answer": "d",
-    "image": "https://i.imgur.com/z7lDTH5.png"
+    "image": "https://i.imgur.com/z7lDTH5.png",
+    "Calc": false,
+    "Table": false
   },
   {
     "number": 1,
@@ -21,14 +23,18 @@
       "Expansion of an interregional canal system"
     ],
     "answer": "a",
-    "image": "https://i.imgur.com/z7lDTH5.png"
+    "image": "https://i.imgur.com/z7lDTH5.png",
+    "Calc": false,
+    "Table": false
   },
   {
     "number": 2,
     "question": "Why did the ottoman die",
     "choices": ["internal problems", "mongols", "China", "East china"],
     "answer": "a",
-    "image": 0
+    "image": 0,
+    "Calc": false,
+    "Table": false
   },
   {
     "number": 3,
@@ -40,6 +46,8 @@
       "other stuff"
     ],
     "answer": "b",
-    "image": 0
+    "image": 0,
+    "Calc": false,
+    "Table": false
   }
 ]
