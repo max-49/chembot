@@ -638,7 +638,7 @@ class Currency(commands.Cog):
                     net_profit -= amount
                 else:
                     times_tied += 1
-            embed = discord.Embed(title="BagelBot High Simulation", timestamp=datetime.utcnow(), color=0x00FF00)
+            embed = discord.Embed(title=f"{self.bot.user.name} High Simulation", timestamp=datetime.utcnow(), color=0x00FF00)
             embed.add_field(name='Times won', value=f"{times_won}/{times} ({round((times_won/times)*100, 2)}%)")
             embed.add_field(name='Times tied', value=f"{times_tied}/{times} ({round((times_tied/times)*100, 2)}%)")
             embed.add_field(name='Times lost', value=f"{times_lost}/{times} ({round((times_lost/times)*100, 2)}%)")
@@ -666,7 +666,7 @@ class Currency(commands.Cog):
                 else:
                     times_won += 1
                     net_profit += math.floor(amount * payout)
-            embed = discord.Embed(title="BagelBot Slots Simulation", timestamp=datetime.utcnow(), color=0x00FF00)
+            embed = discord.Embed(title=f"{self.user.bot.name} Slots Simulation", timestamp=datetime.utcnow(), color=0x00FF00)
             embed.add_field(name='Times won', value=f"{times_won}/{times} ({round((times_won/times)*100, 2)}%)")
             embed.add_field(name='Times lost', value=f"{times_lost}/{times} ({round((times_lost/times)*100, 2)}%)")
             embed.add_field(name='Net profit with consistent bet of {:,} {}'.format(amount, self.info[2]), value="{:,}".format(net_profit), inline=False)
