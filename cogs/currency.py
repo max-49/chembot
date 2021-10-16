@@ -305,7 +305,7 @@ class Currency(commands.Cog):
             work_data.append({"type": "Reverse", "desc": "Reverse the word below.",
                              "prompt": retype.content, "answer": retype.content[::-1]})
         elif(category == 'fill in'):
-            await ctx.send(f"{ctx.author.mention}, please enter the phrase you want to be filled in. Make sure to replace the word you want to be filled in with underscores ( _ ) with spaces in between them signifying how many letters the word you want to be filled in has. (Ex. How _ _ _ you?)")
+            await ctx.send(f"{ctx.author.mention}, please enter the phrase you want to be filled in. Make sure to replace the word you want to be filled in with underscores ( `_` ) with spaces in between them signifying how many letters the word you want to be filled in has. (Ex. `How _ _ _ you?`)")
             retype = await self.bot.wait_for("message", check=check)
             await ctx.send(f"{ctx.author.mention}, please enter the word that should be filled into the above phrase.")
             answer = await self.bot.wait_for("message", check=check)
