@@ -143,7 +143,7 @@ class Fun(commands.Cog):
         if regents.value is None:
             await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
 
-    @commands.command(name='addtrivia', help="add a question to s!trivia!")
+    @commands.command(name='addtrivia', aliases=['addtriv'], help="add a question to s!trivia!")
     async def addtrivia(self, ctx):
         def check(msg):
             return msg.author == ctx.author and msg.channel == msg.channel and \
@@ -170,7 +170,7 @@ class Fun(commands.Cog):
         answer = await self.bot.wait_for("message", check=choices)
         await ctx.send(f"{ctx.author.mention}, is there an image with this question?")
         has_image = await self.bot.wait_for("message", check=yesorno)
-        with open('questions/trivia.json') as f:
+        with open('trivia/trivia.json') as f:
             question_data = json.load(f)
         if(has_image.content == "yes"):
             await ctx.send("Please enter the imgur image link")
