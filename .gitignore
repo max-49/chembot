@@ -7,4 +7,5 @@ config.py
 profiles.json
 allowed_ids.json
 commands.json
+ball.json
 egg.py

@@ -5,6 +5,7 @@ import typing
 import aiohttp
 import discord
 import asyncio
+import random
 import requests
 from random import randint
 from datetime import datetime
@@ -259,6 +260,37 @@ class Fun(commands.Cog):
             await ctx.send(embed=embedVar)
         except IndexError:
             await ctx.send("User is not on the leaderboard yet! Tell them to check out <https://imaginaryctf.org/>!")
+
+    @commands.command(name='8ball', help='ask your question! 8ball <question>')
+    async def ball(self, ctx, question=None):
+        if(not question):
+            await ctx.reply('You must ask a question!')
+            return
+        with open('ball.json') as j:
+            responses = json.load(j)
+        mess = await ctx.send(f'{str(self.bot.user.name).split()[0]} says')
+        for i in range(random.randint(1,8)):
+            await asyncio.sleep(1)
+            await mess.edit(mess.content + '.'*(i+1))
+        await asyncio.sleep(1)
+        await mess.edit(random.choice(responses))
+
+    @commands.command(name='choose', help='chooses a random item! syntax: choose <question> [choices]')
+    async def choose(self, ctx, question, *choices):
+        if(len(question.split()) < 2):
+            message = f"{str(self.bot.user.name).split()[0]} chooses "
+        else:
+            message = question
+        if(len(choices) > 10):
+            await ctx.reply("Too many choices!")
+            return
+        choice = random.choice(list(choices))
+        embed = discord.Embed(title=f"**{message}**")
+        msg = await ctx.send(embed=embed)
+        await asyncio.sleep(random.randint(1,5))
+        embed = discord.Embed(title=f"**{message}**", description=f"`{choice}`")
+        await msg.edit(embed=embed)
+
 
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
