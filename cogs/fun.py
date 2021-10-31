@@ -279,6 +279,22 @@ class Fun(commands.Cog):
         embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says' + '.'*(num+1), description=random.choice(responses), color=0xFFFF00)
         await new_mess.edit(embed=embed)
 
+    @commands.command(name='add8ball', help='add a response to 8ball!')
+    async def ball(self, ctx, res=None):
+        with open('ball.json') as j:
+            responses = json.load(j)
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == msg.channel and msg.content.lower()[0] in string.printable
+        if not res:
+            await ctx.send(f"{ctx.author.mention}, please enter the 8ball reason you would like to be added.")
+            response = await self.bot.wait_for("message", check=check)
+            responses.append(response.content)
+        else:
+            responses.append(res)
+        with open('ball.json', 'w') as j:
+            json.dump(responses, j)
+        await ctx.send(f"{ctx.author.mention}, your 8ball response has successfully been added!")
+
     @commands.command(name='choose', help='chooses a random item! syntax: choose <question> [choices]')
     async def choose(self, ctx, question, *choices):
         if(len(question.split()) < 2):
