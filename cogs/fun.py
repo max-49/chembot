@@ -269,7 +269,7 @@ class Fun(commands.Cog):
         with open('ball.json') as j:
             responses = json.load(j)
         question = question.replace('i', str(ctx.author.name)).replace('I', str(ctx.author.name))
-        title = question if len(question) > 50 else '8ball'
+        title = question if len(question) < 75 else '8ball'
         embed = discord.Embed(title=title)
         embed.add_field(name=f'{str(self.bot.user.name).split()[0]} says', value='\u200b')
         mess = await ctx.send(embed=embed)
@@ -303,7 +303,7 @@ class Fun(commands.Cog):
     @commands.command(name='choose', help='chooses a random item! syntax: choose <question> [choices]')
     async def choose(self, ctx, question, *choices):
         question = question.replace('i', str(ctx.author.name)).replace('I', str(ctx.author.name))
-        title = question if len(question) > 50 else '8ball'
+        title = question if len(question) < 75 else '8ball'
         if(len(question.split()) < 2):
             message = f"{str(self.bot.user.name).split()[0]} chooses "
         else:
