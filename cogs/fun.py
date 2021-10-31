@@ -304,10 +304,7 @@ class Fun(commands.Cog):
     async def choose(self, ctx, question, *choices):
         question = question.capitalize().replace(' i ', f" {str(ctx.author.name)} ").replace(' I ', f" {str(ctx.author.name)} ")
         title = question if len(question) < 75 else 'Choices'
-        if(len(question.split()) < 2):
-            message = f"{str(self.bot.user.name).split()[0]} chooses "
-        else:
-            message = question
+        message = f"{str(self.bot.user.name).split()[0]} chooses "
         if(len(choices) > 10):
             await ctx.reply("Too many choices!")
             return
