@@ -268,15 +268,20 @@ class Fun(commands.Cog):
             return
         with open('ball.json') as j:
             responses = json.load(j)
-        embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says')
+        question = question.replace('i', str(ctx.author.name)).replace('I', str(ctx.author.name))
+        title = question if len(question) > 50 else '8ball'
+        embed = discord.Embed(title=title)
+        embed.add_field(name=f'{str(self.bot.user.name).split()[0]} says', value='\u200b')
         mess = await ctx.send(embed=embed)
         num = random.randint(1,8)
         for i in range(num):
             await asyncio.sleep(1)
-            embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says' + '.'*(i+1))
+            embed = discord.Embed(title=title)
+            embed.add_field(name=f'{str(self.bot.user.name).split()[0]} says' + '.'*(i+1), value='\u200b')
             new_mess = await mess.edit(embed=embed)
         await asyncio.sleep(1)
-        embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says' + '.'*(num+1), description=random.choice(responses), color=0xFFFF00)
+        embed = discord.Embed(title=title, color=0xFFFF00)
+        embed.add_field(name=f'{str(self.bot.user.name).split()[0]} says' + '.'*(num+1), value=random.choice(responses))
         await new_mess.edit(embed=embed)
 
     @commands.command(name='add8ball', help='add a response to 8ball!')
@@ -297,6 +302,8 @@ class Fun(commands.Cog):
 
     @commands.command(name='choose', help='chooses a random item! syntax: choose <question> [choices]')
     async def choose(self, ctx, question, *choices):
+        question = question.replace('i', str(ctx.author.name)).replace('I', str(ctx.author.name))
+        title = question if len(question) > 50 else '8ball'
         if(len(question.split()) < 2):
             message = f"{str(self.bot.user.name).split()[0]} chooses "
         else:
@@ -305,10 +312,12 @@ class Fun(commands.Cog):
             await ctx.reply("Too many choices!")
             return
         choice = random.choice(list(choices))
-        embed = discord.Embed(title=f"**{message}**")
+        embed = discord.Embed(title=title)
+        embed.add_field(name=f"**{message}**", value='\u200b')
         msg = await ctx.send(embed=embed)
         await asyncio.sleep(random.randint(1,5))
-        embed = discord.Embed(title=f"**{message}**", description=f"{choice}", color=0xFFFF00)
+        embed = discord.Embed(title=title, color=0xFFFF00)
+        embed.add_field(name=f"**{message}**", value=f"{choice}")
         await msg.edit(embed=embed)
 
 
