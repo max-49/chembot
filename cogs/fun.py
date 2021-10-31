@@ -268,12 +268,16 @@ class Fun(commands.Cog):
             return
         with open('ball.json') as j:
             responses = json.load(j)
-        mess = await ctx.send(f'{str(self.bot.user.name).split()[0]} says')
-        for i in range(random.randint(1,8)):
+        embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says')
+        mess = await ctx.send(embed=embed)
+        num = random.randint(1,8)
+        for i in range(num):
             await asyncio.sleep(1)
-            await mess.edit(mess.content + '.'*(i+1))
+            embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says' + '.'*(i+1), color=0xFFFF00)
+            new_mess = await mess.edit(embed=embed)
         await asyncio.sleep(1)
-        await mess.edit(random.choice(responses))
+        embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says' + '.'*(num+1), description=random.choice(responses))
+        await new_mess.edit(embed=embed)
 
     @commands.command(name='choose', help='chooses a random item! syntax: choose <question> [choices]')
     async def choose(self, ctx, question, *choices):
