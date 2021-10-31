@@ -262,7 +262,7 @@ class Fun(commands.Cog):
             await ctx.send("User is not on the leaderboard yet! Tell them to check out <https://imaginaryctf.org/>!")
 
     @commands.command(name='8ball', help='ask your question! 8ball <question>')
-    async def ball(self, ctx, question=None):
+    async def ball(self, ctx, *, question=None):
         if(not question):
             await ctx.reply('You must ask a question!')
             return
