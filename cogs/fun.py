@@ -280,7 +280,7 @@ class Fun(commands.Cog):
         await new_mess.edit(embed=embed)
 
     @commands.command(name='add8ball', help='add a response to 8ball!')
-    async def ball(self, ctx, res=None):
+    async def addball(self, ctx, res=None):
         with open('ball.json') as j:
             responses = json.load(j)
         def check(msg):
