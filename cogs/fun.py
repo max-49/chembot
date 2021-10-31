@@ -273,10 +273,10 @@ class Fun(commands.Cog):
         num = random.randint(1,8)
         for i in range(num):
             await asyncio.sleep(1)
-            embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says' + '.'*(i+1), color=0xFFFF00)
+            embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says' + '.'*(i+1))
             new_mess = await mess.edit(embed=embed)
         await asyncio.sleep(1)
-        embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says' + '.'*(num+1), description=random.choice(responses))
+        embed = discord.Embed(title=f'{str(self.bot.user.name).split()[0]} says' + '.'*(num+1), description=random.choice(responses), color=0xFFFF00)
         await new_mess.edit(embed=embed)
 
     @commands.command(name='choose', help='chooses a random item! syntax: choose <question> [choices]')
