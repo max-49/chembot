@@ -308,7 +308,7 @@ class Fun(commands.Cog):
         embed = discord.Embed(title=f"**{message}**")
         msg = await ctx.send(embed=embed)
         await asyncio.sleep(random.randint(1,5))
-        embed = discord.Embed(title=f"**{message}**", description=f"`{choice}`")
+        embed = discord.Embed(title=f"**{message}**", description=f"**{choice}**", color=0xFFFF00)
         await msg.edit(embed=embed)
 
 
