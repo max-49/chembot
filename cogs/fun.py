@@ -262,13 +262,13 @@ class Fun(commands.Cog):
             await ctx.send("User is not on the leaderboard yet! Tell them to check out <https://imaginaryctf.org/>!")
 
     @commands.command(name='8ball', help='ask your question! 8ball <question>')
-    async def ball(self, ctx, question=None):
+    async def ball(self, ctx, *, question=None):
         if(not question):
             await ctx.reply('You must ask a question!')
             return
         with open('ball.json') as j:
             responses = json.load(j)
-        question = question.replace('i', str(ctx.author.name)).replace('I', str(ctx.author.name))
+        question = question.capitalize().replace(' i ', f" {str(ctx.author.name)} ").replace(' I ', f" {str(ctx.author.name)} ")
         title = question if len(question) < 75 else '8ball'
         embed = discord.Embed(title=title)
         embed.add_field(name=f'{str(self.bot.user.name).split()[0]} says', value='\u200b')
@@ -302,8 +302,8 @@ class Fun(commands.Cog):
 
     @commands.command(name='choose', help='chooses a random item! syntax: choose <question> [choices]')
     async def choose(self, ctx, question, *choices):
-        question = question.replace('i', str(ctx.author.name)).replace('I', str(ctx.author.name))
-        title = question if len(question) < 75 else '8ball'
+        question = question.capitalize().replace(' i ', f" {str(ctx.author.name)} ").replace(' I ', f" {str(ctx.author.name)} ")
+        title = question if len(question) < 75 else 'Choices'
         if(len(question.split()) < 2):
             message = f"{str(self.bot.user.name).split()[0]} chooses "
         else:
