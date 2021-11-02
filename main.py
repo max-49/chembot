@@ -1,5 +1,6 @@
 import os
 import sys
+import random
 import discord
 import platform
 import chat_exporter
@@ -48,8 +49,9 @@ async def on_ready():
 async def on_message(ctx):
     if ctx.content.startswith(prefix) and ctx.author.id != bot.user.id:
         print(f"{ctx.author.name}: {ctx.content}")
-    # if ctx.author.id == 523309470105993226:
-    #     await ctx.channel.send('based opinion sean I agree')
+    if ctx.author.id == 523309470105993226:
+        if(random.randint(0,20) == 6):
+            await ctx.channel.send('based opinion sean I agree')
     if is_debug and ctx.author.id != 427832149173862400:
         return
     await bot.process_commands(ctx)
