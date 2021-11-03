@@ -45,7 +45,7 @@ class Basic(commands.Cog):
                 response = await session.get(f"https://g.tenor.com/v1/search?q={search_term}&key={api_key}&limit=50")
                 data = json.loads(await response.text())
                 gif_choice = randint(0, 40)
-                gif_url = data['results'][gif_choice]['media']['url']
+                gif_url = data['results'][gif_choice]['media'][0]['gif']['url']
                 await session.close()
                 return gif_url
             except IndexError:
