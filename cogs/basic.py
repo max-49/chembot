@@ -42,7 +42,7 @@ class Basic(commands.Cog):
         async def search_gifs(query):
             try:
                 session = aiohttp.ClientSession()
-                response = await session.get(f"https://api.giphy.com/v1/gifs/search?api_key={api_key}&q={query}&limit=50&offset=0")
+                response = await session.get(f"https://g.tenor.com/v1/search?q={search_term}&key={api_key}&limit=50")
                 data = json.loads(await response.text())
                 gif_choice = randint(0, 40)
                 gif_url = data['data'][gif_choice]['images']['original']['url']
