@@ -5,6 +5,7 @@ import discord
 import platform
 import chat_exporter
 from config import get_bot
+from datetime import datetime
 from discord.ext import commands
 from discord.ext.commands import CommandNotFound
 
@@ -47,8 +48,13 @@ async def on_ready():
 
 @bot.event
 async def on_message(ctx):
+    if isinstance(ctx.channel, discord.channel.DMChannel):
+        message = "DM: "
+    else:
+        message = ""
     if ctx.content.startswith(prefix) and ctx.author.id != bot.user.id:
-        print(f"{ctx.author.name}: {ctx.content}")
+        current_time = datetime.now().strftime("%H:%M:%S")
+        print(f"({current_time}) {message}{ctx.author.name}: {ctx.content}")
     if ctx.author.id == 523309470105993226:
         if(random.randint(0,20) == 6):
             await ctx.channel.send('based opinion sean I agree')
