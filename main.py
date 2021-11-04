@@ -1,5 +1,6 @@
 import os
 import sys
+import pytz
 import random
 import discord
 import platform
@@ -53,7 +54,7 @@ async def on_message(ctx):
     else:
         message = ""
     if ctx.content.startswith(prefix) and ctx.author.id != bot.user.id:
-        current_time = datetime.now().strftime("%H:%M:%S")
+        current_time = datetime.now(pytz.timezone('America/New_York')).strftime("%H:%M:%S")
         print(f"({current_time}) {message}{ctx.author.name}: {ctx.content}")
     if ctx.author.id == 523309470105993226:
         if(random.randint(0,20) == 6):
