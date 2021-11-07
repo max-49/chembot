@@ -17,6 +17,24 @@ class Admin(commands.Cog):
     async def clear(self, ctx):
         await ctx.send("_ _\n"*40)
 
+    @commands.command(name='ban', help="ban", hidden=True)
+    @has_permissions(administrator=True)
+    async def ban(self, ctx, user: discord.Member=None, *, reason=None):
+        if user is None:
+            await ctx.send("Please specify a user to ban.")
+            return
+        await user.ban(reason=reason)
+        await ctx.send(f"Banned {user.mention}")
+
+    @commands.command(name='kick', help="kick", hidden=True)
+    @has_permissions(administrator=True)
+    async def kick(self, ctx, user: discord.Member=None, *, reason=None):
+        if user is None:
+            await ctx.send("Please specify a user to kick.")
+            return
+        await user.kick(reason=reason)
+        await ctx.send(f"Kicked {user.mention}")
+
     @commands.command(name='addquestion', help="owner only", hidden=True)
     async def addquestion(self, ctx, *params):
         if(ctx.author.id == 427832149173862400):
