@@ -35,7 +35,7 @@ class Basic(commands.Cog):
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/427832149173862400/1767e28d50d41fab9872c7137020df9c.webp?size=1024")
         await ctx.send(embed=embed, view=Website())
 
-    @commands.command(name='gif', help="sends a random gif")
+    @commands.command(name='gif', help="sends a random gif", aliases=['g'])
     async def gif(self, ctx, *, search_term: str):
         api_key = os.getenv('GIPHY_KEY')
 

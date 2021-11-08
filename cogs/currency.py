@@ -204,8 +204,7 @@ class Currency(commands.Cog):
             cd = round(error.retry_after)
             minutes = str(cd // 60)
             seconds = str(cd % 60)
-            em = discord.Embed(title=f"You can only work once per 5 minutes!",
-                               description=f"Try again in {minutes} minutes and {seconds} seconds.", color=0xFF0000)
+            em = discord.Embed(title=f"You can only work once per 5 minutes!", description=f"Try again in {minutes} minutes and {seconds} seconds.", color=0xFF0000)
             await ctx.send(embed=em)
 
     @commands.command(name="worklist", help="Displays the list of jobs.")
@@ -297,20 +296,17 @@ class Currency(commands.Cog):
         if(category == 'retype'):
             await ctx.send(f"{ctx.author.mention}, please enter the word you would like to be retyped.")
             retype = await self.bot.wait_for("message", check=check)
-            work_data.append({"type": "Retype", "desc": "Retype the word below.",
-                             "prompt": retype.content, "answer": retype.content})
+            work_data.append({"type": "Retype", "desc": "Retype the word below.", "prompt": retype.content, "answer": retype.content})
         elif(category == 'reverse'):
             await ctx.send(f"{ctx.author.mention}, please enter the word you would like to be reversed.")
             retype = await self.bot.wait_for("message", check=check)
-            work_data.append({"type": "Reverse", "desc": "Reverse the word below.",
-                             "prompt": retype.content, "answer": retype.content[::-1]})
+            work_data.append({"type": "Reverse", "desc": "Reverse the word below.", "prompt": retype.content, "answer": retype.content[::-1]})
         elif(category == 'fill in'):
             await ctx.send(f"{ctx.author.mention}, please enter the phrase you want to be filled in. Make sure to replace the word you want to be filled in with underscores ( `_` ) with spaces in between them signifying how many letters the word you want to be filled in has. (Ex. `How _ _ _ you?`)")
             retype = await self.bot.wait_for("message", check=check)
             await ctx.send(f"{ctx.author.mention}, please enter the word that should be filled into the above phrase.")
             answer = await self.bot.wait_for("message", check=check)
-            work_data.append({"type": "Retype", "desc": "Retype the word below.",
-                             "prompt": retype.content, "answer": answer.content})
+            work_data.append({"type": "Retype", "desc": "Retype the word below.", "prompt": retype.content, "answer": answer.content})
         with open(f'work/{user_job}.json', 'w') as json_file:
             json.dump(work_data, json_file)
         await ctx.send(f"{ctx.author.mention}, your work was successfully added!")
@@ -472,6 +468,14 @@ class Currency(commands.Cog):
                     return
         else:
             await ctx.reply(f"You don't have a profile yet! Create one with `{self.info[3]}balance`!")
+
+    @commands.command(name='high', help='roll the higher number to win!')
+    async def high(self, ctx, amount: int):
+        await ctx.invoke(self.bet, 'high', amount)
+
+    @commands.command(name='slots', help='slot machine!')
+    async def slots(self, ctx, amount: int):
+        await ctx.invoke(self.bet, 'slots', amount)
 
     @commands.command(name="bet", help="bet <high | slots> <amount>")
     @commands.cooldown(1, 3, commands.BucketType.user)

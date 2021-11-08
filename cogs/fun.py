@@ -119,7 +119,7 @@ class Fun(commands.Cog):
         else:
             await channel.send(message, allowed_mentions=discord.AllowedMentions(everyone=False))
 
-    @commands.command(name='trivia', help="dispenses a user-submitted trivia question!", aliases=['triv'])
+    @commands.command(name='trivia', help="dispenses a user-submitted trivia question!", aliases=['triv', 'tri', 't'])
     async def trivia(self, ctx):
         with open('trivia/trivia.json') as f:
             questions = json.load(f)
@@ -145,7 +145,7 @@ class Fun(commands.Cog):
         if regents.value is None:
             await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
 
-    @commands.command(name='addtrivia', aliases=['addtriv'], help="add a question to s!trivia!")
+    @commands.command(name='addtrivia', aliases=['addtriv', 'at'], help="add a question to s!trivia!")
     async def addtrivia(self, ctx):
         def check(msg):
             return msg.author == ctx.author and msg.channel == msg.channel and \
@@ -261,7 +261,7 @@ class Fun(commands.Cog):
         except IndexError:
             await ctx.send("User is not on the leaderboard yet! Tell them to check out <https://imaginaryctf.org/>!")
 
-    @commands.command(name='8ball', help='ask your question! 8ball <question>')
+    @commands.command(name='8ball', aliases=['ball', '8'], help='ask your question! 8ball <question>')
     async def ball(self, ctx, *, question=None):
         if(not question):
             await ctx.reply('You must ask a question!')
@@ -284,7 +284,7 @@ class Fun(commands.Cog):
         embed.add_field(name=f'{str(self.bot.user.name).split()[0]} says' + '.'*(num+1), value=random.choice(responses))
         await new_mess.edit(embed=embed)
 
-    @commands.command(name='add8ball', help='add a response to 8ball!')
+    @commands.command(name='add8ball', help='add a response to 8ball!', aliases=['addball', 'add8'])
     async def addball(self, ctx, *, res=None):
         with open('ball.json') as j:
             responses = json.load(j)

@@ -15,7 +15,7 @@ class Owner(commands.Cog):
         await ctx.send("Resetting all saved data")
         await ctx.send("Data reset!")
 
-    @commands.command(name='load', hidden=True)
+    @commands.command(name='load', hidden=True, aliases=['l'])
     @commands.is_owner()
     async def load(self, ctx, *, cog: str):
         try:
@@ -25,7 +25,7 @@ class Owner(commands.Cog):
         else:
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully loaded!")
 
-    @commands.command(name='unload', hidden=True)
+    @commands.command(name='unload', hidden=True, aliases=['u'])
     @commands.is_owner()
     async def unload(self, ctx, *, cog: str):
         try:
