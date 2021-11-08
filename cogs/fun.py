@@ -120,10 +120,13 @@ class Fun(commands.Cog):
             await channel.send(message, allowed_mentions=discord.AllowedMentions(everyone=False))
 
     @commands.command(name='trivia', help="dispenses a user-submitted trivia question!", aliases=['triv', 'tri', 't'])
-    async def trivia(self, ctx):
+    async def trivia(self, ctx, num: int=None):
         with open('trivia/trivia.json') as f:
             questions = json.load(f)
-        question_number = int(randint(0, len(questions)-1))
+        if not num:
+            question_number = int(randint(0, len(questions)-1))
+        else:
+            question_number = num - 1
 
         embedVar = discord.Embed(
             title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0x00C3FF)
