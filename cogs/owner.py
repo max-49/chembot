@@ -35,6 +35,13 @@ class Owner(commands.Cog):
         else:
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully unloaded!")
 
+    @commands.command(name='loadall', hidden=True)
+    @commands.is_owner()
+    async def loadall(self, ctx):
+        for filename in os.listdir('cogs'):
+            if filename.endswith('.py'):
+                self.bot.load_extension(f'cogs.{filename[:-3]}')
+
     @commands.command(name='reload', aliases=['r'], hidden=True)
     @commands.is_owner()
     async def reload(self, ctx, *, cog: str):
