@@ -9,5 +9,8 @@ class ChatBot(commands.Cog):
     async def chat(self, ctx, channel: discord.TextChannel):
         await ctx.send(f"{message}")
 
+    @commands.command(name='deletechannel', help='delete a channel from chatbot')
+    async def deletechannel()
+
 def setup(bot):
     bot.add_cog(ChatBot(bot))
