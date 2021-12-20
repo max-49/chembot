@@ -112,13 +112,13 @@ class Fun(commands.Cog):
         self.bot = bot
 
     @commands.command(name="joinvc", help="join a voice channel")
-    async def joinvc(ctx, *, channel: discord.VoiceChannel = None):
+    async def joinvc(self, ctx, *, channel: discord.VoiceChannel = None):
         if channel is None and ctx.author.voice.channel is None:
             return await ctx.send("You are not in a voice channel.")
         await channel.connect()
     
     @commands.command(name="leavevc", help="leave a voice channel")
-    async def leavevc(ctx):
+    async def leavevc(self, ctx):
         await ctx.voice_client.disconnect()
 
     @commands.command(name='chat', help="gives you the ability to chat with the bot", pass_context=True)
