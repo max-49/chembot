@@ -165,7 +165,7 @@ class Fun(commands.Cog):
             await ctx.invoke(self.joinvc)
         async with ctx.typing():
             filename = await YTDLSource.from_url(url, loop=self.bot.loop)
-            ctx.voice_client.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename))
+            ctx.voice_client.play(discord.FFmpegPCMAudio(executable="/bin/ffmpeg", source=filename))
         await ctx.send('**Now playing song**')
 
     @commands.command(name='pause', help='This command pauses the song')
