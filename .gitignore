@@ -12,6 +12,8 @@ egg.py
 smurf_reasons.json
 chat_channels.json
 cogs/rule.py
+events.json
+snipe.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
