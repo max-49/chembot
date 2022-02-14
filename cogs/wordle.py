@@ -1,5 +1,5 @@
 import random
-from discord import commands
+from discord.ext import commands
 from datetime import datetime
 
 class Spaces(discord.ui.View):
