@@ -93,7 +93,7 @@ class Spaces(discord.ui.View):
 
 class Wordle(commands.Cog):
     def __init__(self, bot):
-        bot = self.bot
+        self.bot = bot
 
     @commands.command(name="wordle", help="world")
     async def wordle(self, ctx):
