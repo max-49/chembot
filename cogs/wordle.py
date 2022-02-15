@@ -105,7 +105,7 @@ class Wordle(commands.Cog):
                 words.append(line.strip())
         await ctx.send("after reading words.txt")
         date = datetime.now().date()
-        word = words[int(((date.year * date.day) / date.month) % len(word))]
+        word = words[int(((date.year * date.day) / date.month) % len(words))]
         await ctx.send('before class declaration')
         game = Spaces(word)
         embed = discord.Embed(title="wordle")
