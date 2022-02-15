@@ -103,7 +103,7 @@ class Wordle(commands.Cog):
         with open('words.txt') as j:
             for line in j.readlines():
                 words.append(line.strip())
-
+        await ctx.send("after reading words.txt")
         date = datetime.now().date()
         word = words[int(((date.year * date.day) / date.month) % len(word))]
         await ctx.send('before class declaration')
