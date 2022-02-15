@@ -106,8 +106,10 @@ class Wordle(commands.Cog):
 
         date = datetime.now().date()
         word = words[int(((date.year * date.day) / date.month) % len(word))]
+        await ctx.send('before class declaration')
         game = Spaces(word)
         embed = discord.Embed(title="wordle")
+        await ctx.send("right before sending view")
         await ctx.send(embed=embed, view=game)
 
     async def cog_command_error(self, ctx, error):
