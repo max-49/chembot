@@ -18,6 +18,14 @@ class Events(commands.Cog):
 
     @tasks.loop(seconds=60.0)
     async def event_handler(self):
+        if(datetime.datetime.utcnow() == 0):
+            with open('profiles.json') as j:
+                profile_data = json.load(j)
+            for i in range(len(profile_data)):
+                profile_data[i]['didDaily'] = False
+            with open('profiles.json', 'w') as j:
+                json.dump(profile_data, j)
+        
         with open('events.json') as j:
             events = json.load(j)
         events = sorted(events, key = lambda i: i['unix_time'])
