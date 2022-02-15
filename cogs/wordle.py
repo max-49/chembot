@@ -97,6 +97,7 @@ class Wordle(commands.Cog):
 
     @commands.command(name="wordle", help="world")
     async def wordle(self, ctx):
+        await ctx.send("im aliveaa")
         words = []
 
         with open('words.txt') as j:
