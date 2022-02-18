@@ -149,11 +149,11 @@ class Wordle(commands.Cog):
         with open('words.txt') as j:
             for line in j.readlines():
                 words.append(line.strip())
-        if doingDaily:
-            date = datetime.now().date()
-            word = words[int(((date.year * date.day) / date.month) % len(words))]
-        else:
-            word = random.choice(words)
+        # if doingDaily:
+        #     date = datetime.now().date()
+        #     word = words[int(((date.year * date.day) / date.month) % len(words))]
+        # else:
+        word = random.choice(words)
         with open('words_also.txt') as j:
             for line in j.readlines():
                 words.append(line.strip())
