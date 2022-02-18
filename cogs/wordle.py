@@ -249,6 +249,61 @@ class Wordle(commands.Cog):
             with open(f'profiles.json', 'w') as json_file:
                 json.dump(profile_data, json_file)
 
+    @commands.is_owner()
+    @commands.command(name="debugwordle", help="waaaaorld")
+    async def debugwordle(self, ctx, word):
+        def check(msg):
+            return msg.author == ctx.author and msg.channel == msg.channel and msg.content.lower()[0] in string.printable
+        words = []
+        with open('words.txt') as j:
+            for line in j.readlines():
+                words.append(line.strip())
+        with open('words_also.txt') as j:
+            for line in j.readlines():
+                words.append(line.strip())
+        word = word[0:5].lower()
+        game = Spaces(word)
+        embed = discord.Embed(title="Wordle")
+        view = await ctx.send(embed=embed, view=game)
+        guess_number = 0
+        guesses = []
+        while guess_number < 5:
+            if(not game.value):
+                embed=discord.Embed(title="You win!", color=0x00FF00)
+                return await view.edit(embed=embed, view=game)
+            guess = await self.bot.wait_for("message", check=check)
+            if guess.content.lower() == 'exit' or guess.content.lower() == 'quit':
+                game = Spaces(word, guesses, 'exit')
+                await ctx.send("Quitting game...")
+                return await view.edit(embed=embed, view=game)
+            if len(guess.content) < 5:
+                await guess.add_reaction('❌')
+                embed = discord.Embed(title="Too Short! Guess again.")
+                await view.edit(embed=embed, view=game)
+                continue
+            elif len(guess.content) > 5:
+                await guess.add_reaction('❌')
+                embed = discord.Embed(title="Too Long! Guess again.")
+                await view.edit(embed=embed, view=game)
+                continue
+            elif guess.content not in words:
+                await guess.add_reaction('❌')
+                embed = discord.Embed(title="Word not in wordlist! Guess again.")
+                await view.edit(embed=embed, view=game)
+                continue
+            else:
+                guesses.append(guess.content.lower())
+                embed = discord.Embed(title="Wordle")
+                game = Spaces(word, guesses)
+                await view.edit(embed=embed, view=game)
+                guess_number += 1
+        if(not game.value):
+            embed=discord.Embed(title="You win!", color=0x00FF00)
+            return await view.edit(embed=embed, view=game)
+        else:
+            embed = discord.Embed(title="You lose... Better luck next time!", description=f"The word was {word}", color=0xFF0000)
+            await view.edit(embed=embed, view=game)
+
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
 
