@@ -142,17 +142,7 @@ class Wordle(commands.Cog):
         def check(msg):
             return msg.author == ctx.author and msg.channel == msg.channel and msg.content.lower()[0] in string.printable
         words = []
-        if isinstance(ctx.channel, discord.channel.DMChannel):
-            for i in range(len(profile_data)):
-                if(profile_data[i]['ID'] == ctx.author.id):
-                    if(profile_data[i]['didDaily']):
-                        await ctx.send("You've already done today's daily Wordle! Giving you a random word...")
-                        doingDaily = False
-                    else:
-                        doingDaily = True
-        else:
-            await ctx.send("To do the daily Wordle for stats, run this command in DMs! Using a random word...")
-            doingDaily = False
+        doingDaily = True
         with open('words.txt') as j:
             for line in j.readlines():
                 words.append(line.strip())
@@ -202,7 +192,7 @@ class Wordle(commands.Cog):
                 await view.edit(embed=embed, view=game)
                 continue
             else:
-                guesses.append(guess.content)
+                guesses.append(guess.content.lower())
                 embed = discord.Embed(title="Wordle")
                 game = Spaces(word, guesses)
                 await view.edit(embed=embed, view=game)
