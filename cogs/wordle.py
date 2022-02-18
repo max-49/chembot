@@ -24,7 +24,7 @@ class Spaces(discord.ui.View):
                     if x == y:
                         self.children[i + 5 * j].style = discord.ButtonStyle.green
                     elif y in guess and self.children[i + 5 * j].style != discord.ButtonStyle.green:
-                        indices = [i for i, c in enumerate(guess) if c == char]
+                        indices = [i for i, c in enumerate(guess) if c == y]
                         for index in indices:
                             if self.children[index + 5 * j].style != discord.ButtonStyle.green:
                                 self.children[index + 5 * j].style = discord.ButtonStyle.blurple
