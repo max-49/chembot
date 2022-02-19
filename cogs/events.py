@@ -61,7 +61,7 @@ class Events(commands.Cog):
         event_mess = await ctx.send(f"{ctx.author.mention}, please enter the time of this event IN MILITARY TIME in the format HH:MM (i.e. for the time of 10:30pm, enter 22:30)")
         event_time = await self.bot.wait_for("message", check=check)
         await event_mess.delete()
-        await event.delete()
+        await event_time.delete()
         message_mess = await ctx.send(f"{ctx.author.mention}, what is the event? (Please enter the message you want to be pinged with when this event happens)")
         message = await self.bot.wait_for("message", check=check)
         await message_mess.delete()
