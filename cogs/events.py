@@ -41,7 +41,7 @@ class Events(commands.Cog):
                 user = ""
                 if(most_recent_event['user_ping']):
                     user += f"<@{most_recent_event['creator_id']}>"
-                await channel.send(f"{user}, {most_recent_event['others']}", embed=embed)
+                await channel.send(f"{user}, {most_recent_event['others']}", embed=embed, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
                 events.pop(0)
                 with open('events.json', 'w') as w:
                     json.dump(events, w)

@@ -56,8 +56,10 @@ class Basic(commands.Cog):
 
     @commands.command(name='spam', help="spams text")
     async def spam(self, ctx, *, string: str):
+        if(ctx.guild.id == 732308165265326080):
+            return await ctx.send("no spam in ictf bc it makes wick sad")
         for i in range(5):
-            await ctx.send(string, allowed_mentions=discord.AllowedMentions(everyone=False))
+            await ctx.send(string, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False))
 
     @commands.command(name="ping", help="displays the latency to the bot.")
     async def ping(self, ctx):

@@ -196,9 +196,9 @@ class Fun(commands.Cog):
     async def chat(self, ctx, channel: typing.Optional[discord.TextChannel], *, message: str):
         await ctx.message.delete()
         if channel is None:
-            await ctx.send(message, allowed_mentions=discord.AllowedMentions(everyone=False))
+            await ctx.send(message, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=True, replied_user=False))
         else:
-            await channel.send(message, allowed_mentions=discord.AllowedMentions(everyone=False))
+            await channel.send(message, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=True, replied_user=False))
 
     @commands.command(name='trivia', help="dispenses a user-submitted trivia question!", aliases=['triv', 'tri', 't'])
     async def trivia(self, ctx, num: int=None):
