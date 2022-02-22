@@ -289,11 +289,6 @@ class Wordle(commands.Cog):
                 embed = discord.Embed(title="Too Long! Guess again.")
                 await view.edit(embed=embed, view=game)
                 continue
-            elif guess.content not in words:
-                await guess.add_reaction('❌')
-                embed = discord.Embed(title="Word not in wordlist! Guess again.")
-                await view.edit(embed=embed, view=game)
-                continue
             else:
                 guesses.append(guess.content.lower())
                 embed = discord.Embed(title="Wordle")
