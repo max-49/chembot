@@ -38,9 +38,16 @@ class Spaces(discord.ui.View):
                         guess_indices = [p for p, c in enumerate(guess) if c == y]
                         word_indices = [p for p, c in enumerate(word) if c == y]
                         # print(indices)
+                        while True:
+                            for w in zip(word_indices):
+                                if w in guess_indices:
+                                    guess_indices.remove(w)
+                                    word_indices.remove(w)
+                                    continue
+                            else:
+                                break
                         for g, w in zip(guess_indices, word_indices):
-                            if self.children[w + 5 * j].style == discord.ButtonStyle.grey:
-                                self.children[g + 5 * j].style = discord.ButtonStyle.blurple
+                            self.children[g + 5 * j].style = discord.ButtonStyle.blurple
                 if guess == word:
                     for child in self.children:
                         child.disabled = True
