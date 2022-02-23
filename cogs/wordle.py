@@ -19,7 +19,7 @@ class Spaces(discord.ui.View):
                     self.children[i + 5 * j].label = x
                     if x == y:
                         self.children[i + 5 * j].style = discord.ButtonStyle.green
-                    elif y in guess and self.children[i + 5 * j].style == discord.ButtonStyle.grey:
+                    elif y in guess and self.children[i + 5 * j].style != discord.ButtonStyle.green:
                         indices = [i for i, c in enumerate(guess) if c == y]
                         for index in indices:
                             if self.children[index + 5 * j].style == discord.ButtonStyle.grey:
