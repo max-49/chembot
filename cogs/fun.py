@@ -277,8 +277,9 @@ class Fun(commands.Cog):
 
     @commands.command(name="say", help="say something as a webhook!")
     async def say(self, ctx, *, message: str):
-        message = message.replace('\'', '\'').replace(
-            '\"', '\"').replace('\\', '\\')
+        message = message.replace('\'', '\'').replace('\"', '\"').replace('\\', '\\')
+        if len(message) > 150:
+            message = message[:150]
         for webhook in await ctx.channel.webhooks():
             if str(webhook.user) == str(self.bot.user):
                 use_hook = webhook
@@ -291,6 +292,8 @@ class Fun(commands.Cog):
 
     @commands.command(name="saym", help="impersonate someone!")
     async def saym(self, ctx, member: discord.Member, *, message: str):
+        if len(message) > 150:
+            message = message[:150]
         for webhook in await ctx.channel.webhooks():
             if str(webhook.user) == str(self.bot.user):
                 use_hook = webhook
