@@ -83,7 +83,7 @@ class Events(commands.Cog):
             others_mess = await ctx.send(f"{ctx.author.mention}, please enter all the role/user pings that should be pinged when this event occurs, separated by commas.")
             others = await self.bot.wait_for("message", check=check)
             await others_mess.delete()
-            await date.delete()
+            await others.delete()
             other_message = others.content
         date_split = date.content.split('/')
         time_split = event_time.content.split(':')
