@@ -232,7 +232,7 @@ class Wordle(commands.Cog):
                 await view.edit(embed=embed, view=game)
                 continue
             else:
-                await asyncio.wait(0.5)
+                # await asyncio.wait(0.5)
                 await guess.delete()
                 guesses.append(guess.content.lower())
                 embed = discord.Embed(title="Wordle")
