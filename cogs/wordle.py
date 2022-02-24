@@ -31,8 +31,8 @@ class Spaces(discord.ui.View):
                             else:
                                 break
                         if len(guess_indices) != 0:
-                            for g in guess_indices:
-                                self.children[g + 5 * j].style = discord.ButtonStyle.blurple
+                            for i in range(len(word_indices)):
+                                self.children[guess_indices[i] + 5 * j].style = discord.ButtonStyle.blurple
             for child in self.children:
                 child.disabled = True
             self.value = False
@@ -47,7 +47,7 @@ class Spaces(discord.ui.View):
                         guess_indices = [p for p, c in enumerate(guess) if c == y]
                         word_indices = [p for p, c in enumerate(word) if c == y]
                         while True:
-                            for w in word_indices:
+                             for w in word_indices:
                                 if w in guess_indices or self.children[w + 5 * j].style == discord.ButtonStyle.green:
                                     guess_indices.remove(w)
                                     word_indices.remove(w)
@@ -55,8 +55,9 @@ class Spaces(discord.ui.View):
                             else:
                                 break
                         if len(guess_indices) != 0:
-                            for g in guess_indices:
-                                self.children[g + 5 * j].style = discord.ButtonStyle.blurple
+                            for i in range(len(word_indices)):
+                                self.children[guess_indices[i] + 5 * j].style = discord.ButtonStyle.blurple
+
                 if guess == word:
                     for child in self.children:
                         child.disabled = True
@@ -231,6 +232,7 @@ class Wordle(commands.Cog):
                 guess_number += 1
         if(not game.value):
             embed=discord.Embed(title="You win!", color=0x00FF00)
+            await guess.add_reaction('✅')
             if(doingDaily):
                 for i in range(len(profile_data)):
                     if(profile_data[i]['ID'] == ctx.author.id):
