@@ -20,10 +20,19 @@ class Spaces(discord.ui.View):
                     if x == y:
                         self.children[i + 5 * j].style = discord.ButtonStyle.green
                     elif y in guess and self.children[i + 5 * j].style != discord.ButtonStyle.green:
-                        indices = [i for i, c in enumerate(guess) if c == y]
-                        for index in indices:
-                            if self.children[index + 5 * j].style == discord.ButtonStyle.grey:
-                                self.children[index + 5 * j].style = discord.ButtonStyle.blurple
+                        guess_indices = [p for p, c in enumerate(guess) if c == y]
+                        word_indices = [p for p, c in enumerate(word) if c == y]
+                        while True:
+                            for w in zip(word_indices):
+                                if w in guess_indices or self.children[w + 5 * j].style == discord.ButtonStyle.green:
+                                    guess_indices.remove(w)
+                                    word_indices.remove(w)
+                                    continue
+                            else:
+                                break
+                        if len(guess_indices) != 0:
+                            for g guess_indices:
+                                self.children[g + 5 * j].style = discord.ButtonStyle.blurple
             for child in self.children:
                 child.disabled = True
             self.value = False
@@ -37,17 +46,17 @@ class Spaces(discord.ui.View):
                     elif y in guess and self.children[i + 5 * j].style != discord.ButtonStyle.green:
                         guess_indices = [p for p, c in enumerate(guess) if c == y]
                         word_indices = [p for p, c in enumerate(word) if c == y]
-                        # print(indices)
                         while True:
                             for w in zip(word_indices):
-                                if w in guess_indices:
+                                if w in guess_indices or self.children[w + 5 * j].style == discord.ButtonStyle.green:
                                     guess_indices.remove(w)
                                     word_indices.remove(w)
                                     continue
                             else:
                                 break
-                        for g, w in zip(guess_indices, word_indices):
-                            self.children[g + 5 * j].style = discord.ButtonStyle.blurple
+                        if len(guess_indices) != 0:
+                            for g guess_indices:
+                                self.children[g + 5 * j].style = discord.ButtonStyle.blurple
                 if guess == word:
                     for child in self.children:
                         child.disabled = True
@@ -233,6 +242,7 @@ class Wordle(commands.Cog):
             return await view.edit(embed=embed, view=game)
         else:
             embed = discord.Embed(title="You lose... Better luck next time!", description=f"The word was {word}", color=0xFF0000)
+            game = Spaces(word, guesses, "exit")
             if(doingDaily):
                 for i in range(len(profile_data)):
                     if(profile_data[i]['ID'] == ctx.author.id):
