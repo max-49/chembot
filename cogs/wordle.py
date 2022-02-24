@@ -241,7 +241,6 @@ class Wordle(commands.Cog):
                 guess_number += 1
         if(not game.value):
             embed=discord.Embed(title="You win!", color=0x00FF00)
-            await guess.add_reaction('✅')
             if(doingDaily):
                 for i in range(len(profile_data)):
                     if(profile_data[i]['ID'] == ctx.author.id):
