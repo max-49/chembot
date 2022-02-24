@@ -32,7 +32,10 @@ class Spaces(discord.ui.View):
                                 break
                         if len(guess_indices) != 0:
                             for i in range(len(word_indices)):
-                                self.children[guess_indices[i] + 5 * j].style = discord.ButtonStyle.blurple
+                                try:
+                                    self.children[guess_indices[i] + 5 * j].style = discord.ButtonStyle.blurple
+                                except IndexError:
+                                    break
             for child in self.children:
                 child.disabled = True
             self.value = False
