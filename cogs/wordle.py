@@ -23,7 +23,7 @@ class Spaces(discord.ui.View):
                         guess_indices = [p for p, c in enumerate(guess) if c == y]
                         word_indices = [p for p, c in enumerate(word) if c == y]
                         while True:
-                            for w in zip(word_indices):
+                            for w in word_indices:
                                 if w in guess_indices or self.children[w + 5 * j].style == discord.ButtonStyle.green:
                                     guess_indices.remove(w)
                                     word_indices.remove(w)
@@ -47,7 +47,7 @@ class Spaces(discord.ui.View):
                         guess_indices = [p for p, c in enumerate(guess) if c == y]
                         word_indices = [p for p, c in enumerate(word) if c == y]
                         while True:
-                            for w in zip(word_indices):
+                            for w in word_indices:
                                 if w in guess_indices or self.children[w + 5 * j].style == discord.ButtonStyle.green:
                                     guess_indices.remove(w)
                                     word_indices.remove(w)
