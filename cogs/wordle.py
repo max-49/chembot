@@ -201,7 +201,6 @@ class Wordle(commands.Cog):
         while guess_number < 5:
             if(not game.value):
                 embed=discord.Embed(title="You win!", color=0x00FF00)
-                await guess.add_reaction('✅')
                 if(doingDaily):
                     for i in range(len(profile_data)):
                         if(profile_data[i]['ID'] == ctx.author.id):
@@ -232,12 +231,11 @@ class Wordle(commands.Cog):
                 await view.edit(embed=embed, view=game)
                 continue
             else:
-                # await asyncio.wait(0.5)
-                await guess.delete()
                 guesses.append(guess.content.lower())
                 embed = discord.Embed(title="Wordle")
                 game = Spaces(word, guesses)
                 await view.edit(embed=embed, view=game)
+                await guess.delete()
                 guess_number += 1
         if(not game.value):
             embed=discord.Embed(title="You win!", color=0x00FF00)
