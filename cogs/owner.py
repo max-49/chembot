@@ -126,6 +126,23 @@ class Owner(commands.Cog):
         
         await ctx.send('Shell exited')
 
+    @commands.command(name='fullrefresh', help='yo', aliases=['fs'], hidden=True)
+    async def fullrefresh(self, ctx, cog: str):
+        command = "git pull --no-edit"
+        try:
+            proc = subprocess.check_output([command], shell=True).decode("utf-8")
+        except subprocess.CalledProcessError as e:
+            proc = e.stdout
+        await ctx.send(f"```{proc}```")
+        try:
+            self.bot.unload_extension(cog)
+            self.bot.load_extension(cog)
+        except Exception as e:
+            await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+        else:
+            await ctx.send(f"`{cog.split('.')[-1]}` cog successfully reloaded!")
+        
+
 
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
