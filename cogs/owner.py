@@ -126,7 +126,7 @@ class Owner(commands.Cog):
         
         await ctx.send('Shell exited')
 
-    @commands.is_owner
+    @commands.is_owner()
     @commands.command(name='fullrefresh', help='yo', aliases=['fr'], hidden=True)
     async def fullrefresh(self, ctx, cog: str):
         command = "git pull --no-edit"
