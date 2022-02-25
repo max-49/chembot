@@ -11,7 +11,7 @@ import youtube_dl
 from random import randint
 from datetime import datetime
 from discord.ext import commands
-from discord import Webhook, SyncWebhook
+from discord import SyncWebhook
 
 
 class Regents(discord.ui.View):
@@ -209,21 +209,21 @@ class Fun(commands.Cog):
         else:
             question_number = num - 1
 
-        embedVar = discord.Embed(
+        embed = discord.Embed(
             title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0x00C3FF)
 
         if(questions[question_number]['image'] != 0):
-            embedVar.set_image(url=questions[question_number]['image'])
+            embed.set_image(url=questions[question_number]['image'])
 
-        embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
+        embed.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
             questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]), inline=False)
 
-        embedVar.add_field(
+        embed.add_field(
             name="Added by:", value=questions[question_number]['creator'])
 
         regents = Regents(questions[question_number]['answer'], "Trivia", 4, ctx.author)
 
-        await ctx.reply(embed=embedVar, view=regents)
+        await ctx.reply(embed=embed, view=regents)
 
         await regents.wait()
         if regents.value is None:
@@ -232,15 +232,15 @@ class Fun(commands.Cog):
     @commands.command(name='addtrivia', aliases=['addtriv', 'at'], help="add a question to s!trivia!")
     async def addtrivia(self, ctx):
         def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
+            return msg.author == ctx.author and msg.channel == ctx.channel and \
                 msg.content.lower()[0] in string.printable
 
         def choices(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
+            return msg.author == ctx.author and msg.channel == ctx.channel and \
                 msg.content.lower() in ["a", "b", "c", "d"]
 
         def yesorno(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
+            return msg.author == ctx.author and msg.channel == ctx.channel and \
                 msg.content.lower() in ["yes", "no"]
         await ctx.send(f"{ctx.author.mention}, please enter the question (no questions with newlines)")
         question = await self.bot.wait_for("message", check=check)
@@ -335,14 +335,14 @@ class Fun(commands.Cog):
             all_list.reverse()
             solved = '\n'.join(all_solves)
             unsolved = '\n'.join(all_list)
-            embedVar = discord.Embed(title=f"Stats for {name}", color=0x3498DB)
-            embedVar.add_field(name="Score", value="really good :yep:", inline=False)
+            embed = discord.Embed(title=f"Stats for {name}", color=0x3498DB)
+            embed.add_field(name="Score", value="really good :yep:", inline=False)
             if(len(solved) > 3):
-                embedVar.add_field(name="Solved Challenges", value=solved, inline=True)
+                embed.add_field(name="Solved Challenges", value=solved, inline=True)
             if(len(unsolved) > 3):
-                embedVar.add_field(name="Unsolved Challenges", value=unsolved, inline=True)
-            embedVar.set_thumbnail(url=member.avatar.url)
-            await ctx.send(embed=embedVar)
+                embed.add_field(name="Unsolved Challenges", value=unsolved, inline=True)
+            embed.set_thumbnail(url=member.avatar.url)
+            await ctx.send(embed=embed)
         except IndexError:
             await ctx.send("User is not on the leaderboard yet! Tell them to check out <https://imaginaryctf.org/>!")
 
@@ -374,7 +374,7 @@ class Fun(commands.Cog):
         with open('ball.json') as j:
             responses = json.load(j)
         def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and msg.content.lower()[0] in string.printable
+            return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower()[0] in string.printable
         if not res:
             await ctx.send(f"{ctx.author.mention}, please enter the 8ball reason you would like to be added.")
             response = await self.bot.wait_for("message", check=check)

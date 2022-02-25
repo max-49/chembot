@@ -56,9 +56,8 @@ async def on_message(ctx):
     if ctx.content.startswith(prefix) and ctx.author.id != bot.user.id:
         current_time = datetime.now(pytz.timezone('America/New_York')).strftime("%H:%M:%S")
         print(f"({current_time}) {message}{ctx.author.name}: {ctx.content}")
-    if ctx.author.id == 523309470105993226:
-        if(random.randint(0,20) == 6):
-            await ctx.channel.send('based opinion sean I agree')
+    if ctx.author.id == 523309470105993226 and random.randint(0,20) == 6:
+        await ctx.channel.send('based opinion sean I agree')
     if is_debug and ctx.author.id != 427832149173862400:
         return
     await bot.process_commands(ctx)

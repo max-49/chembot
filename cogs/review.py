@@ -109,63 +109,42 @@ class Review(commands.Cog):
 
     @commands.command(name='profile', help="displays your profile", pass_context=True)
     async def profile(self, ctx, profile: discord.Member=None):
-        while True:
-            try:
-                with open(f'profiles.json') as f:
-                    profile_data = json.load(f)
-                break
-            except FileNotFoundError:
-                with open(f'profiles.json', 'w') as f:
-                    f.write('[]')
-                continue
+        with open(f'profiles.json') as f:
+            profile_data = json.load(f)
         
         uid = ctx.author.id if profile is None else profile.id
-        if(len(profile_data) == 0):
-            if profile is None:
-                profile = ctx.author
-            profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(profile.avatar.url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0, "WordleWins": 0, "WordleTotal": 0, "didDaily": False})
-            embedVar = discord.Embed(
-                title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
-            percent_correct = 0
-            embedVar.add_field(name="Profile initialized!", value=f"Run the command again to see your profile!", inline=False)
-            embedVar.set_thumbnail(url=profile.avatar.url)
-            await ctx.send(embed=embedVar)
-            with open(f'profiles.json', 'w') as json_file:
-                json.dump(profile_data, json_file)
-            return
         for i in range(len(profile_data)):
             if(profile_data[i]['ID'] == uid):
-                embedVar = discord.Embed(
-                    title=f"{profile_data[i]['Name']}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
+                embed = discord.Embed(title=f"{profile_data[i]['Name']}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
                 try:
                     percent_correct = (
                         profile_data[i]['Correct']/profile_data[i]['Total']) * 100
                 except ZeroDivisionError:
                     percent_correct = 0
-                embedVar.add_field(name="Chemistry Regents Review Stats", value=f"{str(profile_data[i]['Correct'])}/{str(profile_data[i]['Total'])} ({str(round(percent_correct, 2))}%)", inline=False)
-                embedVar.add_field(
+                embed.add_field(name="Chemistry Regents Review Stats", value=f"{str(profile_data[i]['Correct'])}/{str(profile_data[i]['Total'])} ({str(round(percent_correct, 2))}%)", inline=False)
+                embed.add_field(
                     name="Balance", value=f"{profile_data[i]['Balance']} {self.info[2]}", inline=False)
-                embedVar.add_field(name="Net profit from betting", value=f"{profile_data[i]['Profit']} {self.info[2]}", inline=False)
+                embed.add_field(name="Net profit from betting", value=f"{profile_data[i]['Profit']} {self.info[2]}", inline=False)
                 try:
                     percent = round((profile_data[i]['Win']/profile_data[i]['Times'])*100, 2)
                 except ZeroDivisionError:
                     percent = 0
-                embedVar.add_field(name="Percent times won", value=f"{profile_data[i]['Win']}/{profile_data[i]['Times']} times ({percent}%)", inline=False) 
-                embedVar.set_thumbnail(url=profile_data[i]['Avatar URL'])
-                await ctx.send(embed=embedVar)
+                embed.add_field(name="Percent times won", value=f"{profile_data[i]['Win']}/{profile_data[i]['Times']} times ({percent}%)", inline=False) 
+                embed.set_thumbnail(url=profile_data[i]['Avatar URL'])
+                await ctx.send(embed=embed)
                 return
-        else:
-            if profile is None:
-                profile = ctx.author
-            profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(profile.avatar.url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0, "WordleWins": 0, "WordleTotal": 0, "didDaily": False})
-            embedVar = discord.Embed(
-                title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
-            percent_correct = 0
-            embedVar.add_field(name="Profile initialized!", value="Run the command again to see your profile!", inline=False)
-            embedVar.set_thumbnail(url=profile.avatar.url)
-            await ctx.send(embed=embedVar)
-            with open(f'profiles.json', 'w') as json_file:
-                json.dump(profile_data, json_file)
+
+        if profile is None:
+            profile = ctx.author
+        profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(profile.avatar.url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0, "WordleWins": 0, "WordleTotal": 0, "didDaily": False})
+        embed = discord.Embed(
+            title=f"{profile.name}'s profile",  timestamp=datetime.utcnow(), color=0x00ff00)
+        percent_correct = 0
+        embed.add_field(name="Profile initialized!", value="Run the command again to see your profile!", inline=False)
+        embed.set_thumbnail(url=profile.avatar.url)
+        await ctx.send(embed=embed)
+        with open(f'profiles.json', 'w') as json_file:
+            json.dump(profile_data, json_file)
 
     @commands.command(name='regents', help="dispenses a Random regents question (syntax: regents (<atom>, <periodic>, <matter>, <solubility>", pass_context=True)
     async def regents(self, ctx, category: str=None):
@@ -202,33 +181,30 @@ class Review(commands.Cog):
             question_number = randint(0, len(questions)-1)
             if questions[question_number]["Calc"] and not profile_data[self_index]["Calc"]:
                 questions.pop(i)
-                continue
-            if questions[question_number]["Table"] and not profile_data[self_index]["Table"]:
+            elif questions[question_number]["Table"] and not profile_data[self_index]["Table"]:
                 questions.pop(i)
-                continue
             else:
                 break
 
-        embedVar = discord.Embed(
-            title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0x00ff00)
+        embed = discord.Embed(title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0x00ff00)
 
         if(questions[question_number]['image'] != 0):
-            embedVar.set_image(url=questions[question_number]['image'])
+            embed.set_image(url=questions[question_number]['image'])
 
-        embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
+        embed.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
             questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]), inline=False)
 
         if(questions[question_number]['Calc'] and questions[question_number]['Table']):
-            embedVar.add_field(name="Tools required", value="Calculator and Reference Table", inline=False)
+            embed.add_field(name="Tools required", value="Calculator and Reference Table", inline=False)
         elif(questions[question_number]['Calc'] and not questions[question_number]['Table']):
-            embedVar.add_field(name="Tools required", value="Calculator", inline=False)
+            embed.add_field(name="Tools required", value="Calculator", inline=False)
         elif(not questions[question_number]['Calc'] and questions[question_number]['Table']):
-            embedVar.add_field(name="Tools required", value="Reference Table", inline=False)
+            embed.add_field(name="Tools required", value="Reference Table", inline=False)
 
-        embedVar.add_field(name="Category", value="`" + str(category)+"`", inline=False)
+        embed.add_field(name="Category", value="`" + str(category)+"`", inline=False)
 
         regents = Regents(questions[question_number]['answer'], category, 4, ctx.author)
-        await ctx.reply(embed=embedVar, view=regents)
+        await ctx.reply(embed=embed, view=regents)
 
         await regents.wait()
         if regents.value is None:
@@ -291,27 +267,27 @@ class Review(commands.Cog):
             await ctx.reply("Invalid review type! Possible options are `apchem`, `apworld`, `apush`, `apbio`, and `apstats`. Please use the regents command for chemistry regents questions.")
             return 0
         
-        embedVar = discord.Embed(title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0xadd8e6)
+        embed = discord.Embed(title="Question #" + str(question_number + 1), timestamp=datetime.utcnow(), color=0xadd8e6)
 
         if(questions[question_number]['image'] != 0):
-            embedVar.set_image(url=questions[question_number]['image'])
+            embed.set_image(url=questions[question_number]['image'])
 
         ife = "\ne) " + str(questions[question_number]['choices'][4]) if choice_number == 5 else ""
-        embedVar.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
+        embed.add_field(name=questions[question_number]['question'], value="a) " + str(questions[question_number]['choices'][0]) + "\nb) " + str(
             questions[question_number]['choices'][1]) + "\nc) " + str(questions[question_number]['choices'][2]) + "\nd) " + str(questions[question_number]['choices'][3]) + ife, inline=False)
         
         if(questions[question_number]['Calc'] and questions[question_number]['Table']):
-            embedVar.add_field(name="Tools required", value="Calculator and Reference Table", inline=False)
+            embed.add_field(name="Tools required", value="Calculator and Reference Table", inline=False)
         elif(questions[question_number]['Calc'] and not questions[question_number]['Table']):
-            embedVar.add_field(name="Tools required", value="Calculator", inline=False)
+            embed.add_field(name="Tools required", value="Calculator", inline=False)
         elif(not questions[question_number]['Calc'] and questions[question_number]['Table']):
-            embedVar.add_field(name="Tools required", value="Reference Table", inline=False)
+            embed.add_field(name="Tools required", value="Reference Table", inline=False)
 
-        embedVar.add_field(name="Category", value="`" + str(category)+"`", inline=False)
+        embed.add_field(name="Category", value="`" + str(category)+"`", inline=False)
 
         regents = Regents(questions[question_number]['answer'], category, choice_number, ctx.author)
 
-        await ctx.reply(embed=embedVar, view=regents)
+        await ctx.reply(embed=embed, view=regents)
 
         await regents.wait()
         if regents.value is None:

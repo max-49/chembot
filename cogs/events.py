@@ -36,7 +36,7 @@ class Events(commands.Cog):
                 embed.add_field(name=f"{most_recent_event['creator_name']}'s event", value=most_recent_event['message'])
                 try:
                     channel = self.bot.get_channel(int(most_recent_event['channel'][2:-1]))
-                except:
+                except Exception:
                     channel = self.bot.get_channel(780586194257182760)
                 user = ""
                 if(most_recent_event['user_ping']):
@@ -49,10 +49,10 @@ class Events(commands.Cog):
     @commands.command(name="addevent", help="addevent!")
     async def addevent(self, ctx):
         def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and msg.content.lower()[0] in string.printable
+            return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower()[0] in string.printable
         
         def check_yn(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and msg.content.lower() in ['y', 'n']
+            return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower() in ['y', 'n']
         
         date_mess = await ctx.send(f"{ctx.author.mention}, please enter the date of this event in the format MM/DD/YYYY (i.e. for the date of April 24th, 2023, enter 04/24/2023)")
         date = await self.bot.wait_for("message", check=check)
@@ -94,9 +94,9 @@ class Events(commands.Cog):
         try:
             datetime_date = (datetime.datetime(int(date_split[2]), int(date_split[0]), int(date_split[1]), int(time_split[0]), int(time_split[1]))) + timedelta(hours=5)
             datetime_unix = time.mktime(datetime_date.timetuple())
-        except:
+        except Exception:
             return await ctx.send("Something went wrong! Please make sure your date and time followed the format!")
-        if(((datetime.datetime.fromtimestamp(datetime_unix) - timedelta(hours=5)) < datetime.datetime.now(timezone('EST')).replace(tzinfo=None))):
+        if((datetime.datetime.fromtimestamp(datetime_unix) - timedelta(hours=5)) < datetime.datetime.now(timezone('EST')).replace(tzinfo=None)):
             return await ctx.send("You can't make an event that would have happened in the past!")
         try:
             with open('events.json') as j:

@@ -29,11 +29,11 @@ class Currency(commands.Cog):
         for i in range(len(profile_data)):
             if(profile_data[i]['ID'] == uid):
                 found = 1
-                embedVar = discord.Embed(
+                embed = discord.Embed(
                     title=f"{profile_data[i]['Name']}'s balance", timestamp=datetime.utcnow(), color=0x00C3FF)
-                embedVar.add_field(
+                embed.add_field(
                     name="Balance", value=f"{profile_data[i]['Balance']} {self.info[2]}", inline=False)
-                await ctx.reply(embed=embedVar)
+                await ctx.reply(embed=embed)
         if(found == 0):
             await ctx.send("No profile found!")
         with open('profiles.json', 'w') as json_file:
@@ -48,7 +48,7 @@ class Currency(commands.Cog):
             await ctx.send("You will be granted a cooldown reset if Max replies with 'yes' in the next 10 seconds")
 
             def check(msg):
-                return str(msg.author) == "Max49#9833" and msg.channel == msg.channel
+                return msg.author.id == 427832149173862400 and msg.channel == ctx.channel
             while True:
                 try:
                     msg = await self.bot.wait_for("message", check=check, timeout=10)
@@ -78,15 +78,15 @@ class Currency(commands.Cog):
                     if(key == "name"):
                         job_list.append(value)
             if(params[0] == "list"):
-                embedVar = discord.Embed(
+                embed = discord.Embed(
                     title="Currently Available Jobs", timestamp=datetime.utcnow(), color=0x00C3FF)
                 msg = ""
                 for i in range(len(jobs)):
                     msg += f"{jobs[i]['name']}: {jobs[i]['base_salary']} {self.info[2]}\n"
-                embedVar.add_field(name="Jobs", value=msg, inline=False)
-                embedVar.add_field(
+                embed.add_field(name="Jobs", value=msg, inline=False)
+                embed.add_field(
                     name="\u200b", value=f"Do `{self.info[3]}work <job>` to select a job!")
-                await ctx.reply(embed=embedVar)
+                await ctx.reply(embed=embed)
                 self.work.reset_cooldown(ctx)
                 return 0
             if(str(params[0]).lower() in job_list):
@@ -102,15 +102,14 @@ class Currency(commands.Cog):
                             with open('profiles.json', 'w') as json_file:
                                 json.dump(profiles, json_file)
                             self.work.reset_cooldown(ctx)
-                            return 0
+                            return
                         else:
                             await ctx.reply(f"You're already working as a {profiles[i]['Job']}! Please do `{self.info[3]}work resign` to choose a new job.")
                             self.work.reset_cooldown(ctx)
-                            return 0
-                else:
-                    await ctx.send(f"You don't have a profile yet! Do {self.info[3]}profile to create a profile and start working!")
-                    self.work.reset_cooldown(ctx)
-                    return 0
+                            return
+                await ctx.send(f"You don't have a profile yet! Do {self.info[3]}profile to create a profile and start working!")
+                self.work.reset_cooldown(ctx)
+                return 0
             if(str(params[0]).lower() == "resign"):
                 for i in range(len(profiles)):
                     if(profiles[i]['ID'] == ctx.author.id):
@@ -130,7 +129,7 @@ class Currency(commands.Cog):
                             self.work.reset_cooldown(ctx)
                         return 0
         except IndexError:
-            l = 0
+            pass
         for i in range(len(profiles)):
             if(profiles[i]['ID'] == ctx.author.id):
                 if(profiles[i]['Job'] == ""):
@@ -140,15 +139,15 @@ class Currency(commands.Cog):
                 else:
                     # check for promotion
                     if(profiles[i]['xp'] > (100 + (profiles[i]['level'] * 1.5))):
-                        embedVar = discord.Embed(
+                        embed = discord.Embed(
                             title="Promotion!", timestamp=datetime.utcnow(), color=0xFFC0CB)
-                        embedVar.add_field(name=f"Congratulations {ctx.author.name}! You've been working hard recently and have worked your way up to a promotion!",
+                        embed.add_field(name=f"Congratulations {ctx.author.name}! You've been working hard recently and have worked your way up to a promotion!",
                                            value=f"Level: **{profiles[i]['level']}** --> **{profiles[i]['level'] + 1}**\nSalary: **{profiles[i]['Salary']} {self.info[2]}** --> **{math.floor(profiles[i]['Salary'] * 1.5)} {self.info[2]}**")
                         profiles[i]['level'] += 1
                         profiles[i]['xp'] = 0
                         profiles[i]['Salary'] = math.floor(
                             profiles[i]['Salary'] * 1.5)
-                        await ctx.reply(embed=embedVar)
+                        await ctx.reply(embed=embed)
                         self.work.reset_cooldown(ctx)
                         with open('profiles.json', 'w') as json_file:
                             json.dump(profiles, json_file)
@@ -156,15 +155,15 @@ class Currency(commands.Cog):
                     with open(f"work/{profiles[i]['Job']}.json") as f:
                         work_scens = json.load(f)
                     scen = randint(0, len(work_scens)-1)
-                    embedVar = discord.Embed(
+                    embed = discord.Embed(
                         title=f"Work as a {profiles[i]['Job']}", color=0x00C3FF)
-                    embedVar.add_field(
+                    embed.add_field(
                         name=f"**{work_scens[scen]['type']}** - {work_scens[scen]['desc']}", value=f"`{work_scens[scen]['prompt']}`")
-                    await ctx.reply(embed=embedVar)
+                    await ctx.reply(embed=embed)
                     attempts = 2
 
                     def check(msg):
-                        return msg.author == ctx.author and msg.channel == msg.channel
+                        return msg.author == ctx.author and msg.channel == ctx.channel
                     while True:
                         try:
                             msg = await self.bot.wait_for("message", check=check, timeout=120)
@@ -172,19 +171,18 @@ class Currency(commands.Cog):
                             await ctx.send(f"Sorry {ctx.author.mention}, you didn't reply in time!")
                             break
                         if msg.content.lower() == str(work_scens[scen]['answer']).lower():
-                            correctEmbed = discord.Embed(color=0x00FF00)
-                            correctEmbed.add_field(
+                            correct_embed = discord.Embed(color=0x00FF00)
+                            correct_embed.add_field(
                                 name="Nice job!", value=f"You've earned {profiles[i]['Salary']} {self.info[2]} for working!")
                             profiles[i]['Balance'] += profiles[i]['Salary']
                             xp_given = randint(0, 20)
                             profiles[i]['xp'] += xp_given
-                            await msg.reply(embed=correctEmbed)
+                            await msg.reply(embed=correct_embed)
                             break
                         else:
                             if(attempts != 0):
                                 await msg.reply(f"Incorrect answer. You have {attempts} attempts left")
                                 attempts -= 1
-                                continue
                             else:
                                 profiles[i]['Balance'] += math.floor(
                                     int(profiles[i]['Salary'])/3)
@@ -193,10 +191,8 @@ class Currency(commands.Cog):
                 with open('profiles.json', 'w') as json_file:
                     json.dump(profiles, json_file)
                 return
-        else:
-            await ctx.reply(f"You don't have a profile yet! Do `{self.info[3]}profile` to create a profile and start working!")
-            self.work.reset_cooldown(ctx)
-            return 0
+        await ctx.reply(f"You don't have a profile yet! Do `{self.info[3]}profile` to create a profile and start working!")
+        self.work.reset_cooldown(ctx)
 
     @work.error
     async def command_name_error(self, ctx, error):
@@ -216,15 +212,15 @@ class Currency(commands.Cog):
             for key, value in thing.items():
                 if(key == "name"):
                     job_list.append(value)
-        embedVar = discord.Embed(
+        embed = discord.Embed(
             title="Currently Available Jobs", timestamp=datetime.utcnow(), color=0x00C3FF)
         msg = ""
         for i in range(len(jobs)):
             msg += f"{jobs[i]['name']}: {jobs[i]['base_salary']} {self.info[2]}\n"
-        embedVar.add_field(name="Jobs", value=msg, inline=False)
-        embedVar.add_field(
+        embed.add_field(name="Jobs", value=msg, inline=False)
+        embed.add_field(
             name="\u200b", value=f"Do `{self.info[3]}work <job>` to select a job!")
-        await ctx.reply(embed=embedVar)
+        await ctx.reply(embed=embed)
 
     @commands.command(name="workresign", help="resign from work")
     async def resign(self, ctx):
@@ -256,7 +252,7 @@ class Currency(commands.Cog):
     @commands.command(name="addwork", help="add a job work!")
     async def addwork(self, ctx):
         def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
+            return msg.author == ctx.author and msg.channel == ctx.channel and \
                 msg.content.lower()[0] in string.printable
 
         await ctx.send(f"{ctx.author.mention}, please enter the job this work is for")
@@ -312,10 +308,7 @@ class Currency(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, your work was successfully added!")
 
     @commands.command(name="transfer", help="transfer money to someone else!", aliases=['send', 'share'], pass_context=True)
-    async def transfer(self, ctx, member: discord.Member, money: int = None):
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
-                msg.content.lower()[0] in string.digits
+    async def transfer(self, ctx, member: discord.Member, money: int):
         with open('profiles.json') as f:
             profile_data = json.load(f)
         found = 0
@@ -323,10 +316,6 @@ class Currency(commands.Cog):
         if member.id == ctx.author.id:
             await ctx.send("You can't transfer money to yourself!")
             return
-        if money is None:
-            await ctx.send("How much money would you like to transfer to this person?")
-            money = await self.bot.wait_for("message", check=check)
-            money = int(money.content)
         for i in range(len(profile_data)):
             if(profile_data[i]['ID'] == ctx.author.id):
                 self_index = i
@@ -344,15 +333,15 @@ class Currency(commands.Cog):
             user_mention = f"<@!{profile_data[i]['ID']}>"
             if(profile_data[i]['ID'] == uid or profile_data[i]['Name'] == uid or profile_data[i]['Nick'] == uid or profile_data[i]['Tag'] == uid or user_mention == uid):
                 found = 1
-                embedVar = discord.Embed(
+                embed = discord.Embed(
                     title=f"Money Transfer to {member.display_name}", timestamp=datetime.utcnow(), color=0xFFFF33)
-                embedVar.add_field(
+                embed.add_field(
                     name=f"{ctx.author.display_name}", value=f"Old balance: {profile_data[self_index]['Balance']}\nNew balance: {profile_data[self_index]['Balance'] - money}", inline=True)
                 profile_data[self_index]['Balance'] = profile_data[self_index]['Balance'] - money
-                embedVar.add_field(
+                embed.add_field(
                     name=f"{member.display_name}", value=f"Old balance: {profile_data[i]['Balance']}\nNew balance: {profile_data[i]['Balance'] + money}", inline=True)
                 profile_data[i]['Balance'] = profile_data[i]['Balance'] + money
-                await ctx.reply(embed=embedVar)
+                await ctx.reply(embed=embed)
         if(found == 0):
             await ctx.send("No profile found for this user! Ask them to create one before transferring money!")
         with open('profiles.json', 'w') as json_file:
@@ -362,7 +351,7 @@ class Currency(commands.Cog):
     @has_permissions(administrator=True)
     async def addmoney(self, ctx, member: discord.Member, money: int = None):
         def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
+            return msg.author == ctx.author and msg.channel == ctx.channel and \
                 msg.content.lower()[0] in string.digits
         with open('profiles.json') as f:
             profile_data = json.load(f)
@@ -378,12 +367,12 @@ class Currency(commands.Cog):
         for i in range(len(profile_data)):
             if(profile_data[i]['ID'] == uid):
                 found = 1
-                embedVar = discord.Embed(
+                embed = discord.Embed(
                     title=f"Giving money to {member.display_name}", timestamp=datetime.utcnow(), color=0x00FF00)
-                embedVar.add_field(
+                embed.add_field(
                     name=f"{member.display_name}", value=f"Old balance: {profile_data[i]['Balance']}\nNew balance: {profile_data[i]['Balance'] + money}", inline=True)
                 profile_data[i]['Balance'] = profile_data[i]['Balance'] + money
-                await ctx.reply(embed=embedVar)
+                await ctx.reply(embed=embed)
         if(found == 0):
             await ctx.send("No profile found for this user! Ask them to create one before giving them money!")
         with open('profiles.json', 'w') as json_file:
@@ -393,7 +382,7 @@ class Currency(commands.Cog):
     @has_permissions(administrator=True)
     async def takemoney(self, ctx, member: discord.Member, money: int = None):
         def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and \
+            return msg.author == ctx.author and msg.channel == ctx.channel and \
                 msg.content.lower()[0] in string.digits
         with open('profiles.json') as f:
             profile_data = json.load(f)
@@ -409,13 +398,12 @@ class Currency(commands.Cog):
         for i in range(len(profile_data)):
             if(profile_data[i]['ID'] == uid):
                 found = 1
-                embedVar = discord.Embed(
+                embed = discord.Embed(
                     title=f"Removing money from {member.display_name}", timestamp=datetime.utcnow(), color=0xFF0000)
-                old_money = profile_data[i]['Balance'] - money
-                embedVar.add_field(
+                embed.add_field(
                     name=f"{member.display_name}", value=f"Old balance: {profile_data[i]['Balance']}\nNew balance: {profile_data[i]['Balance'] - money}", inline=True)
                 profile_data[i]['Balance'] = profile_data[i]['Balance'] - money
-                await ctx.reply(embed=embedVar)
+                await ctx.reply(embed=embed)
         if(found == 0):
             await ctx.send("No profile found for this user! Ask them to create one before ruining their life!")
         with open('profiles.json', 'w') as json_file:
@@ -463,11 +451,9 @@ class Currency(commands.Cog):
                             with open('profiles.json', 'w') as json_file:
                                 json.dump(profile_data, json_file)
                             return
-                else:
-                    await ctx.reply(f"Item doesn't exist! Make sure to use the item code found in `{self.info[3]}shop`")
-                    return
-        else:
-            await ctx.reply(f"You don't have a profile yet! Create one with `{self.info[3]}balance`!")
+                await ctx.reply(f"Item doesn't exist! Make sure to use the item code found in `{self.info[3]}shop`")
+                return
+        await ctx.reply(f"You don't have a profile yet! Create one with `{self.info[3]}balance`!")
 
     @commands.command(name='high', help='roll the higher number to win!')
     async def high(self, ctx, amount: int):
@@ -531,9 +517,8 @@ class Currency(commands.Cog):
                     for emoji in emojis:
                         instances = slots.count(emoji)
                         for table in tables:
-                            if(emoji == table['emoji']):
-                                if(instances == table['count']):
-                                    payout = table['payout']
+                            if(emoji == table['emoji'] and instances == table['count']):
+                                payout = table['payout']
                     if(payout == 0):
                         embed = discord.Embed(title=welcome_message, timestamp=datetime.utcnow(), color=0xFF0000)
                         embed.add_field(name='Your slot roll:', value=f'**>** {slots} **<**', inline=False)
@@ -558,16 +543,13 @@ class Currency(commands.Cog):
                 with open('profiles.json', 'w') as json_file:
                     json.dump(profile_data, json_file)
                 return
-        else:
-            await ctx.send(f"You don't have a profile yet! Do `{self.info[3]}balance` to create one!")
-            self.bet.reset_cooldown(ctx)
-            return
+        await ctx.send(f"You don't have a profile yet! Do `{self.info[3]}balance` to create one!")
+        self.bet.reset_cooldown(ctx)
 
     @bet.error
     async def command_name_error(self, ctx, error):
         if isinstance(error, commands.CommandOnCooldown):
             cd = round(error.retry_after)
-            minutes = str(cd // 60)
             seconds = str(cd % 60)
             em = discord.Embed(title=f"Woah! Stop betting so fast!", description=f"Try again in {seconds} seconds.", color=0xFF0000)
             await ctx.send(embed=em)
@@ -595,9 +577,8 @@ class Currency(commands.Cog):
                     with open('profiles.json', 'w') as json_file:
                         json.dump(profile_data, json_file)
                     return
-            else:
-                await ctx.send(f"You don't have a profile yet! Do `{self.info[3]}balance` to create one.")
-                self.beg.reset_cooldown(ctx)
+            await ctx.send(f"You don't have a profile yet! Do `{self.info[3]}balance` to create one.")
+            self.beg.reset_cooldown(ctx)
             
 
     @beg.error
@@ -631,7 +612,7 @@ class Currency(commands.Cog):
             times_tied = 0
             times_lost = 0
             net_profit = 0
-            for i in range(times):
+            for _ in range(times):
                 bagel_roll = random.randint(1,6)
                 you_roll = random.randint(1,6)
                 if(you_roll > bagel_roll):
@@ -648,22 +629,20 @@ class Currency(commands.Cog):
             embed.add_field(name='Times lost', value=f"{times_lost}/{times} ({round((times_lost/times)*100, 2)}%)")
             embed.add_field(name='Net profit with consistent bet of {:,} {}'.format(amount, self.info[2]), value="{:,}".format(net_profit), inline=False)
             await ctx.reply(embed=embed)
-            return
         elif(bet == 'slots'):
             emojis = ['⚽️', '🔴', '🔍', '🌍', '📸', '💵', '⌛️', '🏓']
             tables = [ { 'emoji': '⚽️', 'count': 2, 'payout': 1 }, { 'emoji': '🔍', 'count': 2, 'payout': 1 }, { 'emoji': '⌛️', 'count': 2, 'payout': 1.75 }, { 'emoji': '🏓', 'count': 2, 'payout': 1.75 }, { 'emoji': '🔴', 'count': 2, 'payout': 2 }, { 'emoji': '🌍', 'count': 2, 'payout': 2 }, { 'emoji': '💵', 'count': 2, 'payout': 2 }, { 'emoji': '📸', 'count': 2, 'payout': 2 }, { 'emoji': '🏓', 'count': 3, 'payout': 5 }, { 'emoji': '⚽️', 'count': 3, 'payout': 10 }, { 'emoji': '🔍', 'count': 3, 'payout': 10 }, { 'emoji': '🔴', 'count': 3, 'payout': 20 }, { 'emoji': '⌛️', 'count': 3, 'payout': 25 }, { 'emoji': '🌍', 'count': 3, 'payout': 50 }, { 'emoji': '📸', 'count': 3, 'payout': 75 }, { 'emoji': '💵', 'count': 3, 'payout': 250 }]
             times_won = 0
             times_lost = 0
             net_profit = 0
-            for i in range(times):
+            for _ in range(times):
                 slots = ' '.join([random.choice(emojis), random.choice(emojis), random.choice(emojis)])     
                 payout = 0
                 for emoji in emojis:
                     instances = slots.count(emoji)
                     for table in tables:
-                        if(emoji == table['emoji']):
-                            if(instances == table['count']):
-                                payout = table['payout']
+                        if(emoji == table['emoji'] and instances == table['count']):
+                            payout = table['payout']
                 if(payout == 0):
                     times_lost += 1
                     net_profit -= amount
@@ -675,7 +654,6 @@ class Currency(commands.Cog):
             embed.add_field(name='Times lost', value=f"{times_lost}/{times} ({round((times_lost/times)*100, 2)}%)")
             embed.add_field(name='Net profit with consistent bet of {:,} {}'.format(amount, self.info[2]), value="{:,}".format(net_profit), inline=False)
             await ctx.reply(embed=embed)
-            return
 
     async def cog_command_error(self, ctx, error):
         if not isinstance(error, commands.CommandOnCooldown):

@@ -42,7 +42,7 @@ class Basic(commands.Cog):
         async def search_gifs(query):
             try:
                 session = aiohttp.ClientSession()
-                response = await session.get(f"https://g.tenor.com/v1/search?q={search_term}&key={api_key}&limit=50")
+                response = await session.get(f"https://g.tenor.com/v1/search?q={query}&key={api_key}&limit=50")
                 data = json.loads(await response.text())
                 gif_choice = randint(0, 40)
                 gif_url = data['results'][gif_choice]['media'][0]['gif']['url']
@@ -58,7 +58,7 @@ class Basic(commands.Cog):
     async def spam(self, ctx, *, string: str):
         if(ctx.guild.id == 732308165265326080):
             return await ctx.send("no spam in ictf bc it makes wick sad")
-        for i in range(5):
+        for _ in range(5):
             await ctx.send(string, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False))
 
     @commands.command(name="ping", help="displays the latency to the bot.")
@@ -68,7 +68,6 @@ class Basic(commands.Cog):
     @commands.command(name='help', help='displays this message!')
     async def help(self, ctx, *, select_cog=None):
         help_list = []
-        num = 0
 
         for cog in self.bot.cogs:
             help_dict = {}
@@ -80,7 +79,6 @@ class Basic(commands.Cog):
                     cog_coms.append(f'{command.name} - {command.help}')
             help_dict[cog] = cog_coms
             help_list.append(help_dict)
-            num += 1
 
         if select_cog is None:
             number = 0
@@ -159,18 +157,17 @@ class Basic(commands.Cog):
         if reaction.message.author.id == self.bot.user.id and user != self.bot.user:
             embed = reaction.message.embeds[0]
             for i in range(len(commands)):
-                for key, value in commands[i].items():
-                    for keyy in value:
-                        if str(key) == str(embed.fields[0].name):
-                            number = i
+                for key in commands[i]:
+                    if str(key) == str(embed.fields[0].name):
+                        number = i
             if str(reaction.emoji) == "⬅️":
-                newEmbed = get_next_embed(commands, number, 0)
-                if newEmbed is not None:
-                    await reaction.message.edit(embed=newEmbed)
+                new_embed = get_next_embed(commands, number, 0)
+                if new_embed is not None:
+                    await reaction.message.edit(embed=new_embed)
             if str(reaction.emoji) == "➡️":
-                newEmbed = get_next_embed(commands, number, 1)
-                if newEmbed is not None:
-                    await reaction.message.edit(embed=newEmbed)
+                new_embed = get_next_embed(commands, number, 1)
+                if new_embed is not None:
+                    await reaction.message.edit(embed=new_embed)
 
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")

@@ -63,18 +63,9 @@ class Owner(commands.Cog):
                 profile_data[i]['Balance'] = 0
             if(profile_data[i]['Balance'] > 20000):
                 profile_data[i]['Balance'] = 20000
-            # if(profile_data[i]['Calc'] == "True"):
-            #     profile_data[i]['Calc'] = True
-            # if(profile_data[i]['Table'] == "True"):
-            #     profile_data[i]['Table'] = True
-            # if(profile_data[i]['Calc'] == "False"):
-            #     profile_data[i]['Calc'] = False
-            # if(profile_data[i]['Table'] == "False"):
-            #     profile_data[i]['Table'] = False
             profile_data[i]['WordleWins'] = 0
             profile_data[i]['WordleTotal'] = 0
             profile_data[i]['didDaily'] = False
-            # profile_data[i]['Times'] = 0
         with open('profiles.json', 'w') as j:
             json.dump(profile_data, j)
         await ctx.send("Profiles updated!")
@@ -105,7 +96,7 @@ class Owner(commands.Cog):
     async def shell(self, ctx):
         await ctx.send('Shell spawned. Type `exit` to exit the shell.')
         def check(msg):
-            return msg.author == ctx.author and msg.channel == msg.channel and msg.content.lower()[0] in string.printable
+            return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower()[0] in string.printable
 
         while True:
             command = await self.bot.wait_for("message", check=check)
