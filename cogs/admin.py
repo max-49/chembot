@@ -12,6 +12,30 @@ class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.command(name='purge', help='purgury')
+    @has_permissions(manage_messages=True)
+    async def purge(self, ctx, num: int):
+        await ctx.channel.purge(limit=num+1)
+        await ctx.send(f'{num} messages cleared by {ctx.author.mention}')
+
+    @commands.command(name='purgeuser', help='purgury in channel')
+    @has_permissions(manage_messages=True)
+    async def purgeuser(self, ctx, member: discord.Member, num: int):
+        if (num > 50):
+            return await ctx.send("You can't purge more than 50 messages with this command!")
+        history = await ctx.channel.history(limit=100, oldest_first=False).flatten()
+        print(len(history))
+        num_deleted = 0
+        for message in history:
+            if num_deleted == num:
+                break
+            elif message.author.id == member.id:
+                await message.delete()
+                num_deleted += 1
+        else:
+            await ctx.send("Number provided was more than this user's sent messages in this channel!")
+        await ctx.send(f'{num_deleted} messages by {member} cleared by {ctx.author.mention}')
+
     @commands.command(name='clear', help="clears screen (admin only)")
     @has_permissions(administrator=True)
     async def clear(self, ctx):
