@@ -33,7 +33,7 @@ class Spaces(discord.ui.View):
             elif y in guess:
                 guess_indices = [p for p, c in enumerate(guess) if c == y and self.children[p + 5 * j].style != discord.ButtonStyle.green]
                 word_indices = [p for p, c in enumerate(word) if c == y and p not in guess_indices and self.children[p + 5 * j].style != discord.ButtonStyle.green]
-                for i in range(len(word_indices)):
+                for i in range(min(len(word_indices), len(guess_indices))):
                     self.children[guess_indices[i] + 5 * j].style = discord.ButtonStyle.blurple
             # if an exit is sent, disable all the buttons
             if guess == word or exitt:

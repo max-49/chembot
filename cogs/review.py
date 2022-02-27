@@ -157,7 +157,7 @@ class Review(commands.Cog):
                 found = 1
                 self_index = i
         if(found == 0):
-            profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(profile.avatar.url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0, "WordleWins": 0, "WordleTotal": 0, "didDaily": False})
+            profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(ctx.author.avatar.url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0, "WordleWins": 0, "WordleTotal": 0, "didDaily": False})
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     found = 1
@@ -329,7 +329,7 @@ class Review(commands.Cog):
                             percent_correct = 0
                         percentages[str(profile_data[i]['Name'])
                                     ] = percent_correct
-                    embedVar = discord.Embed(
+                    embed = discord.Embed(
                         title="AP World Leaderboard", timestamp=datetime.utcnow(), color=0x00ff00)
                     sorted_percentages = {k: v for k, v in sorted(
                         percentages.items(), key=lambda item: item[1], reverse=True)}
@@ -339,8 +339,8 @@ class Review(commands.Cog):
                         msg += str(place) + ". " + key + " (" + \
                             str(round(sorted_percentages[key], 2)) + "%)\n"
                         place += 1
-                    embedVar.add_field(name="Placements", value=msg, inline=False)
-                    await ctx.send(embed=embedVar)
+                    embed.add_field(name="Placements", value=msg, inline=False)
+                    await ctx.send(embed=embed)
                 elif(lb.lower() == 'bal' or lb.lower() == 'money' or lb.lower() == 'rich' or lb.lower() == 'schlucks'):
                     for i in range(len(profile_data)):
                         try:
@@ -348,7 +348,7 @@ class Review(commands.Cog):
                         except ZeroDivisionError:
                             schlucks = 0
                         percentages[str(profile_data[i]['Name'])] = schlucks
-                    embedVar = discord.Embed(
+                    embed = discord.Embed(
                         title="Richest Users", timestamp=datetime.utcnow(), color=0x00ff00)
                     sorted_percentages = {k: v for k, v in sorted(
                         percentages.items(), key=lambda item: item[1], reverse=True)}
@@ -359,8 +359,8 @@ class Review(commands.Cog):
                             str(round(
                                 sorted_percentages[key], 2)) + f" {self.info[2]})\n"
                         place += 1
-                    embedVar.add_field(name="Placements", value=msg, inline=False)
-                    await ctx.send(embed=embedVar)
+                    embed.add_field(name="Placements", value=msg, inline=False)
+                    await ctx.send(embed=embed)
                 else:
                     for i in range(len(profile_data)):
                         try:
@@ -370,7 +370,7 @@ class Review(commands.Cog):
                             percent_correct = 0
                         percentages[str(profile_data[i]['Name'])
                                     ] = percent_correct
-                    embedVar = discord.Embed(
+                    embed = discord.Embed(
                         title="Chemistry Leaderboard", timestamp=datetime.utcnow(), color=0x00ff00)
                     sorted_percentages = {k: v for k, v in sorted(
                         percentages.items(), key=lambda item: item[1], reverse=True)}
@@ -380,8 +380,8 @@ class Review(commands.Cog):
                         msg += str(place) + ". " + key + " (" + \
                             str(round(sorted_percentages[key], 2)) + "%)\n"
                         place += 1
-                    embedVar.add_field(name="Placements", value=msg, inline=False)
-                    await ctx.send(embed=embedVar)
+                    embed.add_field(name="Placements", value=msg, inline=False)
+                    await ctx.send(embed=embed)
             elif(lb.lower() in ['times', 'win', 'lose', 'profit', 'negprofit']):
                 if(lb.lower() == 'win' or lb.lower() == 'lose'):
                     if(lb.lower() == 'win'):
@@ -394,7 +394,7 @@ class Review(commands.Cog):
                         except ZeroDivisionError:
                             percent_correct = 0
                         percentages[str(profile_data[i]['Name'])] = percent_correct
-                    embedVar = discord.Embed(title=f"Highest {lb_type} Percentages", timestamp=datetime.utcnow(), color=0x00ff00)
+                    embed = discord.Embed(title=f"Highest {lb_type} Percentages", timestamp=datetime.utcnow(), color=0x00ff00)
                     sorted_percentages = {k: v for k, v in sorted(percentages.items(), key=lambda item: item[1], reverse=True)}
                     msg = ""
                     place = 1
@@ -408,21 +408,21 @@ class Review(commands.Cog):
                             msg += str(place) + ". " + key + " (" + \
                                 str(round(sorted_percentages[key], 2)) + f"%)\n"
                             place += 1
-                    embedVar.add_field(name="Placements", value=msg, inline=False)
-                    await ctx.send(embed=embedVar)
+                    embed.add_field(name="Placements", value=msg, inline=False)
+                    await ctx.send(embed=embed)
                 elif(lb.lower() == 'times' or lb.lower() == 'profit' or lb.lower() == 'bagels'):
                     if(lb.lower() == 'times'):
                         lb_type = 'Times'
                         end = 'times'
-                        embedVar = discord.Embed(title="People who have gambled the most", timestamp=datetime.utcnow(), color=0x00ff00)
+                        embed = discord.Embed(title="People who have gambled the most", timestamp=datetime.utcnow(), color=0x00ff00)
                     elif(lb.lower() == 'profit'):
                         lb_type = 'Profit'
                         end = self.info[2]
-                        embedVar = discord.Embed(title="Users who have made the most profit", timestamp=datetime.utcnow(), color=0x00ff00)
+                        embed = discord.Embed(title="Users who have made the most profit", timestamp=datetime.utcnow(), color=0x00ff00)
                     else:
                         lb_type = 'Balance'
                         end = self.info[2]
-                        embedVar = discord.Embed(title="Richest Users", timestamp=datetime.utcnow(), color=0x00ff00)
+                        embed = discord.Embed(title="Richest Users", timestamp=datetime.utcnow(), color=0x00ff00)
                     for i in range(len(profile_data)):
                         for i in range(len(profile_data)):
                             number = profile_data[i][lb_type]
@@ -441,10 +441,10 @@ class Review(commands.Cog):
                                 str(round(sorted_percentages[key], 2)) + f" {end})\n"
                             place += 1
 
-                    embedVar.add_field(name="Placements", value=msg, inline=False)
-                    await ctx.send(embed=embedVar)
+                    embed.add_field(name="Placements", value=msg, inline=False)
+                    await ctx.send(embed=embed)
                 elif(lb.lower() == 'negprofit'):
-                    embedVar = discord.Embed(title="Users who have made the least profit", timestamp=datetime.utcnow(), color=0x00ff00)
+                    embed = discord.Embed(title="Users who have made the least profit", timestamp=datetime.utcnow(), color=0x00ff00)
                     for i in range(len(profile_data)):
                         for i in range(len(profile_data)):
                             number = profile_data[i]['Profit']
@@ -463,8 +463,8 @@ class Review(commands.Cog):
                                 str(round(sorted_percentages[key], 2)) + f" {self.info[2]})\n"
                             place += 1
 
-                    embedVar.add_field(name="Placements", value=msg, inline=False)
-                    await ctx.send(embed=embedVar)
+                    embed.add_field(name="Placements", value=msg, inline=False)
+                    await ctx.send(embed=embed)
             else:
                 await ctx.send("Invalid leaderboard choice! Showing chemistry leaderboard")
                 for i in range(len(profile_data)):
@@ -474,7 +474,7 @@ class Review(commands.Cog):
                     except ZeroDivisionError:
                         percent_correct = 0
                     percentages[str(profile_data[i]['Name'])] = percent_correct
-                embedVar = discord.Embed(
+                embed = discord.Embed(
                     title="Chemistry Leaderboard", timestamp=datetime.utcnow(), color=0x00ff00)
                 sorted_percentages = {k: v for k, v in sorted(
                     percentages.items(), key=lambda item: item[1], reverse=True)}
@@ -484,8 +484,8 @@ class Review(commands.Cog):
                     msg += str(place) + ". " + key + " (" + \
                         str(round(sorted_percentages[key], 2)) + "%)\n"
                     place += 1
-                embedVar.add_field(name="Placements", value=msg, inline=False)
-                await ctx.send(embed=embedVar)
+                embed.add_field(name="Placements", value=msg, inline=False)
+                await ctx.send(embed=embed)
         else:
             for i in range(len(profile_data)):
                 try:
@@ -494,7 +494,7 @@ class Review(commands.Cog):
                 except ZeroDivisionError:
                     percent_correct = 0
                 percentages[str(profile_data[i]['Name'])] = percent_correct
-            embedVar = discord.Embed(
+            embed = discord.Embed(
                 title="Chemistry Leaderboard", timestamp=datetime.utcnow(), color=0x00ff00)
             sorted_percentages = {k: v for k, v in sorted(
                 percentages.items(), key=lambda item: item[1], reverse=True)}
@@ -504,8 +504,8 @@ class Review(commands.Cog):
                 msg += str(place) + ". " + key + " (" + \
                     str(round(sorted_percentages[key], 2)) + "%)\n"
                 place += 1
-            embedVar.add_field(name="Placements", value=msg, inline=False)
-            await ctx.send(embed=embedVar)
+            embed.add_field(name="Placements", value=msg, inline=False)
+            await ctx.send(embed=embed)
 
     @commands.command(name='settings', help="displays the settings menu")
     async def settings(self, ctx, *params):
@@ -519,7 +519,7 @@ class Review(commands.Cog):
                 found = 1
                 found_indices.append(i)
         if(found == 0):
-            profile_data.append({"Name": profile.name, "Tag": str(profile), "Nick": profile.display_name, "ID": profile.id, "Avatar URL": str(profile.avatar.url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0, "WordleWins": 0, "WordleTotal": 0, "didDaily": False})
+            profile_data.append({"Name": ctx.author.name, "Tag": str(ctx.author), "Nick": ctx.author.display_name, "ID": ctx.author.id, "Avatar URL": str(ctx.author.avatar.url), "Correct": 0, "Total": 0, "Calc": "True", "Table": "True", "WorldCorrect": 0, "WorldTotal": 0, "Balance": 0, "Job": "", "Salary": 0, "xp": 0, "level": 1, "Times": 0, "Win": 0, "Lose": 0, "Profit": 0, "WordleWins": 0, "WordleTotal": 0, "didDaily": False})
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == uid):
                     found_indices.append(i)
@@ -570,12 +570,12 @@ class Review(commands.Cog):
             else:
                 table_value = f"🔴 Disabled"
 
-            embedVar = discord.Embed(title=f"{ctx.author.name}'s Regents Question Settings", description=f"Use the command syntax `{self.info[3]}settings <calc/table> <on/off>` to change these settings", timestamp=datetime.utcnow(), color=0xFF0000)
-            embedVar.add_field(
+            embed = discord.Embed(title=f"{ctx.author.name}'s Regents Question Settings", description=f"Use the command syntax `{self.info[3]}settings <calc/table> <on/off>` to change these settings", timestamp=datetime.utcnow(), color=0xFF0000)
+            embed.add_field(
                 name="Questions that require the use of a calculator", value=calc_value, inline=False)
-            embedVar.add_field(
+            embed.add_field(
                 name="Questions that require the use of the reference table", value=table_value, inline=False)
-            await ctx.send(embed=embedVar)
+            await ctx.send(embed=embed)
 
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
