@@ -116,7 +116,7 @@ class Wordle(commands.Cog):
 
         if(not game.value):
             embed=discord.Embed(title="You win!", color=0x00FF00)
-            profile_data[user_id]['WordleWins'] = profile_data[i]['WordleWins'] + 1
+            profile_data[user_id]['WordleWins'] = profile_data[user_id]['WordleWins'] + 1
             await view.edit(embed=embed, view=game)
         else:
             embed = discord.Embed(title="You lose... Better luck next time!", description=f"The word was {word}", color=0xFF0000)
