@@ -40,8 +40,8 @@ class Spaces(discord.ui.View):
                     self.children[guess_indices[i] + 5 * j].style = discord.ButtonStyle.blurple
         # if an exit is sent, disable all the buttons
         squares = ""
-        if guess == word or exitt:
-            self.wordle[0] += "X/5" if exitt else f"{self.guesses.index(guess)+1}/5"
+        if guess == word or exitt is not None:
+            self.wordle[0] += "X/5" if exitt is not None else f"{self.guesses.index(guess)+1}/5"
             for i, child in enumerate(self.children):
                 if child.label != '\u200b':
                     squares += colors[child.style]
@@ -124,14 +124,14 @@ class Wordle(commands.Cog):
 
         if(not game.value):
             embed=discord.Embed(title="You win!", color=0x00FF00)
-            await ctx.send('\n'.join(game.wordle))
             profile_data[user_id]['WordleWins'] = profile_data[user_id]['WordleWins'] + 1
             await view.edit(embed=embed, view=game)
+            await ctx.send('\n'.join(game.wordle))
         else:
             embed = discord.Embed(title="You lose... Better luck next time!", description=f"The word was {word}", color=0xFF0000)
-            await ctx.send('\n'.join(game.wordle))
             game = Spaces(self.bot, wordlist.index(word), word, guesses, "exit")
             await view.edit(embed=embed, view=game)
+            await ctx.send('\n'.join(game.wordle))
         
         with open('profiles.json', 'w') as j:
             json.dump(profile_data, j)
@@ -205,13 +205,13 @@ class Wordle(commands.Cog):
     
         if(not game.value):
             embed=discord.Embed(title="You win!", color=0x00FF00)
-            await ctx.send('\n'.join(game.wordle))
             await view.edit(embed=embed, view=game)
+            await ctx.send('\n'.join(game.wordle))
         else:
             embed = discord.Embed(title="You lose... Better luck next time!", description=f"The word was {word}", color=0xFF0000)
-            await ctx.send('\n'.join(game.wordle))
             game = Spaces(self.bot, 0, word, guesses, "exit")
             await view.edit(embed=embed, view=game)
+            await ctx.send('\n'.join(game.wordle))
 
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
