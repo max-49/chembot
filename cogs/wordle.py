@@ -129,7 +129,7 @@ class Wordle(commands.Cog):
         else:
             embed = discord.Embed(title="You lose... Better luck next time!", description=f"The word was {word}", color=0xFF0000)
             await ctx.send('\n'.join(game.wordle))
-            game = Spaces(word, guesses, "exit")
+            game = Spaces(self.bot, wordlist.index(word), word, guesses, "exit")
             await view.edit(embed=embed, view=game)
         
         with open('profiles.json', 'w') as j:
@@ -209,7 +209,7 @@ class Wordle(commands.Cog):
         else:
             embed = discord.Embed(title="You lose... Better luck next time!", description=f"The word was {word}", color=0xFF0000)
             await ctx.send('\n'.join(game.wordle))
-            game = Spaces(word, guesses, "exit")
+            game = Spaces(self.bot, 0, word, guesses, "exit")
             await view.edit(embed=embed, view=game)
 
     async def cog_command_error(self, ctx, error):
