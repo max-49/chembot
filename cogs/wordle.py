@@ -41,9 +41,10 @@ class Spaces(discord.ui.View):
         # if an exit is sent, disable all the buttons
         squares = ""
         if guess == word or exitt:
-            self.wordle[0] += f"{self.guesses.index(guess)+1}/5" if guess == word else "X/5"
+            self.wordle[0] += "X/5" if exitt else f"{self.guesses.index(guess)+1}/5"
             for i, child in enumerate(self.children):
-                squares += colors[child.style]
+                if child.label != '\u200b':
+                    squares += colors[child.style]
                 child.disabled = True
             self.wordle += [squares[i:i+5] for i in range(0, len(squares), 5)]
             self.value = False
