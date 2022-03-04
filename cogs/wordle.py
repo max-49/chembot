@@ -16,7 +16,7 @@ When an exit (exitt in __init__) parameter is sent (sent when a user manually qu
 class Spaces(discord.ui.View):
     def __init__(self, bot, word_num, word: str, guesses=None, exitt=None):
         super().__init__()
-        self.wordle = [f"{(bot.user.name)[:4]}ordle {word_num} ", ""]
+        self.wordle = [f"{(''.join(bot.user.name.split()))[:4]}ordle {word_num} ", ""]
         for _ in range(25):
             self.add_item(Button(label='\u200b', style=discord.ButtonStyle.grey))
         word = word.upper()
