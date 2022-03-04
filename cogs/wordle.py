@@ -14,16 +14,19 @@ When a new word is inputted, it compares the word to the real word and decides w
 When an exit (exitt in __init__) parameter is sent (sent when a user manually quits or runs out of guesses), all buttons are deactivated and the game ends.
 '''
 class Spaces(discord.ui.View):
-    def __init__(self, word: str, guesses=list(), exitt=None):
+    def __init__(self, bot, word_num, word: str, guesses=None, exitt=None):
         super().__init__()
+        self.wordle = [f"{(bot.user.name)[:4]}ordle {word_num} ", ""]
         for _ in range(25):
             self.add_item(Button(label='\u200b', style=discord.ButtonStyle.grey))
         word = word.upper()
         self.value = True
-        for j, guess in enumerate(guesses):
+        self.guesses = guesses if guesses is not None else []
+        for j, guess in enumerate(self.guesses):
             self.change_colors(j, guess, word, exitt)
 
     def change_colors(self, j, guess, word, exitt):
+        colors = {discord.ButtonStyle.green: "🟩", discord.ButtonStyle.blurple: "🟪", discord.ButtonStyle.grey: "⬛"}
         for i, (x,y) in enumerate(zip(guess, word)):
             self.children[i + 5 * j].label = x
             # button should be green if the guess and word have the same letter in the same spot
@@ -35,11 +38,15 @@ class Spaces(discord.ui.View):
                 word_indices = [p for p, c in enumerate(word) if c == y and p not in guess_indices and self.children[p + 5 * j].style != discord.ButtonStyle.green]
                 for i in range(min(len(word_indices), len(guess_indices))):
                     self.children[guess_indices[i] + 5 * j].style = discord.ButtonStyle.blurple
-            # if an exit is sent, disable all the buttons
-            if guess == word or exitt:
-                for child in self.children:
-                    child.disabled = True
-                self.value = False
+        # if an exit is sent, disable all the buttons
+        squares = ""
+        if guess == word or exitt:
+            self.wordle[0] += f"{self.guesses.index(guess)+1}/5" if guess == word else "X/5"
+            for i, child in enumerate(self.children):
+                squares += colors[child.style]
+                child.disabled = True
+            self.wordle += [squares[i:i+5] for i in range(0, len(squares), 5)]
+            self.value = False
 
 '''
 This is the Wordle class, a discord.py cog that hold all commands in the Wordle help category
@@ -78,7 +85,7 @@ class Wordle(commands.Cog):
         wordlist = self.words + self.also_words
 
         # initialize game
-        game = Spaces(word)
+        game = Spaces(self.bot, wordlist.index(word), word)
         embed = discord.Embed(title="Wordle")
         view = await ctx.send(embed=embed, view=game)
 
@@ -89,7 +96,7 @@ class Wordle(commands.Cog):
             guess = await self.bot.wait_for("message", check=check)
             # send exit to the Spaces() class if user quits early
             if guess.content.lower() == 'exit' or guess.content.lower() == 'quit':
-                game = Spaces(word, guesses, 'exit')
+                game = Spaces(self.bot, wordlist.index(word), word, guesses, 'exit')
                 await ctx.send("Quitting game...")
                 return await view.edit(embed=embed, view=game)
             # checks if word is valid
@@ -100,7 +107,7 @@ class Wordle(commands.Cog):
             else:
                 guesses.append(guess.content.upper())
                 embed = discord.Embed(title="Wordle")
-                game = Spaces(word, guesses)
+                game = Spaces(self.bot, wordlist.index(word), word, guesses)
                 await view.edit(embed=embed, view=game)
                 await guess.delete()
                 guess_number += 1
@@ -116,10 +123,12 @@ class Wordle(commands.Cog):
 
         if(not game.value):
             embed=discord.Embed(title="You win!", color=0x00FF00)
+            await ctx.send('\n'.join(game.wordle))
             profile_data[user_id]['WordleWins'] = profile_data[user_id]['WordleWins'] + 1
             await view.edit(embed=embed, view=game)
         else:
             embed = discord.Embed(title="You lose... Better luck next time!", description=f"The word was {word}", color=0xFF0000)
+            await ctx.send('\n'.join(game.wordle))
             game = Spaces(word, guesses, "exit")
             await view.edit(embed=embed, view=game)
         
@@ -168,7 +177,7 @@ class Wordle(commands.Cog):
     async def debugwordle(self, ctx, word):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower()[0] in string.printable
-        game = Spaces(word)
+        game = Spaces(self.bot, 0, word)
         embed = discord.Embed(title="Wordle")
         view = await ctx.send(embed=embed, view=game)
 
@@ -177,7 +186,7 @@ class Wordle(commands.Cog):
         while guess_number < 5 and game.value:
             guess = await self.bot.wait_for("message", check=check)
             if guess.content.lower() == 'exit' or guess.content.lower() == 'quit':
-                game = Spaces(word, guesses, 'exit')
+                game = Spaces(self.bot, 0, word, guesses, 'exit')
                 await ctx.send("Quitting game...")
                 return await view.edit(embed=embed, view=game)
 
@@ -188,16 +197,18 @@ class Wordle(commands.Cog):
             else:
                 guesses.append(guess.content.upper())
                 embed = discord.Embed(title="Wordle")
-                game = Spaces(word, guesses)
+                game = Spaces(self.bot, 0, word, guesses)
                 await view.edit(embed=embed, view=game)
                 await guess.delete()
                 guess_number += 1
     
         if(not game.value):
             embed=discord.Embed(title="You win!", color=0x00FF00)
+            await ctx.send('\n'.join(game.wordle))
             await view.edit(embed=embed, view=game)
         else:
             embed = discord.Embed(title="You lose... Better luck next time!", description=f"The word was {word}", color=0xFF0000)
+            await ctx.send('\n'.join(game.wordle))
             game = Spaces(word, guesses, "exit")
             await view.edit(embed=embed, view=game)
 
