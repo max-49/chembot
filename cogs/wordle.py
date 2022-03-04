@@ -16,7 +16,6 @@ When an exit (exitt in __init__) parameter is sent (sent when a user manually qu
 class Spaces(discord.ui.View):
     def __init__(self, bot, word_num, word: str, guesses=None, exitt=None):
         super().__init__()
-        colors = {discord.ButtonStyle.green: "🟩", discord.ButtonStyle.blurple: "🟪", discord.ButtonStyle.grey: "⬛"}
         self.wordle = [f"{(''.join(bot.user.name.split()))[:4]}ordle {word_num} ", ""]
         for _ in range(25):
             self.add_item(Button(label='\u200b', style=discord.ButtonStyle.grey))
@@ -24,18 +23,10 @@ class Spaces(discord.ui.View):
         self.value = True
         self.guesses = guesses if guesses is not None else []
         for j, guess in enumerate(self.guesses):
-            squares = ""
-            if guess == word or exitt is not None:
-                self.wordle[0] += "X/5" if exitt is not None else f"{self.guesses.index(guess)+1}/5"
-                for child in self.children:
-                    if child.label != '\u200b':
-                        squares += colors[child.style]
-                    child.disabled = True
-                self.wordle += [squares[i:i+5] for i in range(0, len(squares), 5)]
-                self.value = False
             self.change_colors(j, guess, word, exitt)
 
     def change_colors(self, j, guess, word, exitt):
+        colors = {discord.ButtonStyle.green: "🟩", discord.ButtonStyle.blurple: "🟪", discord.ButtonStyle.grey: "⬛"}
         for i, (x,y) in enumerate(zip(guess, word)):
             self.children[i + 5 * j].label = x
             # button should be green if the guess and word have the same letter in the same spot
@@ -47,6 +38,16 @@ class Spaces(discord.ui.View):
                 word_indices = [p for p, c in enumerate(word) if c == y and p not in guess_indices and self.children[p + 5 * j].style != discord.ButtonStyle.green]
                 for i in range(min(len(word_indices), len(guess_indices))):
                     self.children[guess_indices[i] + 5 * j].style = discord.ButtonStyle.blurple
+        # if an exit is sent, disable all the buttons
+        squares = ""
+        if guess == word or (exitt is not None and j == len(self.guesses)-1):
+            self.wordle[0] += "X/5" if exitt is not None else f"{self.guesses.index(guess)+1}/5"
+            for i, child in enumerate(self.children):
+                if child.label != '\u200b':
+                    squares += colors[child.style]
+                child.disabled = True
+            self.wordle += [squares[i:i+5] for i in range(0, len(squares), 5)]
+            self.value = False
 
 '''
 This is the Wordle class, a discord.py cog that hold all commands in the Wordle help category
