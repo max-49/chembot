@@ -3,6 +3,7 @@ import json
 import random
 import string
 import discord
+from discord import ui
 from datetime import datetime
 from discord.ext import commands
 from discord.ui.button import Button
@@ -13,7 +14,15 @@ This class is called whenever a new word is inputted or the game is quit.
 When a new word is inputted, it compares the word to the real word and decides whether the button should be gray, green, or purple, following standard Wordle rules.
 When an exit (exitt in __init__) parameter is sent (sent when a user manually quits or runs out of guesses), all buttons are deactivated and the game ends.
 '''
-class Spaces(discord.ui.View):
+
+class Questionnaire(ui.Modal, title='Questionnaire Response'):
+    name = ui.TextInput(label='Name')
+    answer = ui.TextInput(label='Answer', style=discord.TextStyle.paragraph)
+
+    async def on_submit(self, interaction: discord.Interaction):
+        await interaction.response.send_message(f'Thanks for your response, {self.name}!', ephemeral=True)
+
+class Spaces(ui.View):
     def __init__(self, bot, word_num, word: str, guesses=None, exitt=None):
         super().__init__()
         self.wordle = [f"{(''.join(bot.user.name.split()))[:4]}ordle {word_num} ", ""]
@@ -76,6 +85,12 @@ class Wordle(commands.Cog):
     If the user fails to guess the word in 5 tries, the buttons deactivate and a lose scene is prompted. 
     After a win or lose, the user's profile is updated
     '''
+
+    @commands.command(name='testword', help='yo')
+    async def testt(self, ctx):
+        test = Questionnaire()
+        await discord.InteractionResponse.send_modal(test)
+
     @commands.command(name="wordle", help="world")
     async def wordle(self, ctx):
         def check(msg):
@@ -96,14 +111,17 @@ class Wordle(commands.Cog):
             # get user input for the guess
             guess = await self.bot.wait_for("message", check=check)
             # send exit to the Spaces() class if user quits early
-            if guess.content.lower() == 'exit' or guess.content.lower() == 'quit':
+            if guess.content.lower() in ['exit', 'quit']:
                 game = Spaces(self.bot, wordlist.index(word), word, guesses, 'exit')
                 await ctx.send("Quitting game...")
                 return await view.edit(embed=embed, view=game)
             # checks if word is valid
-            if len(guess.content) < 5 or len(guess.content) > 5 or guess.content.lower() not in wordlist:
+            if len(guess.content) < 5 or len(guess.content) > 5:
+                embed = discord.Embed(title="Wrong length! Guess again.")
+                await view.edit(embed=embed, view=game)
+            elif guess.content.lower() not in wordlist:
                 await guess.add_reaction('❌')
-                embed = discord.Embed(title="Invalid word! Guess again.")
+                embed = discord.Embed(title="Word not in wordlist! Guess again.")
                 await view.edit(embed=embed, view=game)
             else:
                 guesses.append(guess.content.upper())
