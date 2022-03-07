@@ -15,13 +15,6 @@ When a new word is inputted, it compares the word to the real word and decides w
 When an exit (exitt in __init__) parameter is sent (sent when a user manually quits or runs out of guesses), all buttons are deactivated and the game ends.
 '''
 
-class Questionnaire(ui.Modal, title='Questionnaire Response'):
-    name = ui.TextInput(label='Name')
-    answer = ui.TextInput(label='Answer', style=discord.TextStyle.paragraph)
-
-    async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.send_message(f'Thanks for your response, {self.name}!', ephemeral=True)
-
 class Spaces(ui.View):
     def __init__(self, bot, word_num, word: str, guesses=None, exitt=None):
         super().__init__()
