@@ -15,7 +15,7 @@ cogs/rule.py
 events.json
 snipe.json
 r34config.json
-
+test.py
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
