@@ -70,6 +70,29 @@ class Owner(commands.Cog):
             json.dump(profile_data, j)
         await ctx.send("Profiles updated!")
 
+    @commands.command(name='fixeconomy', hidden=True)
+    async def fixecon(self, ctx):
+        with open('profiles.json') as j:
+            profile_data = json.load(j)
+        for i in range(len(profile_data)):
+            if(profile_data[i]['Salary']):
+                profile_data[i]['Salary'] = 2500
+            if(profile_data[i]['Balance'] < 0):
+                profile_data[i]['Balance'] = 0
+            if(profile_data[i]['Balance'] > 10000 or type(profile_data[i]['Balance']) != int):
+                profile_data[i]['Balance'] = 10000
+        with open('profiles.json', 'w') as j:
+            json.dump(profile_data, j)
+        with open('work/jobs.json') as j:
+            jobs = json.load(j)
+        for i in range(len(jobs)):
+            if(jobs[i]['base_salary'] > 2500):
+                jobs[i]['base_salary'] = 2500
+        with open('work/jobs.json', 'w') as j:
+            json.dump(jobs, j)
+        await ctx.send('done')
+
+
     @commands.command(name='updatequestions', hidden=True)
     @commands.is_owner()
     async def updatequestions(self, ctx):

@@ -271,6 +271,8 @@ class Currency(commands.Cog):
                 await ctx.send("You can't have a salary this low! Exiting.")
                 return
             try:
+                if int(salary.content) > 2500 or len(salary.content) > 5:
+                    return await ctx.send('no.')
                 job_data.append({
                     "name": user_job,
                     "base_salary": int(salary.content)
