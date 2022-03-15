@@ -258,11 +258,14 @@ class Currency(commands.Cog):
         await ctx.send(f"{ctx.author.mention}, please enter the job this work is for")
         question = await self.bot.wait_for("message", check=check)
         user_job = question.content.lower().replace("/", "").replace(".", "").replace("~", "").replace("\"", "").replace("'", "").replace("\\", "").replace("-", "").replace("$", "").replace("{", "").replace("}", "").replace(
-            "#", "").replace("?", "").replace("*", "").replace("[", "").replace("]", "").replace(";", "").replace("&", "").replace(">", "").replace("<", "").replace("|", "").replace("!", "").replace("(", "").replace(")", "")
-        try:
-            with open(f'work/{user_job}.json') as f:
-                work_data = json.load(f)
-        except FileNotFoundError:
+            "#", "").replace("?", "").replace("*", "").replace("[", "").replace("]", "").replace(";", "").replace("&", "").replace(">", "").replace("<", "").replace("|", "").replace("!", "").replace("(", "").replace(")", "").replace('`', '')
+        if user_job == 'jobs':
+            return await ctx.send('no')
+        for filename in os.listdir('work'):
+            if filename.split('.')[0] == 'user_job':
+                work_data = json.load("work/" + filename)
+                break
+        else:
             with open(f'work/jobs.json') as f:
                 job_data = json.load(f)
             await ctx.send(f"{ctx.author.mention}, new job detected! Please enter a base salary for this job (just the number). Keep in mind, the base salary for most jobs is around 10.")
@@ -282,7 +285,8 @@ class Currency(commands.Cog):
                 return 0
             with open(f'work/jobs.json', 'w') as json_file:
                 json.dump(job_data, json_file)
-            os.system(f'touch work/{user_job}.json')
+            fp = open(f'work/{user_job}.json', 'x')
+            fp.close()
             work_data = []
         await ctx.send(f"{ctx.author.mention}, please enter the category of this work (reverse, fill in, retype)")
         category = await self.bot.wait_for("message", check=check)
