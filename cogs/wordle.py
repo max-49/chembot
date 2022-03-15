@@ -79,11 +79,6 @@ class Wordle(commands.Cog):
     After a win or lose, the user's profile is updated
     '''
 
-    @commands.command(name='testword', help='yo')
-    async def testt(self, ctx):
-        test = Questionnaire()
-        await discord.InteractionResponse.send_modal(test)
-
     @commands.command(name="wordle", help="world")
     async def wordle(self, ctx):
         def check(msg):
