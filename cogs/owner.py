@@ -53,6 +53,18 @@ class Owner(commands.Cog):
         else:
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully reloaded!")
 
+    @commands.command(name='reloadall', hidden=True)
+    @commands.is_owner()
+    async def reloadall(self, ctx):
+        for filename in os.listdir('cogs'):
+            if filename.endswith('.py'):
+                try:
+                    self.bot.unload_extension(f'cogs.{filename[:-3]}')
+                    self.bot.load_extension(f'cogs.{filename[:-3]}')
+                except Exception as e:
+                    await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
+        await ctx.send("All cogs successfully reloaded!")
+
     @commands.command(name='updateprofiles', hidden=True)
     @commands.is_owner()
     async def updateprofiles(self, ctx):
@@ -71,6 +83,7 @@ class Owner(commands.Cog):
         await ctx.send("Profiles updated!")
 
     @commands.command(name='fixeconomy', hidden=True)
+    @commands.is_owner()
     async def fixecon(self, ctx):
         with open('profiles.json') as j:
             profile_data = json.load(j)
@@ -156,6 +169,17 @@ class Owner(commands.Cog):
             await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
         else:
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully reloaded!")
+
+    @commands.is_owner()
+    @commands.command(name='fullrefreshall', help='yo', aliases=['fra'], hidden=True)
+    async def fullrefreshall(self, ctx):
+        command = "git pull --no-edit"
+        try:
+            proc = subprocess.check_output([command], shell=True).decode("utf-8")
+        except subprocess.CalledProcessError as e:
+            proc = e.stdout
+        await ctx.send(f"```{proc}```")
+        await ctx.invoke(self.bot.get_command('reloadall'))
         
 
 

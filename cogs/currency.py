@@ -253,12 +253,11 @@ class Currency(commands.Cog):
     async def addwork(self, ctx):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and \
-                msg.content.lower()[0] in string.printable
+                msg.content.lower()[0] in string.ascii_lowercase
 
         await ctx.send(f"{ctx.author.mention}, please enter the job this work is for")
         question = await self.bot.wait_for("message", check=check)
-        user_job = question.content.lower().replace("/", "").replace(".", "").replace("~", "").replace("\"", "").replace("'", "").replace("\\", "").replace("-", "").replace("$", "").replace("{", "").replace("}", "").replace(
-            "#", "").replace("?", "").replace("*", "").replace("[", "").replace("]", "").replace(";", "").replace("&", "").replace(">", "").replace("<", "").replace("|", "").replace("!", "").replace("(", "").replace(")", "").replace('`', '')
+        user_job = ''.join([x for x in question.content.lower() if x in string.ascii_lowercase])
         if user_job == 'jobs':
             return await ctx.send('no')
         for filename in os.listdir('work'):

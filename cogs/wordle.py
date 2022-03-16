@@ -101,6 +101,7 @@ class Wordle(commands.Cog):
             # send exit to the Spaces() class if user quits early
             if guess.content.lower() in ['exit', 'quit']:
                 game = Spaces(self.bot, wordlist.index(word), word, guesses, 'exit')
+                embed = discord.Embed(title="Game exited...", description=f"The word was {word}", color=0xFF0000)
                 await ctx.send("Quitting game...")
                 return await view.edit(embed=embed, view=game)
             # checks if word is valid
