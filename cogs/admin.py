@@ -23,7 +23,7 @@ class Admin(commands.Cog):
     async def purgeuser(self, ctx, member: discord.Member, num: int):
         if (num > 50):
             return await ctx.send("You can't purge more than 50 messages with this command!")
-        history = await ctx.channel.history(limit=100, oldest_first=False).flatten()
+        history = [message async for message in ctx.channel.history(limit=100, oldest_first=False)]
         num_deleted = 0
         for message in history:
             if num_deleted == num:
