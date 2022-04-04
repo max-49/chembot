@@ -276,6 +276,8 @@ class Wordle(commands.Cog):
                 if 'text' in saying:
                     phonetic = saying['text']
                     break
+                else:
+                    phonetic = definition[0]['word']
         embed = discord.Embed(title=definition[0]['word'], description=phonetic, timestamp=datetime.utcnow(), color=0x0000FF)
         definitions = []
         for meaning in definition[0]["meanings"][:3]:
