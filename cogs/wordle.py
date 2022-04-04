@@ -70,20 +70,20 @@ class Dictionary(discord.ui.View):
         else:
             for child in self.children:
                 child.disabled = False
-        embed = discord.Embed(title=self.word, description=self.phonetic, timestamp=datetime.utcnow(), color=discord.Color.blue)
+        embed = discord.Embed(title=self.word, description=self.phonetic, timestamp=datetime.utcnow(), color=0x0000FF)
         embed.add_field(name=self.definitions[self.index]["speech"], value=self.definitions[self.index]['meanings'], inline=False)
         await interaction.message.edit(embed=embed, view=self)
 
     @discord.ui.button(label='➡️', style=discord.ButtonStyle.blurple)
     async def right(self, button: discord.ui.Button, interaction: discord.Interaction):
         self.index += 1
-        if self.index > (len(self.events) - 1):
+        if self.index > (len(self.definitions) - 1):
            self.index -= 1
            button.disabled = True
         else:
             for child in self.children:
                 child.disabled = False
-        embed = discord.Embed(title=self.word, description=self.phonetic, timestamp=datetime.utcnow(), color=discord.Color.blue)
+        embed = discord.Embed(title=self.word, description=self.phonetic, timestamp=datetime.utcnow(), color=0x0000FF)
         embed.add_field(name=self.definitions[self.index]["speech"], value=self.definitions[self.index]['meanings'], inline=False)
         await interaction.message.edit(embed=embed, view=self)
 
@@ -268,16 +268,25 @@ class Wordle(commands.Cog):
         definition = requests.get(f'https://api.dictionaryapi.dev/api/v2/entries/en/{word}').json()
         if type(definition) == dict:
             return await ctx.reply("No definition found for this word! Try searching on the web.")
-        embed = discord.Embed(title=definition[0]['word'], description=definition[0]['phonetic'], timestamp=datetime.utcnow(), color=discord.Color.blue)
+        print(definition[0])
+        if('phonetic' in definition[0]):
+            phonetic = definition[0]['phonetic']
+        else:
+            for saying in definition[0]['phonetics']:
+                if 'text' in saying:
+                    phonetic = saying['text']
+                    break
+        embed = discord.Embed(title=definition[0]['word'], description=phonetic, timestamp=datetime.utcnow(), color=0x0000FF)
         definitions = []
-        for meaning in definition["meanings"]:
+        for meaning in definition[0]["meanings"][:3]:
             meanings = ""
-            for i, defin in enumerate(meaning["definintions"]):
+            for i, defin in enumerate(meaning["definitions"][:5]):
                 meanings += f"{i+1}) {defin['definition']}\n"
+            print(meanings)
             definitions.append({"speech": meaning["partOfSpeech"], "meanings": meanings})
         index = 0
         embed.add_field(name=definitions[index]["speech"], value=definitions[index]['meanings'], inline=False)
-        arrows = Dictionary(index, definitions, definition[0]['word'], definition[0]['phonetic'], ctx.author)
+        arrows = Dictionary(index, definitions, definition[0]['word'], phonetic, ctx.author)
         await ctx.send(embed=embed, view=arrows)
     
     async def cog_command_error(self, ctx, error):
