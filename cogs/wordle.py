@@ -263,7 +263,7 @@ class Wordle(commands.Cog):
             await view.edit(embed=embed, view=game)
             await ctx.send('\n'.join(game.wordle))
 
-    @commands.command(name='dictionary', help='look up the definition of a word!', aliases=['dict', 'd'])
+    @commands.command(name='dictionary', help='look up the definition of a word!', aliases=['dict', 'd', 'def', 'definition'])
     async def dictionary(self, ctx, word: str):
         definition = requests.get(f'https://api.dictionaryapi.dev/api/v2/entries/en/{word}').json()
         if type(definition) == dict:
