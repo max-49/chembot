@@ -3,6 +3,7 @@ import json
 import random
 import string
 import discord
+import requests
 from discord import ui
 from datetime import datetime
 from discord.ext import commands
@@ -50,6 +51,48 @@ class Spaces(ui.View):
                 child.disabled = True
             self.wordle += [squares[i:i+5] for i in range(0, len(squares), 5)]
             self.value = False
+
+class Dictionary(discord.ui.View):
+    def __init__(self, index, definitions, word, phonetic, author):
+        super().__init__()
+        self.index = index
+        self.definitions = definitions
+        self.word = word
+        self.phonetic = phonetic
+        self.author = author
+
+    @discord.ui.button(label='⬅️', style=discord.ButtonStyle.blurple)
+    async def left(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.index -= 1
+        if self.index < 0:
+           self.index += 1
+           button.disabled = True
+        else:
+            for child in self.children:
+                child.disabled = False
+        embed = discord.Embed(title=self.word, description=self.phonetic, timestamp=datetime.utcnow(), color=discord.Color.blue)
+        embed.add_field(name=self.definitions[self.index]["speech"], value=self.definitions[self.index]['meanings'], inline=False)
+        await interaction.message.edit(embed=embed, view=self)
+
+    @discord.ui.button(label='➡️', style=discord.ButtonStyle.blurple)
+    async def right(self, button: discord.ui.Button, interaction: discord.Interaction):
+        self.index += 1
+        if self.index > (len(self.events) - 1):
+           self.index -= 1
+           button.disabled = True
+        else:
+            for child in self.children:
+                child.disabled = False
+        embed = discord.Embed(title=self.word, description=self.phonetic, timestamp=datetime.utcnow(), color=discord.Color.blue)
+        embed.add_field(name=self.definitions[self.index]["speech"], value=self.definitions[self.index]['meanings'], inline=False)
+        await interaction.message.edit(embed=embed, view=self)
+
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        if interaction.user == self.author:
+            return True
+        else:
+            await interaction.response.send_message('This button isn\'t for you!', ephemeral=True)
+            return False
 
 '''
 This is the Wordle class, a discord.py cog that hold all commands in the Wordle help category
@@ -220,6 +263,23 @@ class Wordle(commands.Cog):
             await view.edit(embed=embed, view=game)
             await ctx.send('\n'.join(game.wordle))
 
+    @commands.command(name='dictionary', help='look up the definition of a word!', aliases=['dict', 'd'])
+    async def dictionary(self, ctx, word: str):
+        definition = requests.get(f'https://api.dictionaryapi.dev/api/v2/entries/en/{word}').json()
+        if type(definition) == dict:
+            return await ctx.reply("No definition found for this word! Try searching on the web.")
+        embed = discord.Embed(title=definition[0]['word'], description=definition[0]['phonetic'], timestamp=datetime.utcnow(), color=discord.Color.blue)
+        definitions = []
+        for meaning in definition["meanings"]:
+            meanings = ""
+            for i, defin in enumerate(meaning["definintions"]):
+                meanings += f"{i+1}) {defin['definition']}\n"
+            definitions.append({"speech": meaning["partOfSpeech"], "meanings": meanings})
+        index = 0
+        embed.add_field(name=definitions[index]["speech"], value=definitions[index]['meanings'], inline=False)
+        arrows = Dictionary(index, definitions, definition[0]['word'], definition[0]['phonetic'], ctx.author)
+        await ctx.send(embed=embed, view=arrows)
+    
     async def cog_command_error(self, ctx, error):
         await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
 
