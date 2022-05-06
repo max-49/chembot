@@ -390,7 +390,7 @@ class Fun(commands.Cog):
         question = question.capitalize().replace(' i ', f" {str(ctx.author.name)} ").replace(' I ', f" {str(ctx.author.name)} ")
         title = question if len(question) < 75 else 'Choices'
         message = f"{str(self.bot.user.name).split()[0]} chooses "
-        if(len(choices) > 10):
+        if(len(choices) > 30):
             await ctx.reply("Too many choices!")
             return
         choice = random.choice(list(choices))
