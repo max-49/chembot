@@ -68,12 +68,13 @@ class Basic(commands.Cog):
     async def help(self, ctx, *, select_cog=None):
         help_list = []
 
-        for command in self.bot.all_commands:
-            if command.name == select_cog:
-                embed = discord.Embed(title=f"{self.info[3]}{command.name}", color=0x00ff00)
-                embed.add_field(name="Usage", value=f"{self.info[3]}{command.usage}", inline=False)
+        if select_cog in self.bot.all_commands:
+            command = self.bot.all_commands[select_cog]
+            embed = discord.Embed(title=f"{self.info[3]}{command.name}", color=0x00ff00)
+            embed.add_field(name="Usage", value=f"{self.info[3]}{command.usage}", inline=False)
+            if command.aliases is not None:
                 embed.add_field(name="Aliases", value=f"{', '.join(command.aliases)}", inline=False)
-                return await ctx.send(embed=embed)
+            return await ctx.send(embed=embed)
 
         for cog in self.bot.cogs:
             help_dict = {}
