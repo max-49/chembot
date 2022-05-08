@@ -9,7 +9,7 @@ from config import get_bot
 from random import randint
 from datetime import datetime
 from discord.ext import commands
-from discord.ext.commands import has_permissions
+from discord.ext.commands import has_permissions, BadArgument, MissingRequiredArgument
 
 
 class Currency(commands.Cog):
@@ -17,7 +17,7 @@ class Currency(commands.Cog):
         self.info = get_bot(os.getcwd().split('/')[-1])
         self.bot = bot
 
-    @commands.command(name="balance", aliases=['bal', 'money'], help="displays your balance!", pass_context=True)
+    @commands.command(name="balance", aliases=['bal', 'money'], help="displays your balance!", usage="balance [member]")
     async def bal(self, ctx, profile: discord.Member=None):
         with open('profiles.json') as f:
             profile_data = json.load(f)
@@ -39,7 +39,7 @@ class Currency(commands.Cog):
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
 
-    @commands.command(name="resetcooldown", help="resets your work cooldown with permission from the owner.")
+    @commands.command(name="resetcooldown", help="resets your work cooldown with permission from the owner.", usage="resetcooldown")
     async def resetcool(self, ctx):
         if(ctx.author.id == 427832149173862400):
             self.work.reset_cooldown(ctx)
@@ -64,7 +64,7 @@ class Currency(commands.Cog):
                     await ctx.send("No reset for you.")
                     break
 
-    @commands.command(name="work", help="work")
+    @commands.command(name="work", help="work", usage="work [list, job, resign]")
     @commands.cooldown(1, 300, commands.BucketType.user)
     async def work(self, ctx, *params):
         with open('profiles.json') as f:
@@ -203,7 +203,7 @@ class Currency(commands.Cog):
             em = discord.Embed(title=f"You can only work once per 5 minutes!", description=f"Try again in {minutes} minutes and {seconds} seconds.", color=0xFF0000)
             await ctx.send(embed=em)
 
-    @commands.command(name="worklist", help="Displays the list of jobs.")
+    @commands.command(name="worklist", help="Displays the list of jobs.", usage="worklist")
     async def worklist(self, ctx):
         with open('work/jobs.json') as f:
             jobs = json.load(f)
@@ -222,7 +222,7 @@ class Currency(commands.Cog):
             name="\u200b", value=f"Do `{self.info[3]}work <job>` to select a job!")
         await ctx.reply(embed=embed)
 
-    @commands.command(name="workresign", help="resign from work")
+    @commands.command(name="workresign", help="resign from work", usage="workresign")
     async def resign(self, ctx):
         with open('profiles.json') as f:
             profiles = json.load(f)
@@ -249,7 +249,7 @@ class Currency(commands.Cog):
                     await ctx.reply(f"You're already don't have a job! Select a job fron `{self.info[3]}work list`!")
                     self.work.reset_cooldown(ctx)
 
-    @commands.command(name="addwork", help="add a job work!")
+    @commands.command(name="addwork", help="add a job work!", usage="addwork")
     async def addwork(self, ctx):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and \
@@ -312,7 +312,7 @@ class Currency(commands.Cog):
             json.dump(work_data, json_file)
         await ctx.send(f"{ctx.author.mention}, your work was successfully added!")
 
-    @commands.command(name="transfer", help="transfer money to someone else!", aliases=['send', 'share'], pass_context=True)
+    @commands.command(name="transfer", help="transfer money to someone else!", aliases=['send', 'share'], usage="transfer <member> <amount>")
     async def transfer(self, ctx, member: discord.Member, money: int):
         with open('profiles.json') as f:
             profile_data = json.load(f)
@@ -352,9 +352,9 @@ class Currency(commands.Cog):
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
 
-    @commands.command(name="addmoney", help="add money to someone's profile!", pass_context=True)
+    @commands.command(name="addmoney", help="add money to someone's profile!", usage="addmoney <member> [money]")
     @has_permissions(administrator=True)
-    async def addmoney(self, ctx, member: discord.Member, money: int = None):
+    async def addmoney(self, ctx, member: discord.Member, money: int=None):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and \
                 msg.content.lower()[0] in string.digits
@@ -383,9 +383,9 @@ class Currency(commands.Cog):
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
 
-    @commands.command(name="takemoney", help="take money from someone's profile!", pass_context=True)
+    @commands.command(name="takemoney", help="take money from someone's profile!", usage="takemoney <member> [money]")
     @has_permissions(administrator=True)
-    async def takemoney(self, ctx, member: discord.Member, money: int = None):
+    async def takemoney(self, ctx, member: discord.Member, money: int=None):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and \
                 msg.content.lower()[0] in string.digits
@@ -414,7 +414,7 @@ class Currency(commands.Cog):
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
 
-    @commands.command(name='table', help='shows the slots payout table!')
+    @commands.command(name='table', help='shows the slots payout table!', usage="table")
     async def table(self, ctx):
         tables = [ { 'emoji': '⚽️', 'count': 2, 'payout': 1 }, { 'emoji': '🔍', 'count': 2, 'payout': 1 }, { 'emoji': '⌛️', 'count': 2, 'payout': 1.75 }, { 'emoji': '🏓', 'count': 2, 'payout': 1.75 }, { 'emoji': '🔴', 'count': 2, 'payout': 2 }, { 'emoji': '🌍', 'count': 2, 'payout': 2 }, { 'emoji': '💵', 'count': 2, 'payout': 2 }, { 'emoji': '📸', 'count': 2, 'payout': 2 }, { 'emoji': '🏓', 'count': 3, 'payout': 5 }, { 'emoji': '⚽️', 'count': 3, 'payout': 10 }, { 'emoji': '🔍', 'count': 3, 'payout': 10 }, { 'emoji': '🔴', 'count': 3, 'payout': 20 }, { 'emoji': '⌛️', 'count': 3, 'payout': 25 }, { 'emoji': '🌍', 'count': 3, 'payout': 50 }, { 'emoji': '📸', 'count': 3, 'payout': 75 }, { 'emoji': '💵', 'count': 3, 'payout': 250 }]
         emojis = ''
@@ -424,13 +424,13 @@ class Currency(commands.Cog):
         embed.add_field(name='emoji - payout', value=emojis, inline=False)
         await ctx.send(embed=embed)
 
-    @commands.command(name='shop', help='buy items at the shop!')
+    @commands.command(name='shop', help='buy items at the shop!', usage="shop")
     async def shop(self, ctx):
         embed = discord.Embed(title='BagelBot shop!', timestamp=datetime.utcnow(), color=0x00C3FF)
         embed.add_field(name='Items for sale! (Item code - Price)', value='**1kbagels** - 1,000 bagels\n**fakeflag** - 1,000 bagels\n**flag** - 1,000,000 bagels', inline=False)
         await ctx.send(embed=embed)
 
-    @commands.command(name='buy', help='buy an item from the shop!')
+    @commands.command(name='buy', help='buy an item from the shop!', usage="buy <item>")
     async def buy(self, ctx, buy_item: str):
         with open('profiles.json') as f:
             profile_data = json.load(f)
@@ -460,15 +460,15 @@ class Currency(commands.Cog):
                 return
         await ctx.reply(f"You don't have a profile yet! Create one with `{self.info[3]}balance`!")
 
-    @commands.command(name='high', help='roll the higher number to win!')
+    @commands.command(name='high', help='roll the higher number to win!', usage="high <bet amount>")
     async def high(self, ctx, amount: int):
         await ctx.invoke(self.bet, 'high', amount)
 
-    @commands.command(name='slots', help='slot machine!')
+    @commands.command(name='slots', help='slot machine!', usage="slots <bet amount>")
     async def slots(self, ctx, amount: int):
         await ctx.invoke(self.bet, 'slots', amount)
 
-    @commands.command(name="bet", help="bet <high | slots> <amount>")
+    @commands.command(name="bet", help="play either high or slots with the bet command!", usage="bet <high | slots> <amount>")
     @commands.cooldown(1, 3, commands.BucketType.user)
     async def bet(self, ctx, bet: str, amount: int):
         with open('profiles.json') as f:
@@ -560,7 +560,7 @@ class Currency(commands.Cog):
             await ctx.send(embed=em)
 
 
-    @commands.command(name='beg', help="beg for money because you don't have any")
+    @commands.command(name='beg', help="beg for money because you don't have any", usage="beg")
     @commands.cooldown(1, 240, commands.BucketType.user)
     async def beg(self, ctx):
         choice = random.randint(0,1)
@@ -595,7 +595,7 @@ class Currency(commands.Cog):
             em = discord.Embed(title=f"You can't just keep begging to get money!", description=f"Try again in {minutes} minutes and {seconds} seconds.", color=0xFF0000)
             await ctx.send(embed=em)
 
-    @commands.command(name="sim", help="sim <high | slots> <amount> <times>")
+    @commands.command(name="sim", help="simulate bets to determine probabilities!", usage="sim <high | slots> <bet amount> <times>")
     async def sim(self, ctx, bet: str, amount: int, times: int):
         if(times < 1):
             await ctx.reply('You can\'t simulate that number of attempts!')
@@ -661,8 +661,11 @@ class Currency(commands.Cog):
             await ctx.reply(embed=embed)
 
     async def cog_command_error(self, ctx, error):
-        if not isinstance(error, commands.CommandOnCooldown):
+        if isinstance(error, MissingRequiredArgument) or isinstance(error, BadArgument):
+            await ctx.reply(f"Incorrect syntax! Command usage: {self.info[3]}{ctx.command.usage}")
+        else:
             await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 
 def setup(bot):

@@ -2,9 +2,11 @@ import os
 import json
 import aiohttp
 import discord
+from config import get_bot
 from random import randint
 from datetime import datetime
 from discord.ext import commands
+from discord.ext.commands import BadArgument, MissingRequiredArgument
 
 class Website(discord.ui.View):
     def __init__(self):
@@ -14,19 +16,16 @@ class Website(discord.ui.View):
 class Basic(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.info = get_bot(os.getcwd().split('/')[-1])
 
-    @commands.command(name='amongus', help='yo')
-    async def smthg(self, ctx):
-        await ctx.invoke(self.bot.get_command('gif'), search_term="among us")
-
-    @commands.command(name='pfp', help="Displays a profile picture", pass_context=True)
+    @commands.command(name='pfp', help="Displays a profile picture", usage="pfp [member]")
     async def pfp(self, ctx, member: discord.Member = None):
         if member is None:
             await ctx.send(f'{ctx.author.avatar.url}')
         else:
             await ctx.send(f'{member.avatar.url}')
 
-    @commands.command(name='info', help="Displays information about this bot")
+    @commands.command(name='info', help="Displays information about this bot", usage="info")
     async def info(self, ctx):
         embed = discord.Embed(
             title="Bot Info", timestamp=datetime.utcnow(), color=0x00ff00)
@@ -35,7 +34,7 @@ class Basic(commands.Cog):
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/427832149173862400/1767e28d50d41fab9872c7137020df9c.webp?size=1024")
         await ctx.send(embed=embed, view=Website())
 
-    @commands.command(name='gif', help="sends a random gif", aliases=['g'])
+    @commands.command(name='gif', help="sends a random gif", aliases=['g'], usage="gif <search query>")
     async def gif(self, ctx, *, search_term: str):
         api_key = os.getenv('GIPHY_KEY')
 
@@ -54,20 +53,27 @@ class Basic(commands.Cog):
         gif = await search_gifs(search_term)
         await ctx.send(gif)
 
-    @commands.command(name='spam', help="spams text")
+    @commands.command(name='spam', help="spams text", usage="spam <message>")
     async def spam(self, ctx, *, string: str):
         if(ctx.guild.id == 732308165265326080):
             return await ctx.send("no spam in ictf bc it makes wick sad")
         for _ in range(5):
             await ctx.send(string, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False))
 
-    @commands.command(name="ping", help="displays the latency to the bot.")
+    @commands.command(name="ping", help="displays the latency to the bot.", usage="ping")
     async def ping(self, ctx):
         await ctx.send(f'{round(self.bot.latency * 1000)}ms')
 
-    @commands.command(name='help', help='displays this message!')
+    @commands.command(name='help', help='displays this message!', usage="help [cog, command]")
     async def help(self, ctx, *, select_cog=None):
         help_list = []
+
+        for command in self.bot.all_commands:
+            if command.name == select_cog:
+                embed = discord.Embed(title=f"{self.info[3]}{command.name}", color=0x00ff00)
+                embed.add_field(name="Usage", value=f"{self.info[3]}{command.usage}", inline=False)
+                embed.add_field(name="Aliases", value=f"{', '.join(command.aliases)}", inline=False)
+                return await ctx.send(embed=embed)
 
         for cog in self.bot.cogs:
             help_dict = {}
@@ -170,7 +176,11 @@ class Basic(commands.Cog):
                     await reaction.message.edit(embed=new_embed)
 
     async def cog_command_error(self, ctx, error):
-        await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+        if isinstance(error, MissingRequiredArgument) or isinstance(error, BadArgument):
+            await ctx.reply(f"Incorrect syntax! Command usage: {self.info[3]}{ctx.command.usage}")
+        else:
+            await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 
 def setup(bot):

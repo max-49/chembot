@@ -5,13 +5,17 @@ import string
 import discord
 import datetime
 from pytz import timezone
+from config import get_bot
 from datetime import timedelta
 from discord.ext import commands, tasks
+from discord.ext.commands import BadArgument, MissingRequiredArgument
+
 
 class Events(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.event_handler.start()
+        self.info = get_bot(os.getcwd().split('/')[-1])
 
     def cog_unload(self):
         self.event_handler.cancel()
@@ -38,6 +42,8 @@ class Events(commands.Cog):
                     channel = self.bot.get_channel(int(most_recent_event['channel'][2:-1]))
                 except Exception:
                     channel = self.bot.get_channel(780586194257182760)
+                if channel is None:
+                    return
                 user = ""
                 if(most_recent_event['user_ping']):
                     user += f"<@{most_recent_event['creator_id']}>"
@@ -46,7 +52,7 @@ class Events(commands.Cog):
                 with open('events.json', 'w') as w:
                     json.dump(events, w)
 
-    @commands.command(name="addevent", help="addevent!")
+    @commands.command(name="addevent", help="Add an event for the bot to remind you of!", usage="addevent")
     async def addevent(self, ctx):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower()[0] in string.printable
@@ -108,7 +114,7 @@ class Events(commands.Cog):
         with open('events.json', 'w') as w:
             json.dump(events, w)
 
-    @commands.command(name='listevents', help='list the events!')
+    @commands.command(name='listevents', help='list the events!', usage="listevents")
     async def listevents(self, ctx):
         with open('events.json') as j:
             events = json.load(j)
@@ -131,7 +137,11 @@ class Events(commands.Cog):
         await ctx.send(embed=embed)
 
     async def cog_command_error(self, ctx, error):
-        await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+        if isinstance(error, MissingRequiredArgument) or isinstance(error, BadArgument):
+            await ctx.reply(f"Incorrect syntax! Command usage: {self.info[3]}{ctx.command.usage}")
+        else:
+            await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 def setup(bot):
     bot.add_cog(Events(bot))

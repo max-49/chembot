@@ -7,6 +7,8 @@ from config import get_bot
 from random import randint, choice
 from datetime import datetime
 from discord.ext import commands
+from discord.ext.commands import BadArgument, MissingRequiredArgument
+
 
 class Regents(discord.ui.View):
     def __init__(self, correct: str, category: str, choices: int, author: discord.Member):
@@ -107,7 +109,7 @@ class Review(commands.Cog):
         self.info = get_bot(os.getcwd().split('/')[-1])
         self.bot = bot
 
-    @commands.command(name='profile', help="displays your profile", pass_context=True)
+    @commands.command(name='profile', help="displays your profile", usage="profile [member]")
     async def profile(self, ctx, profile: discord.Member=None):
         with open(f'profiles.json') as f:
             profile_data = json.load(f)
@@ -146,7 +148,7 @@ class Review(commands.Cog):
         with open(f'profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
 
-    @commands.command(name='regents', help="dispenses a Random regents question (syntax: regents (<atom>, <periodic>, <matter>, <solubility>", pass_context=True)
+    @commands.command(name='regents', help="dispenses a random NYS Chemistry Regents question", usage="regents [atom, periodic, matter, solubility]")
     async def regents(self, ctx, category: str=None):
         found = 0
         with open(f'profiles.json') as f:
@@ -225,7 +227,7 @@ class Review(commands.Cog):
         with open('profiles.json', 'w') as json_file:
             json.dump(profile_data, json_file)
 
-    @commands.command(name='review', help='review for tests!', pass_context=True)
+    @commands.command(name='review', help='review for tests!', usage="review [category]")
     async def reviewcommand(self, ctx, cat: str=None):
         if not cat:
             await ctx.reply("Please specify what kind of review you want! Possible options are `apchem`, `apworld`, `apush`, `apbio`, and `apstats`. Please use the regents command for chemistry regents questions.")
@@ -293,28 +295,28 @@ class Review(commands.Cog):
         if regents.value is None:
             await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
 
-    @commands.command(name='apstats', aliases=['stats', 'apstatistics', 'statistics'])
+    @commands.command(name='apstats', aliases=['stats', 'apstatistics', 'statistics'], usage="apstats")
     async def apstats(self, ctx):
         await ctx.invoke(self.bot.get_command('review'), cat="apstats")
 
-    @commands.command(name='apush', aliases=['ush', 'ushistory', 'us', 'america'])
+    @commands.command(name='apush', aliases=['ush', 'ushistory', 'us', 'america'], usage="apush")
     async def apush(self, ctx):
         await ctx.invoke(self.bot.get_command('review'), cat="apush")
 
-    @commands.command(name='apbio', aliases=['bio', 'biology', 'apbiology'])
+    @commands.command(name='apbio', aliases=['bio', 'biology', 'apbiology'], usage="apbio")
     async def apbio(self, ctx):
         await ctx.invoke(self.bot.get_command('review'), cat="apbio")
 
-    @commands.command(name='apworld', aliases=['world'])
+    @commands.command(name='apworld', aliases=['world'], usage="apworld")
     async def apworld(self, ctx):
         await ctx.invoke(self.bot.get_command('review'), cat="apworld")
 
-    @commands.command(name='apchem', aliases=['chem', 'chemistry', 'apchemistry'])
+    @commands.command(name='apchem', aliases=['chem', 'chemistry', 'apchemistry'], usage="apchem")
     async def apchem(self, ctx):
         await ctx.invoke(self.bot.get_command('review'), cat="apchem")
 
-    @commands.command(name='leaderboard', help="Displays the global leaderboards", aliases=['lb', 'leader'], pass_context=True)
-    async def lb(self, ctx, *, lb: str = None):
+    @commands.command(name='leaderboard', help="Displays the global leaderboards", aliases=['lb', 'leader'], usage="leaderboard [type]")
+    async def lb(self, ctx, *, lb: str=None):
         with open('profiles.json') as f:
             profile_data = json.load(f)
         percentages = {}
@@ -507,7 +509,7 @@ class Review(commands.Cog):
             embed.add_field(name="Placements", value=msg, inline=False)
             await ctx.send(embed=embed)
 
-    @commands.command(name='settings', help="displays the settings menu")
+    @commands.command(name='settings', help="displays the settings menu", usage="settings [calc, table] [on, off]")
     async def settings(self, ctx, *params):
         with open('profiles.json') as f:
             profile_data = json.load(f)
@@ -578,7 +580,11 @@ class Review(commands.Cog):
             await ctx.send(embed=embed)
 
     async def cog_command_error(self, ctx, error):
-        await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+        if isinstance(error, MissingRequiredArgument) or isinstance(error, BadArgument):
+            await ctx.reply(f"Incorrect syntax! Command usage: {self.info[3]}{ctx.command.usage}")
+        else:
+            await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 
 def setup(bot):

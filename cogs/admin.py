@@ -1,24 +1,34 @@
 import io
 import os
 import json
-import string
 import discord
 import chat_exporter
+from config import get_bot
 from discord.ext import commands
-from discord.ext.commands import has_permissions
+from discord.ext.commands import has_permissions, BadArgument, MissingRequiredArgument
 
 
+'''
+This class is a Cog which contains all commands to be listed under the Admin category.
+'''
 class Admin(commands.Cog):
     def __init__(self, bot):
+        self.info = get_bot(os.getcwd().split('/')[-1])
         self.bot = bot
 
-    @commands.command(name='purge', help='purgury')
+    '''
+    The purge command allows everyone with permissions to manage messages to purge a number of recent messages.
+    '''
+    @commands.command(name='purge', help='deletes the most recent # of messages specified', usage='purge <# messages>')
     @has_permissions(manage_messages=True)
     async def purge(self, ctx, num: int):
         await ctx.channel.purge(limit=num+1)
         await ctx.send(f'{num} messages cleared by {ctx.author.mention}')
 
-    @commands.command(name='purgeuser', help='purgury in channel')
+    '''
+    The purgeuser command is similar to the purge command, but deletes the most recent number of messages from a specific user.
+    '''
+    @commands.command(name='purgeuser', help='deletes the most recent # of messages specified by a certain user', usage='purgeuser <member> <# messages>')
     @has_permissions(manage_messages=True)
     async def purgeuser(self, ctx, member: discord.Member, num: int):
         if (num > 50):
@@ -35,62 +45,52 @@ class Admin(commands.Cog):
             await ctx.send("Number provided was more than this user's sent messages in this channel!")
         await ctx.send(f'{num_deleted} messages by {member} cleared by {ctx.author.mention}')
 
-    @commands.command(name='clear', help="clears screen (admin only)")
+    '''
+    This command just sends a large blank message to "clear" the screen of users
+    '''
+    @commands.command(name='clear', help="clears screen (admin only)", usage='clear')
     @has_permissions(administrator=True)
     async def clear(self, ctx):
         await ctx.send("_ _\n"*40)
 
-    @commands.command(name='ban', help="ban", hidden=True)
+    '''
+    This command can be used to ban a user from the server with an optional reason to be included in the server audit log.
+    '''
+    @commands.command(name='ban', help="bans user", usage='ban <user> [reason]')
     @has_permissions(administrator=True)
-    async def ban(self, ctx, user: discord.Member=None, *, reason=None):
-        if user is None:
-            await ctx.send("Please specify a user to ban.")
-            return
-        await user.ban(reason=reason)
+    async def ban(self, ctx, user: discord.Member, *, reason=None):
+        await user.ban(reason=reason, delete_message_days=0)
         await ctx.send(f"Banned {user.mention}")
 
-    @commands.command(name='kick', help="kick", hidden=True)
+    '''
+    This command can be used to kick a user from the server with an optional reason to be included in the server audit log.
+    '''
+    @commands.command(name='kick', help="kicks user", usage='kick <user> [reason]')
     @has_permissions(administrator=True)
-    async def kick(self, ctx, user: discord.Member=None, *, reason=None):
-        if user is None:
-            await ctx.send("Please specify a user to kick.")
-            return
+    async def kick(self, ctx, user: discord.Member, *, reason=None):
         await user.kick(reason=reason)
         await ctx.send(f"Kicked {user.mention}")
 
-    @commands.command(name='save', help="saves an archive of the chat!")
-    async def save(self, ctx, *params):
-        with open('allowed_ids.json') as j:
-            allowed_ids = json.load(j)
-        try:
-            if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator):
-                if(params[0] == "allowId"):
-                    if int(params[1]) not in allowed_ids:
-                        allowed_ids.append(int(params[1]))
-                        await ctx.reply("Successfully added ID to allowed IDs!")
-                    else:
-                        await ctx.reply("This ID is already allowed to archive chats!")
-                elif(params[0] == "denyId"):
-                    if int(params[1]) in allowed_ids:
-                        allowed_ids.remove(int(params[1]))
-                        await ctx.reply("Successfully denied user from archiving chats!")
-                    else:
-                        await ctx.reply("This ID already isn't allowed to archive chats!")
-        except IndexError:
-            if(ctx.author.id == 427832149173862400 or ctx.author.guild_permissions.administrator or int(ctx.author.id) in allowed_ids):
-                await ctx.send("Saving...")
-                transcript = await chat_exporter.export(ctx.channel, None, "EST")
-                if transcript is None:
-                    await ctx.reply("Save resulted in no transcript being created! Please try again.")
-                    return
-                transcript_file = discord.File(io.BytesIO(
-                    transcript.encode()), filename=f"archive-{ctx.channel.name}.html")
-                await ctx.reply(file=transcript_file)
-        with open('allowed_ids.json', 'w') as j:
-            json.dump(allowed_ids, j)
+    '''
+    This command uses the chat_exporter library to create a transcript of a server channel as an HTML file to be saved for later.
+    '''
+    @commands.is_owner()
+    @commands.command(name='save', help="saves an archive of the chat!", usage='save')
+    async def save(self, ctx):
+        await ctx.send("Saving...")
+        transcript = await chat_exporter.export(ctx.channel, None, "EST")
+        if transcript is None:
+            await ctx.reply("Save resulted in no transcript being created! Please try again.")
+            return
+        transcript_file = discord.File(io.BytesIO(
+            transcript.encode()), filename=f"archive-{ctx.channel.name}.html")
+        await ctx.reply(file=transcript_file)
 
     async def cog_command_error(self, ctx, error):
-        await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+        if isinstance(error, MissingRequiredArgument) or isinstance(error, BadArgument):
+            await ctx.reply(f"Incorrect syntax! Command usage: {self.info[3]}{ctx.command.usage}")
+        else:
+            await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
 
 
 def setup(bot):

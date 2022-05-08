@@ -5,9 +5,12 @@ import string
 import discord
 import requests
 from discord import ui
+from config import get_bot
 from datetime import datetime
 from discord.ext import commands
 from discord.ui.button import Button
+from discord.ext.commands import BadArgument, MissingRequiredArgument
+
 
 '''
 This is the Spaces class, the callback class that is required for any discord.py view, in this case, for buttons. 
@@ -111,6 +114,7 @@ class Wordle(commands.Cog):
         with open('words_also.txt') as j:
             for line in j.readlines():
                 self.also_words.append(line.strip())
+        self.info = get_bot(os.getcwd().split('/')[-1])
 
     '''
     When a user runs the wordle command, a word is selected from the "words" list and a game is initialized.
@@ -122,7 +126,7 @@ class Wordle(commands.Cog):
     After a win or lose, the user's profile is updated
     '''
 
-    @commands.command(name="wordle", help="world")
+    @commands.command(name="wordle", help="Generates a Wordle for the user to play with a random 5-letter word!", usage="wordle")
     async def wordle(self, ctx):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower()[0] in string.printable
@@ -190,7 +194,7 @@ class Wordle(commands.Cog):
     This command is the same as the profile command but just returns the user's wordle stats.
     It will initialize a user profile if the user does not have one.
     '''
-    @commands.command(name="wordlestats", help="wordle stats")
+    @commands.command(name="wordlestats", help="Returns a user's wordle stats!", usage="wordlestats [user]")
     async def wordlestats(self, ctx, profile: discord.Member=None):
         with open(f'profiles.json') as f:
             profile_data = json.load(f)
@@ -224,7 +228,7 @@ class Wordle(commands.Cog):
     does not check the wordlist for valid words, and has no effect on the user's stats.
     '''
     @commands.is_owner()
-    @commands.command(name="debugwordle", help="waaaaorld")
+    @commands.command(name="debugwordle", help="Generates a Wordle with a provided word", usage="debugwordle <word>")
     async def debugwordle(self, ctx, word):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower()[0] in string.printable
@@ -263,7 +267,7 @@ class Wordle(commands.Cog):
             await view.edit(embed=embed, view=game)
             await ctx.send('\n'.join(game.wordle))
 
-    @commands.command(name='dictionary', help='look up the definition of a word!', aliases=['dict', 'd', 'def', 'definition'])
+    @commands.command(name='dictionary', help='look up the definition of a word!', aliases=['dict', 'd', 'def', 'definition'], usage="dictionary <word>")
     async def dictionary(self, ctx, word: str):
         definition = requests.get(f'https://api.dictionaryapi.dev/api/v2/entries/en/{word}').json()
         if type(definition) == dict:
@@ -292,7 +296,11 @@ class Wordle(commands.Cog):
         await ctx.send(embed=embed, view=arrows)
     
     async def cog_command_error(self, ctx, error):
-        await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+        if isinstance(error, MissingRequiredArgument) or isinstance(error, BadArgument):
+            await ctx.reply(f"Incorrect syntax! Command usage: {self.info[3]}{ctx.command.usage}")
+        else:
+            await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 
 def setup(bot):

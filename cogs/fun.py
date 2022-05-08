@@ -8,10 +8,12 @@ import asyncio
 import random
 import requests
 import youtube_dl
+from config import get_bot
 from random import randint
 from datetime import datetime
 from discord.ext import commands
 from discord import SyncWebhook
+from discord.ext.commands import BadArgument, MissingRequiredArgument
 
 
 class Regents(discord.ui.View):
@@ -107,92 +109,22 @@ class Regents(discord.ui.View):
             await interaction.response.send_message('This button isn\'t for you!', ephemeral=True)
             return False
 
-# youtube_dl.utils.bug_reports_message = lambda: ''
-
-# ytdl_format_options = {
-#     'format': 'bestaudio/best',
-#     'restrictfilenames': True,
-#     'noplaylist': True,
-#     'nocheckcertificate': True,
-#     'ignoreerrors': False,
-#     'logtostderr': False,
-#     'quiet': True,
-#     'no_warnings': True,
-#     'default_search': 'auto',
-#     'source_address': '0.0.0.0' # bind to ipv4 since ipv6 addresses cause issues sometimes
-# }
-
-# ffmpeg_options = {
-#     'options': '-vn'
-# }
-
-# ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
-
-# class YTDLSource(discord.PCMVolumeTransformer):
-#     def __init__(self, source, *, data, volume=0.5):
-#         super().__init__(source, volume)
-#         self.data = data
-#         self.title = data.get('title')
-#         self.url = ""
-
-#     @classmethod
-#     async def from_url(cls, url, *, loop=None, stream=False):
-#         loop = loop or asyncio.get_event_loop()
-#         data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
-#         if 'entries' in data:
-#             # take first item from a playlist
-#             data = data['entries'][0]
-#         filename = data['title'] if stream else ytdl.prepare_filename(data)
-#         return filename
-
 class Fun(commands.Cog):
     def __init__(self, bot):
+        self.info = get_bot(os.getcwd().split('/')[-1])
         self.bot = bot
 
-    @commands.command(name="joinvc", help="join a voice channel")
+    @commands.command(name="joinvc", help="join a voice channel", usage="joinvc")
     async def joinvc(self, ctx, *, channel: discord.VoiceChannel = None):
         if channel is None and ctx.author.voice.channel is None:
             return await ctx.send("You are not in a voice channel.")
         await channel.connect()
     
-    @commands.command(name="leavevc", help="leave a voice channel")
+    @commands.command(name="leavevc", help="leave a voice channel", usage="leavevc")
     async def leavevc(self, ctx):
         await ctx.voice_client.disconnect()
 
-    # @commands.command(name='play', help='To play song')
-    # async def play(self, ctx, url: str):
-    #     if ctx.voice_client is None:
-    #         await ctx.invoke(self.joinvc)
-    #     async with ctx.typing():
-    #         filename = await YTDLSource.from_url(url, loop=self.bot.loop)
-    #         ctx.voice_client.play(discord.FFmpegPCMAudio(executable="/bin/ffmpeg", source=filename))
-    #     await ctx.send('**Now playing song**')
-
-    # @commands.command(name='pause', help='This command pauses the song')
-    # async def pause(self, ctx):
-    #     if ctx.voice_client.is_playing():
-    #         await ctx.voice_client.pause()
-    #         await ctx.send("paused")
-    #     else:
-    #         await ctx.send("no.")
-        
-    # @commands.command(name='resume', help='Resumes the song')
-    # async def resume(self, ctx):
-    #     if ctx.voice_client.is_paused():
-    #         await ctx.voice_client.resume()
-    #         await ctx.send('resumed')
-    #     else:
-    #         await ctx.send("no.")
-
-    # @commands.command(name='stop', help='Stops the song')
-    # async def stop(self, ctx):
-    #     if ctx.voice_client.is_playing():
-    #         await ctx.voice_client.stop()
-    #         await ctx.send('stopped')
-    #     else:
-    #         await ctx.send("no.")
-
-    @commands.command(name='chat', help="gives you the ability to chat with the bot", pass_context=True)
+    @commands.command(name='chat', help="gives you the ability to chat with the bot", usage="chat [channel] <message>")
     async def chat(self, ctx, channel: typing.Optional[discord.TextChannel], *, message: str):
         await ctx.message.delete()
         if channel is None:
@@ -200,7 +132,7 @@ class Fun(commands.Cog):
         else:
             await channel.send(message, allowed_mentions=discord.AllowedMentions(everyone=False, roles=False, users=True, replied_user=False))
 
-    @commands.command(name='trivia', help="dispenses a user-submitted trivia question!", aliases=['triv', 'tri', 't'])
+    @commands.command(name='trivia', help="dispenses a user-submitted trivia question!", aliases=['triv', 'tri', 't'], usage="trivia [trivia number]")
     async def trivia(self, ctx, num: int=None):
         with open('trivia/trivia.json') as f:
             questions = json.load(f)
@@ -229,7 +161,7 @@ class Fun(commands.Cog):
         if regents.value is None:
             await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
 
-    @commands.command(name='addtrivia', aliases=['addtriv', 'at'], help="add a question to s!trivia!")
+    @commands.command(name='addtrivia', aliases=['addtriv', 'at'], help="add a question to s!trivia!", usage="addtrivia")
     async def addtrivia(self, ctx):
         def check(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel and \
@@ -275,7 +207,7 @@ class Fun(commands.Cog):
             json.dump(question_data, json_file)
         await ctx.send(f"{ctx.author.mention}, your question was successfully added!")
 
-    @commands.command(name="say", help="say something as a webhook!")
+    @commands.command(name="say", help="say something as a webhook!", usage="say <message>")
     async def say(self, ctx, *, message: str):
         message = message.replace('\'', '\'').replace('\"', '\"').replace('\\', '\\')
         if len(message) > 150:
@@ -290,7 +222,7 @@ class Fun(commands.Cog):
         webhook = SyncWebhook.from_url(use_hook.url)
         webhook.send(message, username=ctx.author.display_name, avatar_url=ctx.author.avatar.url, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
 
-    @commands.command(name="saym", help="impersonate someone!")
+    @commands.command(name="saym", help="impersonate someone!", usage="saym <user> <message>")
     async def saym(self, ctx, member: discord.Member, *, message: str):
         if len(message) > 150:
             message = message[:150]
@@ -304,7 +236,7 @@ class Fun(commands.Cog):
         webhook = SyncWebhook.from_url(use_hook.url)
         webhook.send(message, username=member.display_name, avatar_url=member.avatar.url, allowed_mentions=discord.AllowedMentions(everyone=False, users=True, roles=False, replied_user=False))
 
-    @commands.command(name="ictfstats", help="ictf stats on chembot lmao", pass_context=True)
+    @commands.command(name="ictfstats", help="see your ImaginaryCTF stats on the bot!", usage="ictfstats <member>")
     async def stats(self, ctx, member: discord.Member = None):
         try:
             if member is None:
@@ -346,7 +278,7 @@ class Fun(commands.Cog):
         except IndexError:
             await ctx.send("User is not on the leaderboard yet! Tell them to check out <https://imaginaryctf.org/>!")
 
-    @commands.command(name='8ball', aliases=['ball', '8'], help='ask your question! 8ball <question>')
+    @commands.command(name='8ball', aliases=['ball', '8'], help='Ask a question to the bot!', usage="8ball <question>")
     async def ball(self, ctx, *, question=None):
         if(not question):
             await ctx.reply('You must ask a question!')
@@ -369,7 +301,7 @@ class Fun(commands.Cog):
         embed.add_field(name=f'{str(self.bot.user.name).split()[0]} says' + '.'*(num+1), value=random.choice(responses))
         await new_mess.edit(embed=embed)
 
-    @commands.command(name='add8ball', help='add a response to 8ball!', aliases=['addball', 'add8'])
+    @commands.command(name='add8ball', help='add a response to 8ball!', aliases=['addball', 'add8'], usage="add8ball [reason to add]")
     async def addball(self, ctx, *, res=None):
         with open('ball.json') as j:
             responses = json.load(j)
@@ -385,7 +317,7 @@ class Fun(commands.Cog):
             json.dump(responses, j)
         await ctx.send(f"{ctx.author.mention}, your 8ball response has successfully been added!")
 
-    @commands.command(name='choose', help='chooses a random item! syntax: choose <question> [choices]')
+    @commands.command(name='choose', help='have the bot help you make a decision!', usage="choose <question> <choices separated by spaces>")
     async def choose(self, ctx, question, *choices):
         question = question.capitalize().replace(' i ', f" {str(ctx.author.name)} ").replace(' I ', f" {str(ctx.author.name)} ")
         title = question if len(question) < 75 else 'Choices'
@@ -404,7 +336,11 @@ class Fun(commands.Cog):
 
 
     async def cog_command_error(self, ctx, error):
-        await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+        if isinstance(error, MissingRequiredArgument) or isinstance(error, BadArgument):
+            await ctx.reply(f"Incorrect syntax! Command usage: {self.info[3]}{ctx.command.usage}")
+        else:
+            await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 
 def setup(bot):

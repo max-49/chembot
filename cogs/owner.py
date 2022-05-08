@@ -3,19 +3,17 @@ import json
 import discord
 import subprocess
 import string
+from config import get_bot
 from discord.ext import commands
+from discord.ext.commands import BadArgument, MissingRequiredArgument
 
 
 class Owner(commands.Cog):
     def __init__(self, bot):
+        self.info = get_bot(os.getcwd().split('/')[-1])
         self.bot = bot
 
-    @commands.command(name='resetbot', help='resets all bot data')
-    async def resetbot(self, ctx):
-        await ctx.send("Resetting all saved data")
-        await ctx.send("Data reset!")
-
-    @commands.command(name='load', hidden=True, aliases=['l'])
+    @commands.command(name='load', help='load a cog', aliases=['l'], usage="load <cog>")
     @commands.is_owner()
     async def load(self, ctx, *, cog: str):
         try:
@@ -25,7 +23,7 @@ class Owner(commands.Cog):
         else:
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully loaded!")
 
-    @commands.command(name='unload', hidden=True, aliases=['u'])
+    @commands.command(name='unload', help='unload a cog', aliases=['u'], usage="unload <cog>")
     @commands.is_owner()
     async def unload(self, ctx, *, cog: str):
         try:
@@ -35,14 +33,14 @@ class Owner(commands.Cog):
         else:
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully unloaded!")
 
-    @commands.command(name='loadall', hidden=True)
+    @commands.command(name='loadall', help='load all cogs', usage="loadall")
     @commands.is_owner()
     async def loadall(self, ctx):
         for filename in os.listdir('cogs'):
             if filename.endswith('.py'):
                 self.bot.load_extension(f'cogs.{filename[:-3]}')
 
-    @commands.command(name='reload', aliases=['r'], hidden=True)
+    @commands.command(name='reload', help='reload a cog', aliases=['r'], usage="reload <cog>")
     @commands.is_owner()
     async def reload(self, ctx, *, cog: str):
         try:
@@ -53,7 +51,7 @@ class Owner(commands.Cog):
         else:
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully reloaded!")
 
-    @commands.command(name='reloadall', hidden=True)
+    @commands.command(name='reloadall', help='reload all cogs', aliases=['ra'], usage="reloadall")
     @commands.is_owner()
     async def reloadall(self, ctx):
         for filename in os.listdir('cogs'):
@@ -65,7 +63,7 @@ class Owner(commands.Cog):
                     await ctx.send(f'**`ERROR:`** {type(e).__name__} - {e}')
         await ctx.send("All cogs successfully reloaded!")
 
-    @commands.command(name='updateprofiles', hidden=True)
+    @commands.command(name='updateprofiles', hidden=True, usage="updateprofiles")
     @commands.is_owner()
     async def updateprofiles(self, ctx):
         with open('profiles.json') as j:
@@ -82,52 +80,7 @@ class Owner(commands.Cog):
             json.dump(profile_data, j)
         await ctx.send("Profiles updated!")
 
-    @commands.command(name='fixeconomy', hidden=True)
-    @commands.is_owner()
-    async def fixecon(self, ctx):
-        with open('profiles.json') as j:
-            profile_data = json.load(j)
-        for i in range(len(profile_data)):
-            if(profile_data[i]['Salary']):
-                profile_data[i]['Salary'] = 2500
-            if(profile_data[i]['Balance'] < 0):
-                profile_data[i]['Balance'] = 0
-            if(profile_data[i]['Balance'] > 10000 or type(profile_data[i]['Balance']) != int):
-                profile_data[i]['Balance'] = 10000
-        with open('profiles.json', 'w') as j:
-            json.dump(profile_data, j)
-        with open('work/jobs.json') as j:
-            jobs = json.load(j)
-        for i in range(len(jobs)):
-            if(jobs[i]['base_salary'] > 2500):
-                jobs[i]['base_salary'] = 2500
-        with open('work/jobs.json', 'w') as j:
-            json.dump(jobs, j)
-        await ctx.send('done')
-
-
-    @commands.command(name='updatequestions', hidden=True)
-    @commands.is_owner()
-    async def updatequestions(self, ctx):
-        with open('questions/categories.json') as j:
-            categories = json.load(j)
-        for category in categories:
-            with open(f'questions/{category}.json') as j:
-                questions = json.load(j)
-            for question in questions:
-                if(question['Calc'] == "True"):
-                    question['Calc'] = True
-                if(question['Table'] == "True"):
-                    question['Table'] = True
-                if(question['Calc'] == "False"):
-                    question['Calc'] = False
-                if(question['Table'] == "False"):
-                    question['Table'] = False
-            with open(f'questions/{category}.json', 'w') as j:
-                questions = json.dump(questions, j)
-        await ctx.send('Questions updated!')
-
-    @commands.command(name='shell', hidden=True)
+    @commands.command(name='shell', help="spawns a shell from the vps to execute commands in", usage="shell")
     @commands.is_owner()
     async def shell(self, ctx):
         await ctx.send('Shell spawned. Type `exit` to exit the shell.')
@@ -137,7 +90,7 @@ class Owner(commands.Cog):
         while True:
             command = await self.bot.wait_for("message", check=check)
             print(f"$ {command.content}")
-            if(command.content == 'exit'):
+            if(command.content.lower() == 'exit'):
                 break
             try:
                 proc = subprocess.check_output([command.content], shell=True).decode("utf-8")
@@ -154,7 +107,7 @@ class Owner(commands.Cog):
         await ctx.send('Shell exited')
 
     @commands.is_owner()
-    @commands.command(name='fullrefresh', help='yo', aliases=['fr'], hidden=True)
+    @commands.command(name='fullrefresh', help='pull latest changes from the GitHub and reload a cog', aliases=['fr'], usage="fullrefresh <cog>")
     async def fullrefresh(self, ctx, cog: str):
         command = "git pull --no-edit"
         try:
@@ -171,7 +124,7 @@ class Owner(commands.Cog):
             await ctx.send(f"`{cog.split('.')[-1]}` cog successfully reloaded!")
 
     @commands.is_owner()
-    @commands.command(name='fullrefreshall', help='yo', aliases=['fra'], hidden=True)
+    @commands.command(name='fullrefreshall', help='pull latest changes from GitHub and reload all commands', aliases=['fra'], usage="fullrefreshall")
     async def fullrefreshall(self, ctx):
         command = "git pull --no-edit"
         try:
@@ -180,11 +133,13 @@ class Owner(commands.Cog):
             proc = e.stdout
         await ctx.send(f"```{proc}```")
         await ctx.invoke(self.bot.get_command('reloadall'))
-        
-
 
     async def cog_command_error(self, ctx, error):
-        await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+        if isinstance(error, MissingRequiredArgument) or isinstance(error, BadArgument):
+            await ctx.reply(f"Incorrect syntax! Command usage: {self.info[3]}{ctx.command.usage}")
+        else:
+            await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 
 

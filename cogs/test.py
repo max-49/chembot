@@ -2,7 +2,9 @@ import os
 import discord
 from discord import ui
 from discord.ext import commands
-from discord.ext.commands import has_permissions
+from config import get_bot
+from discord.ext.commands import BadArgument, MissingRequiredArgument
+
 
 class Questionnaire(ui.Modal, title='Questionnaire Response'):
     name = ui.TextInput(label='Name')
@@ -21,15 +23,20 @@ class Butto(ui.View):
 
 class Test(commands.Cog):
     def __init__(self, bot):
+        self.info = get_bot(os.getcwd().split('/')[-1])
         self.bot = bot
 
-    @commands.command(name='test', help='purgury')
+    @commands.command(name='test', help='purgury', usage="test")
     async def bubto(self, ctx):
         game = Butto()
         await ctx.send(view=game)
 
     async def cog_command_error(self, ctx, error):
-        await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+        if isinstance(error, MissingRequiredArgument) or isinstance(error, BadArgument):
+            await ctx.reply(f"Incorrect syntax! Command usage: {self.info[3]}{ctx.command.usage}")
+        else:
+            await ctx.send(f"**`ERROR in {os.path.basename(__file__)}:`** {type(error).__name__} - {error}")
+
 
 
 def setup(bot):
