@@ -72,7 +72,7 @@ class Basic(commands.Cog):
             command = self.bot.all_commands[select_cog]
             embed = discord.Embed(title=f"{self.info[3]}{command.name} help", color=0x00ff00)
             embed.add_field(name="Usage", value=f"{self.info[3]}{command.usage}", inline=False)
-            if command.aliases is not None:
+            if len(command.aliases) > 0:
                 embed.add_field(name="Aliases", value=f"{', '.join(command.aliases)}", inline=False)
             return await ctx.send(embed=embed)
 
