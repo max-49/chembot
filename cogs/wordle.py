@@ -227,7 +227,6 @@ class Wordle(commands.Cog):
     The differences between this command and the normal wordle command are that this command has you choose your own word,
     does not check the wordlist for valid words, and has no effect on the user's stats.
     '''
-    @commands.is_owner()
     @commands.command(name="debugwordle", help="Generates a Wordle with a provided word", usage="debugwordle <word>")
     async def debugwordle(self, ctx, word):
         def check(msg):
