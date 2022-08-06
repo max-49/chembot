@@ -210,7 +210,7 @@ class Review(commands.Cog):
 
         await regents.wait()
         if regents.value is None:
-            await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
+            await ctx.reply(f"Sorry {ctx.author.mention}, you didn't reply in time!")
             for i in range(len(profile_data)):
                 if(profile_data[i]['ID'] == ctx.author.id):
                     profile_data[i]['Total'] += 1
@@ -293,7 +293,7 @@ class Review(commands.Cog):
 
         await regents.wait()
         if regents.value is None:
-            await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
+            await ctx.reply(f"Sorry {ctx.author.mention}, you didn't reply in time!")
 
     @commands.command(name='apstats', aliases=['stats', 'apstatistics', 'statistics'], usage="apstats")
     async def apstats(self, ctx):

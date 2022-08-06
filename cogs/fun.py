@@ -159,7 +159,7 @@ class Fun(commands.Cog):
 
         await regents.wait()
         if regents.value is None:
-            await ctx.reply(f"Sorry {ctx.author.display_name}, you didn't reply in time!")
+            await ctx.reply(f"Sorry {ctx.author.mention}, you didn't reply in time!")
 
     @commands.command(name='addtrivia', aliases=['addtriv', 'at'], help="add a question to s!trivia!", usage="addtrivia")
     async def addtrivia(self, ctx):
