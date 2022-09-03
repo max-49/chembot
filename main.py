@@ -28,16 +28,14 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), help_comma
 
 TOKEN = info[0]
 
-if __name__ == '__main__':
-    for filename in os.listdir('cogs'):
-        if filename.endswith('.py'):
-            await bot.load_extension(f'cogs.{filename[:-3]}')
-
-
 @bot.event
 async def on_ready():
     print("Setting NP game", flush=True)
     await bot.change_presence(activity=discord.Game(name=info[1]))
+    print("Loading cogs")
+    for filename in os.listdir('cogs'):
+        if filename.endswith('.py'):
+            await bot.load_extension(f'cogs.{filename[:-3]}')
     print(f"Logged in as {bot.user.name}")
     print(f"discord.py API version: {discord.__version__}")
     print(f"Python version: {platform.python_version()}")
