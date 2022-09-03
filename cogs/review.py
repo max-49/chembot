@@ -587,5 +587,5 @@ class Review(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(Review(bot))
+async def setup(bot):
+    await bot.add_cog(Review(bot))

@@ -302,5 +302,5 @@ class Wordle(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(Wordle(bot))
+async def setup(bot):
+    await bot.add_cog(Wordle(bot))

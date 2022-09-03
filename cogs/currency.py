@@ -668,5 +668,5 @@ class Currency(commands.Cog):
 
 
 
-def setup(bot):
-    bot.add_cog(Currency(bot))
+async def setup(bot):
+    await bot.add_cog(Currency(bot))
