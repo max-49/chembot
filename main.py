@@ -43,8 +43,6 @@ async def on_ready():
     if(is_debug):
         print("Running with level DEBUG")
     print("-------------------")
-    chat_exporter.init_exporter(bot)
-
 
 @bot.event
 async def on_message(ctx):
